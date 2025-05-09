@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Select, MenuItem } from '@mui/material';
 import * as d3 from 'd3';
 import CryptoJS from 'crypto-js';
+import { styled } from '@mui/material/styles';
 
 // 语言映射
 const languages = [
@@ -84,6 +85,61 @@ function tokensToBits(tokenIds) {
   }
   return h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
 }
+
+// 极简黑白风格自定义样式
+const MinimalPaper = styled(Paper)(({ theme }) => ({
+  borderRadius: 18,
+  boxShadow: '0 4px 16px 0 rgba(0,0,0,0.08)',
+  background: '#fff',
+  color: '#111',
+  marginBottom: 32,
+  flex: 1,
+  minHeight: 0,
+  padding: 20,
+}));
+const MinimalButton = styled(Button)(({ theme }) => ({
+  borderRadius: 18,
+  background: '#111',
+  color: '#fff',
+  fontWeight: 600,
+  fontSize: 18,
+  boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)',
+  textTransform: 'none',
+  '&:hover': {
+    background: '#222',
+  },
+  minWidth: 140,
+  minHeight: 48,
+}));
+const MinimalSelect = styled(Select)(({ theme }) => ({
+  borderRadius: 16,
+  background: '#fff',
+  color: '#111',
+  fontSize: 18,
+  fontWeight: 500,
+  boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)',
+  '.MuiSelect-select': {
+    padding: '14px 20px',
+  },
+}));
+const MinimalMenuItem = styled(MenuItem)(({ theme }) => ({
+  fontSize: 18,
+  borderRadius: 12,
+  '&.Mui-selected': {
+    background: '#111',
+    color: '#fff',
+  },
+  '&:hover': {
+    background: '#eee',
+  },
+}));
+
+const MinimalBox = styled(Box)(({ theme }) => ({
+  background: 'transparent',
+  minHeight: '100vh',
+  padding: '40px 0',
+  fontFamily: '"Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif',
+}));
 
 const TokenGenerator = () => {
   const [sourceLanguage, setSourceLanguage] = useState('');
@@ -254,61 +310,62 @@ const TokenGenerator = () => {
       .attr('text-anchor', 'middle')
       .attr('y', radius + 45)
       .attr('fill', '#000')
-      .attr('font-size', 38)
+      .attr('font-size', 15)
       .text(localWord);
   };
 
   return (
-    <Box>
-      <Paper sx={{ p: 3, bgcolor: '#f5f5f5', color: '#000', mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
+    <MinimalBox sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '100%', boxSizing: 'border-box', padding: 0 }}>
+      {/* 左侧表单区 */}
+      <MinimalPaper sx={{ width: 280, minWidth: 180, mr: 2, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', p: 2 }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: 22, mb: 2 }}>
           Token生成器
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-          <Select
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+          <MinimalSelect
             value={sourceLanguage}
             onChange={(e) => {
               setSourceLanguage(e.target.value);
               setWord('');
             }}
-            sx={{ width: 200, bgcolor: '#fff', color: '#000', '& .MuiSelect-icon': { color: '#000' } }}
             displayEmpty
+            sx={{ width: '100%', fontSize: 15, height: 40 }}
           >
-            <MenuItem value="">选择源语言</MenuItem>
+            <MinimalMenuItem value="">选择源语言</MinimalMenuItem>
             {languages.map(lang => (
-              <MenuItem key={lang.code} value={lang.nameEn}>{lang.name}</MenuItem>
+              <MinimalMenuItem key={lang.code} value={lang.nameEn}>{lang.name}</MinimalMenuItem>
             ))}
-          </Select>
-          <Select
+          </MinimalSelect>
+          <MinimalSelect
             value={word}
             onChange={(e) => setWord(e.target.value)}
-            sx={{ width: 200, bgcolor: '#fff', color: '#000', '& .MuiSelect-icon': { color: '#000' } }}
             displayEmpty
+            sx={{ width: '100%', fontSize: 15, height: 40 }}
             disabled={!sourceLanguage}
           >
-            <MenuItem value="">选择词语</MenuItem>
+            <MinimalMenuItem value="">选择词语</MinimalMenuItem>
             {wordOptions.map((w, idx) => (
-              <MenuItem key={w.local_word + idx} value={w.main_word + '|' + w.local_word}>{w.local_word}</MenuItem>
+              <MinimalMenuItem key={w.local_word + idx} value={w.main_word + '|' + w.local_word}>{w.local_word}</MinimalMenuItem>
             ))}
-          </Select>
-          <Button 
-            variant="contained" 
-            color="primary"
+          </MinimalSelect>
+          <MinimalButton
+            variant="contained"
             onClick={handleGenerate}
-            sx={{ bgcolor: '#000' }}
             disabled={!word || !sourceLanguage}
+            sx={{ height: 40, fontSize: 15, minWidth: 100 }}
           >
             生成可视化
-          </Button>
+          </MinimalButton>
         </Box>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: '#bbb', fontSize: 13 }}>
           请选择语言和词语，词语列表会根据语言自动变化。
         </Typography>
-      </Paper>
-      <Paper sx={{ p: 3, bgcolor: '#f5f5f5' }}>
+      </MinimalPaper>
+      {/* 右侧可视化区 */}
+      <MinimalPaper sx={{ flex: 1, minWidth: 0, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2, mb: 0 }}>
         <svg ref={graphRef}></svg>
-      </Paper>
-    </Box>
+      </MinimalPaper>
+    </MinimalBox>
   );
 };
 
