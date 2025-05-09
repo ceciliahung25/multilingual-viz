@@ -2,22 +2,22 @@ import React from 'react';
 import Home from './components/Home';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 
-const darkTheme = createTheme({
+const lightTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     background: {
-      default: '#1a1a1a',
-      paper: '#2d2d2d',
+      default: '#ffffff',
+      paper: '#f5f5f5',
     },
     primary: {
-      main: '#4285f4',
+      main: '#000000',
     },
   },
 });
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <Home />
     </ThemeProvider>

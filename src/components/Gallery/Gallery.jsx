@@ -24,14 +24,6 @@ const Gallery = () => {
     'stillness', 'majestic'
   ];
 
-  // const handleZoomIn = () => {
-  //   setScale(prev => Math.min(prev + 0.2, 2));
-  // };
-
-  // const handleZoomOut = () => {
-  //   setScale(prev => Math.max(prev - 0.2, 0.5));
-  // };
-
   const generateVisualization = (container, word, x, y, size = 100) => {
     const margin = size * 0.15;
     const radius = size / 2 - margin;
@@ -42,7 +34,6 @@ const Gallery = () => {
     // 生成17边形的顶点
     const numSides = 17;
     const angles = d3.range(numSides).map(i => i * (2 * Math.PI / numSides));
-    
     const vertices = angles.map(angle => ({
       x: radius * Math.cos(angle),
       y: radius * Math.sin(angle)
@@ -61,19 +52,27 @@ const Gallery = () => {
       };
     });
 
-    // 绘制填充的多边形
-    const pointLine = d3.line()
+    // 绘制17边形轮廓
+    const polygonLine = d3.line()
       .x(d => d.x)
       .y(d => d.y);
 
     g.append('path')
-      .datum([...points, points[0]])
-      .attr('d', pointLine)
-      .attr('fill', 'rgba(66, 133, 244, 0.1)')
-      .attr('stroke', '#4285f4')
+      .datum([...vertices, vertices[0]])
+      .attr('d', polygonLine)
+      .attr('fill', 'rgba(200, 200, 200, 0.12)')
+      .attr('stroke', '#ccc')
       .attr('stroke-width', 1);
 
-    // 添加点
+    // 绘制内部多边形
+    g.append('path')
+      .datum([...points, points[0]])
+      .attr('d', polygonLine)
+      .attr('fill', 'none')
+      .attr('stroke', '#000')
+      .attr('stroke-width', 1);
+
+    // 添加点（外圈）
     g.selectAll('.node')
       .data(points)
       .enter()
@@ -81,14 +80,52 @@ const Gallery = () => {
       .attr('class', 'node')
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('r', 2)
-      .attr('fill', '#4285f4');
+      .attr('r', 3)
+      .attr('fill', '#000');
+
+    // 内部矩阵参数
+    const rowCounts = [2, 4, 6, 6, 4, 2];
+    const dotR = size * 0.035; // 圆点半径
+    const yGap = dotR * 2.2;   // 行间距
+    const xGap = dotR * 2.2;   // 列间距
+    let bitIdx = 0;
+    const totalRows = rowCounts.length;
+    const matrixGroup = g.append('g').attr('class', 'matrix-group');
+    let firstDotPos = null;
+    rowCounts.forEach((count, row) => {
+      const y = (row - (totalRows - 1) / 2) * yGap;
+      const xStart = -((count - 1) / 2) * xGap;
+      for (let i = 0; i < count; i++) {
+        const x = xStart + i * xGap;
+        const color = Math.random() > 0.5 ? '#000' : '#ccc';
+        matrixGroup.append('circle')
+          .attr('cx', x)
+          .attr('cy', y)
+          .attr('r', dotR)
+          .attr('fill', color);
+        if (row === 0 && i === 0) {
+          firstDotPos = { x, y };
+        }
+        bitIdx++;
+      }
+    });
+    // 红色三角形
+    if (firstDotPos) {
+      const triangleBase = dotR * 1.5;
+      const triangleHeight = triangleBase * 1.1;
+      const triX = firstDotPos.x - dotR * 1.6;
+      const triY = firstDotPos.y;
+      matrixGroup.append('path')
+        .attr('d', `M ${triX} ${triY} L ${triX - triangleBase} ${triY + triangleHeight/2} L ${triX - triangleBase} ${triY - triangleHeight/2} Z`)
+        .attr('fill', 'red');
+    }
 
     // 添加词语标签
     g.append('text')
       .attr('text-anchor', 'middle')
-      .attr('y', radius + 20)
-      .attr('fill', '#fff')
+      .attr('y', radius + size * 0.18)
+      .attr('fill', '#000')
+      .attr('font-size', size * 0.13)
       .text(word);
 
     return g;
@@ -107,7 +144,7 @@ const Gallery = () => {
     const svg = d3.select(svgRef.current)
       .attr('width', width)
       .attr('height', height)
-      .style('background', '#1a1a1a');
+      .style('background', '#fff');
 
     const container = svg.append('g');
 
@@ -159,7 +196,7 @@ const Gallery = () => {
       width: '100vw',
       height: '100vh',
       overflow: 'hidden',
-      bgcolor: '#1a1a1a'
+      bgcolor: '#fff'
     }}>
       <svg ref={svgRef}></svg>
     </Box>
