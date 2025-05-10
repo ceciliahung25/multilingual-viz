@@ -89,7 +89,7 @@ function tokensToBits(tokenIds) {
 // 极简黑白风格自定义样式
 const MinimalPaper = styled(Paper)(({ theme }) => ({
   borderRadius: 18,
-  boxShadow: '0 4px 16px 0 rgba(0,0,0,0.08)',
+  boxShadow: '0 2px 8px 0 rgba(0,0,0,0.06)',
   background: '#fff',
   color: '#111',
   marginBottom: 32,
@@ -349,7 +349,7 @@ const TokenGenerator = () => {
             ))}
           </MinimalSelect>
           <MinimalButton
-            variant="contained"
+            variant="contained" 
             onClick={handleGenerate}
             disabled={!word || !sourceLanguage}
             sx={{ height: 40, fontSize: 15, minWidth: 100 }}

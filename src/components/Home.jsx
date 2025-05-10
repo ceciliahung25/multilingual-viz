@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { Box, Typography, Paper, IconButton, Tooltip } from '@mui/material';
 import Gallery from './Gallery/Gallery';
 import TokenGenerator from './TokenGenerator/TokenGenerator';
+import PuzzleSentence from './PuzzleSentence';
 import { styled } from '@mui/material/styles';
 import DonutLargeIcon from '@mui/icons-material/DonutLarge';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import ExtensionIcon from '@mui/icons-material/Extension';
+import SearchIcon from '@mui/icons-material/Search';
+import FontDownloadIcon from '@mui/icons-material/FontDownload';
+import NameVisualizer from './NameVisualizer';
+import SentenceComposer from './SentenceComposer';
 
 // 侧边栏宽度
 const SIDEBAR_WIDTH = 90;
@@ -31,12 +36,12 @@ const SidebarIconBtn = styled(IconButton)(({ selected }) => ({
   height: 56,
   margin: '12px 0',
   borderRadius: 18,
-  background: selected ? '#fff' : 'transparent',
+  background: selected ? '#ececf0' : 'transparent',
   color: selected ? '#18191c' : '#fff',
   boxShadow: selected ? '0 2px 8px 0 rgba(0,0,0,0.08)' : 'none',
   transition: 'all 0.18s',
   '&:hover': {
-    background: selected ? '#fff' : 'rgba(255,255,255,0.08)',
+    background: selected ? '#ececf0' : 'rgba(255,255,255,0.08)',
   },
 }));
 const MainArea = styled(Box)(({ theme }) => ({
@@ -78,16 +83,35 @@ const Home = () => {
             <PhotoLibraryIcon sx={{ fontSize: 32 }} />
           </SidebarIconBtn>
         </Tooltip>
-        <Tooltip title="TOKEN生成器" placement="right">
+        <Tooltip title="句子拼图" placement="right">
           <SidebarIconBtn selected={currentTab === 1} onClick={() => setCurrentTab(1)}>
             <ExtensionIcon sx={{ fontSize: 32 }} />
+          </SidebarIconBtn>
+        </Tooltip>
+        <Tooltip title="TOKEN生成器" placement="right">
+          <SidebarIconBtn selected={currentTab === 2} onClick={() => setCurrentTab(2)}>
+            <SearchIcon sx={{ fontSize: 32 }} />
+          </SidebarIconBtn>
+        </Tooltip>
+        <Tooltip title="姓名可视化" placement="right">
+          <SidebarIconBtn selected={currentTab === 3} onClick={() => setCurrentTab(3)}>
+            <FontDownloadIcon sx={{ fontSize: 32 }} />
+          </SidebarIconBtn>
+        </Tooltip>
+        <Tooltip title="句子拼接" placement="right">
+          <SidebarIconBtn selected={currentTab === 4} onClick={() => setCurrentTab(4)}>
+            <ExtensionIcon sx={{ fontSize: 32, transform: 'rotate(-45deg)' }} />
           </SidebarIconBtn>
         </Tooltip>
       </Sidebar>
       {/* 主内容区 */}
       <MainArea>
         <MinimalCard>
-          {currentTab === 0 ? <Gallery /> : <TokenGenerator />}
+          {currentTab === 0 && <Gallery />}
+          {currentTab === 1 && <PuzzleSentence />}
+          {currentTab === 2 && <TokenGenerator />}
+          {currentTab === 3 && <NameVisualizer />}
+          {currentTab === 4 && <SentenceComposer />}
         </MinimalCard>
       </MainArea>
     </Box>
