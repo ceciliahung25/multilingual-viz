@@ -122,12 +122,6 @@ const languageOptions = [
 ];
 const roleNames = ['主语', '谓语', '宾语'];
 
-// 语言顺序
-const langOrder = [
-  'Arabic', 'German', 'English', 'Spanish', 'French', 'Hindi', 'Indonesian', 'Italian',
-  'Japanese', 'Dutch', 'Portuguese', 'Russian', 'Thai', 'Turkish', 'Vietnamese', 'Chinese', 'Korean'
-];
-
 const SentenceComposer = () => {
   // 当前语言
   const [language, setLanguage] = useState('en');
@@ -137,19 +131,19 @@ const SentenceComposer = () => {
   const [dragWord, setDragWord] = useState(null);
   // 动画高亮
   const [dragging, setDragging] = useState(null);
-  // 词语-token_id数据
-  const [tokenData, setTokenData] = useState([]);
+  // one-hot数据
+  const [oneHotData, setOneHotData] = useState([]);
+  // token id数据
+  const [tokenIdData, setTokenIdData] = useState([]);
+  const [langOrder, setLangOrder] = useState([
+    'Arabic', 'German', 'English', 'Spanish', 'French', 'Hindi', 'Indonesian', 'Italian',
+    'Japanese', 'Dutch', 'Portuguese', 'Russian', 'Thai', 'Turkish', 'Vietnamese', 'Chinese', 'Korean'
+  ]); // 默认值，后续会被覆盖
   const graphRef = useRef();
 
-  // 当前语言的词库
-  const currentLang = languageOptions.find(l => l.code === language) || languageOptions[0];
-  const subjects = currentLang.subjects;
-  const verbs = currentLang.verbs;
-  const objects = currentLang.objects;
-
-  // 加载token数据
+  // 加载one-hot和token id表
   useEffect(() => {
-    fetch('/reference/words_tokens_cleaned.csv')
+    fetch('/reference/Final_Multilingual_OneHot_Table.csv')
       .then(res => res.text())
       .then(text => {
         const lines = text.trim().split('\n');
@@ -158,45 +152,70 @@ const SentenceComposer = () => {
           main_word: header.indexOf('main_word'),
           language: header.indexOf('language'),
           local_word: header.indexOf('local_word'),
-          token_id: header.indexOf('token_id')
         };
         const data = [];
         for (let i = 1; i < lines.length; i++) {
           const row = lines[i].split(',');
-          if (row.length < 4) continue;
+          if (row.length < 3) continue;
           data.push({
             main_word: row[idx.main_word],
             language: row[idx.language],
             local_word: row[idx.local_word],
-            token_id: parseInt(row[idx.token_id])
           });
         }
-        setTokenData(data);
+        setOneHotData(data);
+      });
+    fetch('/reference/Final_Multilingual_TokenID_Table.csv')
+      .then(res => res.text())
+      .then(text => {
+        const lines = text.trim().split('\n');
+        const header = lines[0].split(',');
+        setLangOrder(header.slice(1)); // 动态设置langOrder
+        const data = [];
+        for (let i = 1; i < lines.length; i++) {
+          const row = lines[i].split(',');
+          const main_word = row[0];
+          const obj = { main_word };
+          for (let j = 1; j < header.length; j++) {
+            obj[header[j]] = parseInt(row[j]);
+          }
+          data.push(obj);
+        }
+        setTokenIdData(data);
       });
   }, []);
+
+  // 当前语言的词库
+  const currentLang = languageOptions.find(l => l.code === language) || languageOptions[0];
+  // 按钮分组（main_word）
+  const subjects = currentLang.subjects;
+  const verbs = currentLang.verbs;
+  const objects = currentLang.objects;
+  // 当前语言英文名
+  const langName = language === 'zh' ? 'Chinese' : 'English';
+
+  // 根据 main_word 和当前语言，查找本地词
+  const getLocalWord = (main_word) => {
+    const row = oneHotData.find(d => d.main_word === main_word && d.language === langName);
+    return row ? row.local_word : main_word;
+  };
 
   // 可视化逻辑
   useEffect(() => {
     if (!graphRef.current) return;
     d3.select(graphRef.current).selectAll('*').remove();
     const filled = holes.filter(Boolean);
-    if (filled.length === 0 || tokenData.length === 0) return;
-    // 1. 计算ratios_list和token_ids_list
+    if (filled.length === 0 || tokenIdData.length === 0) return;
     let ratiosList = [];
     let tokenIdsList = [];
-    filled.forEach((word, idx) => {
-      // 查找英文主词
-      let main_word = word;
-      // 先查当前语言的local_word->main_word
-      const localRow = tokenData.find(d => d.local_word === word && d.language.toLowerCase() === (language === 'zh' ? 'chinese' : 'english'));
-      if (localRow) main_word = localRow.main_word;
-      // 查找17语言token_id
-      const tokens = langOrder.map(lang => {
-        const item = tokenData.find(d => d.main_word === main_word && d.language.trim().toLowerCase() === lang.trim().toLowerCase());
-        return item ? item.token_id : 0;
-      });
+    filled.forEach((local_word, idx) => {
+      const row = oneHotData.find(d => d.local_word === local_word && d.language === langName);
+      const main_word = row ? row.main_word : local_word;
+      const tokenRow = tokenIdData.find(d => d.main_word === main_word);
+      const tokens = langOrder.map(lang => tokenRow ? tokenRow[lang] : 0);
       tokenIdsList.push(tokens);
-      // 计算ratios
+      // 调试输出
+      // console.log('main_word', main_word, 'tokens', tokens);
       const tokenIdsLog = tokens.map(tid => Math.log1p(tid));
       const minTid = Math.min(...tokenIdsLog);
       const maxTid = Math.max(...tokenIdsLog);
@@ -304,12 +323,11 @@ const SentenceComposer = () => {
       .attr('fill', '#000')
       .attr('font-size', 15)
       .text(filled.join(' '));
-  }, [holes, tokenData, language]);
+  }, [holes, tokenIdData, oneHotData, language, langOrder]);
 
   // 拖拽到洞位（限制类型）
   const handleDrop = (idx) => {
     if (!dragWord) return;
-    // 只能填对应类型
     if (
       (idx === 0 && subjects.includes(dragWord)) ||
       (idx === 1 && verbs.includes(dragWord)) ||
@@ -346,7 +364,7 @@ const SentenceComposer = () => {
               value={language}
               onChange={e => {
                 setLanguage(e.target.value);
-                setHoles([null, null, null]); // 切换语言时清空洞
+                setHoles([null, null, null]);
               }}
               sx={{ width: '100%', fontSize: 16, borderRadius: 2 }}
             >
@@ -383,9 +401,9 @@ const SentenceComposer = () => {
               onDragStart={() => { setDragWord(w); setDragging(w); }}
               onDragEnd={() => setDragging(null)}
               className={clsx({ dragging: dragging === w })}
-              style={{ opacity: isUsed(w) ? 0.4 : 1, pointerEvents: isUsed(w) ? 'none' : 'auto' }}
+              style={{ opacity: isUsed(getLocalWord(w)) ? 0.4 : 1, pointerEvents: isUsed(getLocalWord(w)) ? 'none' : 'auto' }}
             >
-              {w}
+              {getLocalWord(w)}
             </WordButton>
           ))}
         </WordList>
@@ -398,9 +416,9 @@ const SentenceComposer = () => {
               onDragStart={() => { setDragWord(w); setDragging(w); }}
               onDragEnd={() => setDragging(null)}
               className={clsx({ dragging: dragging === w })}
-              style={{ opacity: isUsed(w) ? 0.4 : 1, pointerEvents: isUsed(w) ? 'none' : 'auto' }}
+              style={{ opacity: isUsed(getLocalWord(w)) ? 0.4 : 1, pointerEvents: isUsed(getLocalWord(w)) ? 'none' : 'auto' }}
             >
-              {w}
+              {getLocalWord(w)}
             </WordButton>
           ))}
         </WordList>
@@ -413,9 +431,9 @@ const SentenceComposer = () => {
               onDragStart={() => { setDragWord(w); setDragging(w); }}
               onDragEnd={() => setDragging(null)}
               className={clsx({ dragging: dragging === w })}
-              style={{ opacity: isUsed(w) ? 0.4 : 1, pointerEvents: isUsed(w) ? 'none' : 'auto' }}
+              style={{ opacity: isUsed(getLocalWord(w)) ? 0.4 : 1, pointerEvents: isUsed(getLocalWord(w)) ? 'none' : 'auto' }}
             >
-              {w}
+              {getLocalWord(w)}
             </WordButton>
           ))}
         </WordList>
