@@ -9,8 +9,10 @@ import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import ExtensionIcon from '@mui/icons-material/Extension';
 import SearchIcon from '@mui/icons-material/Search';
 import FontDownloadIcon from '@mui/icons-material/FontDownload';
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import NameVisualizer from './NameVisualizer';
 import SentenceComposer from './SentenceComposer';
+import SymbolRecognizer from './SymbolRecognizer';
 
 // 侧边栏宽度
 const SIDEBAR_WIDTH = 90;
@@ -103,6 +105,11 @@ const Home = () => {
             <ExtensionIcon sx={{ fontSize: 32, transform: 'rotate(-45deg)' }} />
           </SidebarIconBtn>
         </Tooltip>
+        <Tooltip title="符号识别" placement="right">
+          <SidebarIconBtn selected={currentTab === 5} onClick={() => setCurrentTab(5)}>
+            <ImageSearchIcon sx={{ fontSize: 32 }} />
+          </SidebarIconBtn>
+        </Tooltip>
       </Sidebar>
       {/* 主内容区 */}
       <MainArea>
@@ -112,6 +119,7 @@ const Home = () => {
           {currentTab === 2 && <TokenGenerator />}
           {currentTab === 3 && <NameVisualizer />}
           {currentTab === 4 && <SentenceComposer />}
+          {currentTab === 5 && <SymbolRecognizer />}
         </MinimalCard>
       </MainArea>
     </Box>
