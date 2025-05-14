@@ -1,166 +1,189 @@
-# 符号识别模型的TensorFlow.js实现
+# Multilingual Visualization Platform
 
-本项目实现了一个基于TensorFlow.js的符号识别系统，可以在网页浏览器中运行，无需服务器端推理。模型通过深度学习识别50种不同的符号，提供友好的用户界面，支持图片上传和拖放操作。
+A comprehensive interactive platform for visualizing multilingual data representations, token generation, and symbol recognition. The application showcases the relationships between languages, words, and their computational representations through intuitive and visually engaging interfaces.
 
-## 目录结构
+## Project Overview
 
-```
-.
-├── data/                         # 训练数据集
-│   └── symbols/                  # 符号图像目录
-│       ├── train/                # 训练集
-│       └── validation/           # 验证集
-├── checkpoints/                  # 模型检查点
-├── web_model/                    # TensorFlow.js模型文件
-│   ├── model.json                # 模型架构
-│   └── group*-shard*.bin         # 模型权重
-├── src/                          # 源代码
-│   └── components/
-│       └── SymbolRecognizer.jsx  # React组件
-├── train_symbol_model.py         # 模型训练脚本
-├── convert_to_tfjs.py            # 模型转换脚本
-├── test_model_browser.html       # 独立测试页面
-├── class_mapping.json            # 类别映射
-└── README.md                     # 本文档
-```
+This platform integrates multiple visualization tools that demonstrate how language tokens and symbols can be represented across different languages and writing systems. Key features include:
 
-## 系统实现
+- **Token Generation**: Create visual representations of words across 17 languages
+- **Sentence Composition**: Build sentences and visualize their multilingual token patterns
+- **Name Visualizer**: Generate personalized symbols from letters
+- **Symbol Recognition**: Identify 50 different symbolic representations using TensorFlow.js
+- **Space Scene Gallery**: Visual exploration of space-themed symbols and signs
 
-### 1. 模型训练
+## Technologies Used
 
-模型使用TensorFlow/Keras构建，具有以下架构：
+- **Frontend**: React 19, Material UI 7
+- **Visualization**: D3.js for custom data visualizations
+- **Machine Learning**: TensorFlow.js for browser-based symbol recognition
+- **Cryptography**: CryptoJS for creating consistent hashing patterns
+- **Styling**: CSS with responsive design for various screen sizes
 
-- 输入层: (224, 224, 3) - 明确定义输入形状是关键
-- 4个卷积块（每个包含卷积层和池化层）
-- 全连接层和Dropout层
-- 50个类别的输出层（Softmax激活）
-
-训练脚本支持数据增强、早停和模型检查点，以提高模型质量和防止过拟合。
-
-**关键点**：
-- 使用新的`.keras`格式保存模型
-- 明确定义输入层，确保TensorFlow.js兼容性
-
-### 2. 模型转换
-
-使用TensorFlow.js转换器将Keras模型转换为浏览器兼容格式：
+## Project Structure
 
 ```
-tfjs.converters.save_keras_model(model, 'web_model')
+multilingual-viz/
+├── public/                       # Static assets
+│   ├── images/                   # Image resources for the application
+│   ├── reference/                # Reference data files for visualizations
+│   │   ├── Final_Multilingual_OneHot_Table.csv    # One-hot encoded language data
+│   │   ├── Final_Multilingual_TokenID_Table.csv   # Token ID data for 17 languages
+│   │   ├── words_tokens_cleaned.csv               # Word and token mappings
+│   │   └── symbols_50/                            # 50 reference symbols for recognition
+│   └── web_model/                # TensorFlow.js model for symbol recognition
+│       ├── model.json            # Model architecture
+│       └── group*-shard*.bin     # Model weights
+├── src/
+│   ├── components/
+│   │   ├── TokenGenerator/       # Word token visualization module
+│   │   ├── NameVisualizer.jsx    # Character-based identity visualization
+│   │   ├── PuzzleSentence.jsx    # Multilingual sentence visualization
+│   │   ├── SentenceComposer.jsx  # Drag-and-drop sentence building
+│   │   ├── SpaceGallery.jsx      # Space-themed symbol gallery
+│   │   ├── SymbolRecognizer.jsx  # AI-powered symbol recognition
+│   │   └── Sidebar.jsx           # Application navigation
+│   ├── App.jsx                   # Main application component
+│   └── index.js                  # Application entry point
+└── package.json                  # Project dependencies
 ```
 
-这将生成:
-- `model.json`: 包含模型架构
-- `group*-shard*.bin`: 包含模型权重
+## Features
 
-### 3. 前端集成
+### Token Generator
+Visualizes how different words are represented as tokens across 17 languages. The module generates unique visual patterns based on token IDs from multilingual embeddings.
 
-项目提供两种前端实现:
+- Select source language and word
+- Generate visualization showing token patterns
+- Displays 17-sided polygon with unique pattern for each word
 
-- 独立HTML测试页面 (`test_model_browser.html`)
-- React组件 (`SymbolRecognizer.jsx`)
+### Sentence Composer
+An interactive tool for building sentences by dragging subject, verb, and object components. Each sentence creates a composite visualization of the multilingual token patterns.
 
-两种实现都处理:
-- 模型加载
-- 图像上传/拖放
-- 图像预处理
-- 预测和结果显示
-- 内存管理
+- Drag-and-drop sentence building
+- Real-time visualization updates
+- Supports both English and Chinese interfaces
 
-## 使用方法
+### Name Visualizer
+Creates personalized symbols from letters using token IDs associated with each character.
 
-### 训练新模型
+- Interactive letter selection
+- Creates layered 17-sided polygons
+- Generates unique identity marks from letter combinations
 
-1. 准备数据集:
-   ```
-   data/symbols/train/[类别1]/*.jpg
-   data/symbols/train/[类别2]/*.jpg
-   ...
-   data/symbols/validation/[类别1]/*.jpg
-   data/symbols/validation/[类别2]/*.jpg
-   ...
-   ```
+### Symbol Recognition
+AI-powered recognition system capable of identifying 50 different symbolic representations.
 
-2. 运行训练脚本:
+- Browser-based machine learning using TensorFlow.js
+- Upload or drag-and-drop images for recognition
+- Real-time prediction with confidence scores
+- Displays top 5 most likely matches
+
+### Space Gallery
+A visual exploration of space-themed signs and symbols, showcasing different symbolic representations used in space environments.
+
+- Collection of space-themed symbols
+- Visual reference for standard space signage
+- Interactive gallery layout
+
+## Installation and Setup
+
+1. Clone the repository:
    ```bash
-   python train_symbol_model.py
+   git clone https://github.com/username/multilingual-viz.git
+   cd multilingual-viz
    ```
 
-3. 转换模型:
+2. Install dependencies:
    ```bash
-   python convert_to_tfjs.py
+   npm install
    ```
 
-### 集成到现有网站
-
-1. 将转换后的模型文件复制到您的Web项目:
-   ```
-   web_model/ → public/web_model/
-   class_mapping.json → public/class_mapping.json
-   ```
-
-2. 确保安装`@tensorflow/tfjs`依赖:
+3. Start the development server:
    ```bash
-   npm install @tensorflow/tfjs
+   npm start
    ```
 
-3. 将`SymbolRecognizer.jsx`组件集成到您的React应用程序中:
-   ```jsx
-   import SymbolRecognizer from './components/SymbolRecognizer';
+4. Open your browser and visit: `http://localhost:3000`
 
-   function App() {
-     return (
-       <div className="App">
-         <SymbolRecognizer />
-       </div>
-     );
-   }
-   ```
+## Using the Platform
 
-## 故障排查
+### Token Generator
+1. Select a language from the dropdown menu
+2. Choose a word from the available options
+3. Click "Generate Visualization" to create a unique token pattern
 
-### 模型加载问题
+### Sentence Composer
+1. Select a language (English or Chinese)
+2. Drag subject, verb, and object words to their respective slots
+3. Observe the generated visualization change in real-time
 
-如果遇到"An InputLayer should be passed either a `batchInputShape` or an `inputShape`"错误：
+### Name Visualizer
+1. Drag uppercase or lowercase letters into the four slots
+2. See your unique identity symbol generated from the letter combination
 
-- 确保模型中明确定义了输入层
-- 检查模型转换是否成功（所有文件都能正确加载）
-- 确认使用`tf.loadLayersModel`而非`tf.loadGraphModel`
+### Symbol Recognition
+1. Upload an image or drag and drop it onto the designated area
+2. The system will process the image and display the top matching symbols
+3. Each prediction includes a confidence score
 
-### 内存管理
+## Development
 
-浏览器中的TensorFlow.js可能消耗大量内存。为避免内存泄漏：
+### Prerequisites
+- Node.js 16+
+- npm 8+
 
-- 使用`tf.tidy()`进行自动内存管理
-- 手动调用`dispose()`释放不再需要的张量
-- 在React组件卸载时清理模型资源
+### Available Scripts
+- `npm start`: Runs the app in development mode
+- `npm test`: Launches the test runner
+- `npm run build`: Builds the app for production
 
-## 预测流程
+## Symbol Recognition Details
 
-1. **预处理**:
-   - 调整图像尺寸为224x224
-   - 归一化像素值(0-1)
-   - 添加批次维度
+The symbol recognition system uses a TensorFlow model converted to TensorFlow.js format for browser-based inference. The model can identify 50 unique symbols with high accuracy.
 
-2. **预测**:
-   ```js
-   const tensor = preprocessImage(imgElement);
-   const predictions = await model.predict(tensor).data();
-   tensor.dispose();
-   ```
+### Model Architecture
+- Input: 224x224 RGB images
+- 4 convolutional blocks (each with convolution and pooling layers)
+- Fully connected layers with dropout
+- 50-class output layer (Softmax activation)
 
-3. **结果处理**:
-   - 获取前K个预测结果
-   - 显示类别名称和置信度
+### Image Processing
+1. Resize input image to 224x224
+2. Normalize pixel values (0-1)
+3. Apply TensorFlow.js preprocessing
 
-## 注意事项
+### Prediction Flow
+1. Load the TensorFlow.js model
+2. Preprocess the uploaded image
+3. Run inference to get prediction scores
+4. Display top matches with confidence percentages
 
-- 首次加载模型可能需要几秒钟
-- 复杂图像的处理可能在移动设备上较慢
-- 图像预处理必须与训练时保持一致
+## Data Structure
 
-## 参考资源
+The application uses several data files for visualization:
 
-- [TensorFlow.js文档](https://www.tensorflow.org/js)
-- [TensorFlow.js模型转换](https://www.tensorflow.org/js/tutorials/conversion/import_keras)
-- [TensorFlow数据增强](https://www.tensorflow.org/tutorials/images/data_augmentation)
+- `Final_Multilingual_TokenID_Table.csv`: Maps words to token IDs across 17 languages
+- `Final_Multilingual_OneHot_Table.csv`: One-hot encoded representations for words
+- `words_tokens_cleaned.csv`: Cleaned dataset of words and their tokens
+
+## Browser Compatibility
+
+The application is tested and compatible with:
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+Mobile browsers are supported with responsive design accommodations.
+
+## Credits
+
+- TensorFlow.js - https://www.tensorflow.org/js
+- D3.js - https://d3js.org/
+- React - https://reactjs.org/
+- Material UI - https://mui.com/
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
