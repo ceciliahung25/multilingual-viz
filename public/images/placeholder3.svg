@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f5a623" />
+  <text x="150" y="150" font-family="Arial" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">身份生成</text>
+  <rect x="120" y="180" width="60" height="40" fill="white" opacity="0.3" rx="5" />
+  <circle cx="150" cy="100" r="30" fill="white" opacity="0.3" />
+  <path d="M100,220 L200,220 L150,180 Z" fill="white" opacity="0.3" />
+</svg> 

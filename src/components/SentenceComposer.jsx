@@ -15,6 +15,14 @@ const MainBox = styled(Box)(({ theme }) => ({
   minHeight: 'calc(100vh - 48px)',
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
+  padding: '0 20px',
+  boxSizing: 'border-box',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    gap: 32,
+    alignItems: 'center',
+    padding: '0 12px',
+  },
 }));
 const LeftPanel = styled(Box)(({ theme }) => ({
   width: 600,
@@ -26,6 +34,12 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   paddingLeft: 30,
   paddingRight: 8,
   boxSizing: 'border-box',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    maxWidth: 600,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
 }));
 const WordList = styled(Box)(({ theme }) => ({
   background: '#f7f7f9',
@@ -53,6 +67,11 @@ const HoleRow = styled(Box)(({ theme }) => ({
   marginBottom: 12,
   justifyContent: 'flex-start',
   width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    gap: 8,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
 }));
 const Hole = styled(Paper)(({ theme }) => ({
   minWidth: 120,
@@ -71,6 +90,12 @@ const Hole = styled(Paper)(({ theme }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 100,
+    fontSize: 16,
+    height: 48,
+    padding: '0 12px',
+  },
 }));
 const RightPanel = styled(Paper)(({ theme }) => ({
   width: 420,
@@ -84,6 +109,14 @@ const RightPanel = styled(Paper)(({ theme }) => ({
   alignItems: 'flex-start',
   justifyContent: 'center',
   paddingTop: 16,
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    minWidth: 'auto',
+    maxWidth: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: 350,
+  },
 }));
 const WordButton = styled(Box)(({ theme }) => ({
   display: 'inline-block',
@@ -105,6 +138,11 @@ const WordButton = styled(Box)(({ theme }) => ({
     transform: 'scale(1.18)',
     boxShadow: '0 4px 16px 0 rgba(0,0,0,0.18)',
     zIndex: 2,
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 14,
+    padding: '6px 10px',
+    minHeight: 28,
   },
 }));
 
@@ -140,6 +178,22 @@ const SentenceComposer = () => {
     'Japanese', 'Dutch', 'Portuguese', 'Russian', 'Thai', 'Turkish', 'Vietnamese', 'Chinese', 'Korean'
   ]); // 默认值，后续会被覆盖
   const graphRef = useRef();
+  const containerRef = useRef();
+  const [graphSize, setGraphSize] = useState({ width: 420, height: 420 });
+
+  // 自适应调整图表大小
+  useEffect(() => {
+    const updateGraphSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const size = Math.min(containerWidth - 32, 420);
+      setGraphSize({ width: size, height: size });
+    };
+
+    updateGraphSize();
+    window.addEventListener('resize', updateGraphSize);
+    return () => window.removeEventListener('resize', updateGraphSize);
+  }, []);
 
   // 加载one-hot和token id表
   useEffect(() => {
@@ -227,10 +281,11 @@ const SentenceComposer = () => {
     });
     // 2. 计算bits
     const s = tokenIdsList.map(arr => arr.join('_')).join('|');
-    const h = CryptoJS.MD5(s).toString();
+    const h = CryptoJS.SHA256(s).toString();
     const bits = h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
     // 3. 绘制
-    const width = 420, height = 420, margin = 36;
+    const { width, height } = graphSize;
+    const margin = Math.floor(width * 0.09);
     const svg = d3.select(graphRef.current)
       .attr('width', width)
       .attr('height', height)
@@ -238,7 +293,7 @@ const SentenceComposer = () => {
       .attr('transform', `translate(${width/2},${height/2})`);
     const numSides = 17;
     const baseRadius = Math.min(width, height) / 2 - margin;
-    const radiusStep = 38;
+    const radiusStep = Math.min(38, baseRadius / filled.length);
     // 多层多边形
     ratiosList.forEach((ratios, i) => {
       const r = baseRadius - i * radiusStep;
@@ -278,14 +333,14 @@ const SentenceComposer = () => {
         .attr('class', `node-${i}`)
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
-        .attr('r', 7)
+        .attr('r', width < 350 ? 5 : 7)
         .attr('fill', '#000');
     });
     // 内部矩阵
     const rowCounts = [2, 4, 6, 6, 4, 2];
-    const dotR = 4;
-    const yGap = 8;
-    const xGap = 8;
+    const dotR = width < 350 ? 3 : 4;
+    const yGap = width < 350 ? 6 : 8;
+    const xGap = width < 350 ? 6 : 8;
     let bitIdx = 0;
     const totalRows = rowCounts.length;
     let firstDotPos = null;
@@ -319,11 +374,11 @@ const SentenceComposer = () => {
     // 词语标签
     svg.append('text')
       .attr('text-anchor', 'middle')
-      .attr('y', baseRadius + 30)
+      .attr('y', baseRadius + (width < 350 ? 20 : 30))
       .attr('fill', '#000')
-      .attr('font-size', 15)
+      .attr('font-size', width < 350 ? 13 : 15)
       .text(filled.join(' '));
-  }, [holes, tokenIdData, oneHotData, language, langOrder]);
+  }, [holes, tokenIdData, oneHotData, language, langOrder, graphSize]);
 
   // 拖拽到洞位（限制类型）
   const handleDrop = (idx) => {
@@ -357,8 +412,19 @@ const SentenceComposer = () => {
   return (
     <MainBox>
       <LeftPanel>
-        <Box sx={{ mb: 2, width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 2 }}>
-          <Box sx={{ flex: '0 0 160px', mr: 2 }}>
+        <Box sx={{ 
+          mb: 2, 
+          width: '100%', 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' }, 
+          alignItems: { xs: 'flex-start', sm: 'flex-start' }, 
+          gap: 2 
+        }}>
+          <Box sx={{ 
+            flex: { xs: '1 1 100%', sm: '0 0 160px' }, 
+            mr: { xs: 0, sm: 2 }, 
+            mb: { xs: 2, sm: 0 } 
+          }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>选择语言</Typography>
             <Select
               value={language}
@@ -366,19 +432,39 @@ const SentenceComposer = () => {
                 setLanguage(e.target.value);
                 setHoles([null, null, null]);
               }}
-              sx={{ width: '100%', fontSize: 16, borderRadius: 2 }}
+              sx={{ 
+                width: '100%', 
+                fontSize: { xs: 14, sm: 16 }, 
+                borderRadius: 2 
+              }}
             >
               {languageOptions.map(opt => (
                 <MenuItem key={opt.code} value={opt.code}>{opt.label}</MenuItem>
               ))}
             </Select>
           </Box>
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', mt: '40px' }}>
+          <Box sx={{ 
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            justifyContent: 'flex-start', 
+            mt: { xs: 0, sm: '40px' } 
+          }}>
             <HoleRow sx={{ alignItems: 'flex-start' }}>
               {[0,1,2].map(idx => (
                 <Hole key={idx} onDrop={() => handleDrop(idx)} onDragOver={handleDragOver}>
                   {holes[idx] ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 18, color: '#888', maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 1, 
+                      fontSize: { xs: 16, sm: 18 }, 
+                      color: '#888', 
+                      maxWidth: { xs: 85, sm: 110 }, 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap' 
+                    }}>
                       <span>{holes[idx]}</span>
                       <IconButton size="small" sx={{ ml: 0.5 }} onClick={() => handleRemove(idx)}>
                         <CloseIcon fontSize="small" />
@@ -438,7 +524,7 @@ const SentenceComposer = () => {
           ))}
         </WordList>
       </LeftPanel>
-      <RightPanel>
+      <RightPanel ref={containerRef}>
         <svg ref={graphRef}></svg>
       </RightPanel>
     </MainBox>

@@ -19,7 +19,7 @@ def stretch_ratio(r, low=0.05, high=0.95):
 
 def sentence_to_bits(list_of_token_ids):
     s = '|'.join('_'.join(str(t) for t in token_ids) for token_ids in list_of_token_ids)
-    h = hashlib.md5(s.encode()).hexdigest()
+    h = hashlib.sha256(s.encode()).hexdigest()
     bits = [int(x, 16) % 2 for x in h[:24]]
     return bits
 

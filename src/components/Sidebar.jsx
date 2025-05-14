@@ -1,34 +1,52 @@
 import React from 'react';
-import { FaHome, FaLanguage, FaBook, FaRocket, FaImage } from 'react-icons/fa';
+import { FaRocket, FaRobot, FaPuzzlePiece, FaFont, FaSearch, FaMicrophone, FaAtom, FaNetworkWired } from 'react-icons/fa';
 
 const Sidebar = ({ activePage, setActivePage }) => {
   return (
     <div className="sidebar">
-      <div className="logo">
-        <img src="/logo.png" alt="Logo" />
+      <div className="logo" onClick={() => setActivePage('homepage')} style={{ cursor: 'pointer', filter: 'brightness(0) invert(1)' }}>
+        <img src="/logo192.png" alt="Logo" />
       </div>
       <div className="menu">
         <button
-          className={activePage === 'home' ? 'active' : ''}
-          onClick={() => setActivePage('home')}
+          className={activePage === 'gallery' ? 'active' : ''}
+          onClick={() => setActivePage('gallery')}
+          title="可视化图库"
         >
-          <FaHome />
+          <FaNetworkWired />
         </button>
         <button
-          className={activePage === 'language' ? 'active' : ''}
-          onClick={() => setActivePage('language')}
+          className={activePage === 'tokengenerator' ? 'active' : ''}
+          onClick={() => setActivePage('tokengenerator')}
+          title="Token生成器"
         >
-          <FaLanguage />
+          <FaSearch />
         </button>
         <button
-          className={activePage === 'dictionary' ? 'active' : ''}
-          onClick={() => setActivePage('dictionary')}
+          className={activePage === 'puzzlesentence' ? 'active' : ''}
+          onClick={() => setActivePage('puzzlesentence')}
+          title="Omni-D宣言"
         >
-          <FaBook />
+          <FaMicrophone />
+        </button>
+        <button
+          className={activePage === 'sentencecomposer' ? 'active' : ''}
+          onClick={() => setActivePage('sentencecomposer')}
+          title="句子拼接"
+        >
+          <FaPuzzlePiece />
+        </button>
+        <button
+          className={activePage === 'namevisualizer' ? 'active' : ''}
+          onClick={() => setActivePage('namevisualizer')}
+          title="身份生成"
+        >
+          <FaFont />
         </button>
         <button
           className={activePage === 'space' ? 'active' : ''}
           onClick={() => setActivePage('space')}
+          title="空间画廊"
         >
           <FaRocket />
         </button>
@@ -37,7 +55,7 @@ const Sidebar = ({ activePage, setActivePage }) => {
           onClick={() => setActivePage('symbols')}
           title="符号识别"
         >
-          <FaImage />
+          <FaRobot />
         </button>
       </div>
     </div>

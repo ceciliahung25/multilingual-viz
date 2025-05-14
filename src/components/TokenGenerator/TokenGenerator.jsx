@@ -110,6 +110,10 @@ const MinimalButton = styled(Button)(({ theme }) => ({
   },
   minWidth: 140,
   minHeight: 48,
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 16,
+    minWidth: 100,
+  },
 }));
 const MinimalSelect = styled(Select)(({ theme }) => ({
   borderRadius: 16,
@@ -120,6 +124,12 @@ const MinimalSelect = styled(Select)(({ theme }) => ({
   boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)',
   '.MuiSelect-select': {
     padding: '14px 20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 16,
+    '.MuiSelect-select': {
+      padding: '10px 16px',
+    },
   },
 }));
 const MinimalMenuItem = styled(MenuItem)(({ theme }) => ({
@@ -132,20 +142,50 @@ const MinimalMenuItem = styled(MenuItem)(({ theme }) => ({
   '&:hover': {
     background: '#eee',
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 16,
+  },
 }));
 
 const MinimalBox = styled(Box)(({ theme }) => ({
   background: 'transparent',
   minHeight: '100vh',
-  padding: '40px 0',
+  padding: '40px 20px',
   fontFamily: '"Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
+  width: '100%',
+  boxSizing: 'border-box',
+  gap: '20px',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px 12px',
+  },
 }));
 
 const TokenGenerator = () => {
   const [sourceLanguage, setSourceLanguage] = useState('');
   const [word, setWord] = useState('');
   const [data, setData] = useState([]);
+  const [graphSize, setGraphSize] = useState({ width: 500, height: 500 });
   const graphRef = useRef();
+  const containerRef = useRef();
+
+  useEffect(() => {
+    const updateGraphSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const newSize = containerWidth < 500 ? containerWidth - 40 : 500;
+      setGraphSize({ width: newSize, height: newSize });
+    };
+
+    updateGraphSize();
+    window.addEventListener('resize', updateGraphSize);
+    return () => window.removeEventListener('resize', updateGraphSize);
+  }, []);
 
   useEffect(() => {
     fetch('/reference/words_tokens_cleaned.csv')
@@ -195,10 +235,11 @@ const TokenGenerator = () => {
     ratios = ratios.map(r => 0.05 + (0.95 - 0.05) * r);
     // 3. bits计算
     const s = allLangTokens.join('_');
-    const h = CryptoJS.MD5(s).toString();
+    const h = CryptoJS.SHA256(s).toString();
     const bits = h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
     // 4. 绘制
-    const width = 500, height = 500, margin = 60;
+    const { width, height } = graphSize;
+    const margin = Math.floor(width * 0.12);
     const radius = Math.min(width, height) / 2 - margin;
     const svg = d3.select(graphRef.current)
       .attr('width', width)
@@ -257,7 +298,7 @@ const TokenGenerator = () => {
       .attr('class', 'node')
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('r', 7)
+      .attr('r', width < 400 ? 5 : 7)
       .attr('fill', '#000')
       .on('mouseover', function(e, d) {
         tooltip.style('visibility', 'visible')
@@ -272,7 +313,7 @@ const TokenGenerator = () => {
       });
     // 内部矩阵
     const rowCounts = [2, 4, 6, 6, 4, 2];
-    const dotR = 13;
+    const dotR = width < 400 ? 9 : 13;
     const yGap = dotR * 2.2;
     const xGap = dotR * 2.2;
     let bitIdx = 0;
@@ -310,16 +351,26 @@ const TokenGenerator = () => {
       .attr('text-anchor', 'middle')
       .attr('y', radius + 45)
       .attr('fill', '#000')
-      .attr('font-size', 15)
+      .attr('font-size', width < 400 ? 13 : 15)
       .text(localWord);
   };
 
   return (
-    <MinimalBox sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '100%', boxSizing: 'border-box', padding: 0 }}>
+    <MinimalBox ref={containerRef}>
       {/* 左侧表单区 */}
-      <MinimalPaper sx={{ width: 280, minWidth: 180, mr: 2, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', p: 2 }}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: 22, mb: 2 }}>
-          Token生成器
+      <MinimalPaper sx={{ 
+        width: { xs: '100%', md: 280 }, 
+        minWidth: { xs: 'auto', md: 180 }, 
+        mr: { xs: 0, md: 2 }, 
+        mb: { xs: 2, md: 0 },
+        boxSizing: 'border-box', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        p: 2 
+      }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: { xs: 20, md: 22 }, mb: 2 }}>
+          查找词语
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
           <MinimalSelect
@@ -329,7 +380,7 @@ const TokenGenerator = () => {
               setWord('');
             }}
             displayEmpty
-            sx={{ width: '100%', fontSize: 15, height: 40 }}
+            sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
           >
             <MinimalMenuItem value="">选择源语言</MinimalMenuItem>
             {languages.map(lang => (
@@ -340,7 +391,7 @@ const TokenGenerator = () => {
             value={word}
             onChange={(e) => setWord(e.target.value)}
             displayEmpty
-            sx={{ width: '100%', fontSize: 15, height: 40 }}
+            sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
             disabled={!sourceLanguage}
           >
             <MinimalMenuItem value="">选择词语</MinimalMenuItem>
@@ -352,17 +403,27 @@ const TokenGenerator = () => {
             variant="contained" 
             onClick={handleGenerate}
             disabled={!word || !sourceLanguage}
-            sx={{ height: 40, fontSize: 15, minWidth: 100 }}
+            sx={{ height: { xs: 38, md: 40 }, fontSize: { xs: 14, md: 15 }, minWidth: { xs: 90, md: 100 } }}
           >
             生成可视化
           </MinimalButton>
         </Box>
-        <Typography variant="body2" sx={{ color: '#bbb', fontSize: 13 }}>
+        <Typography variant="body2" sx={{ color: '#bbb', fontSize: { xs: 12, md: 13 } }}>
           请选择语言和词语，词语列表会根据语言自动变化。
         </Typography>
       </MinimalPaper>
       {/* 右侧可视化区 */}
-      <MinimalPaper sx={{ flex: 1, minWidth: 0, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2, mb: 0 }}>
+      <MinimalPaper sx={{ 
+        flex: 1, 
+        minWidth: 0, 
+        maxWidth: { xs: '100%', md: 'none' },
+        boxSizing: 'border-box', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        p: { xs: 1, md: 2 }, 
+        mb: 0 
+      }}>
         <svg ref={graphRef}></svg>
       </MinimalPaper>
     </MinimalBox>

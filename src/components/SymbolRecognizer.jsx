@@ -104,47 +104,28 @@ const symbolCategories = {
 
 // 本地预测函数，不依赖TensorFlow.js
 const localPredict = (imageSrc) => {
-  // 这里使用简单的哈希算法，基于图像数据生成一个伪随机的预测结果
-  // 注意：这只是一个后备方案，不提供实际的AI识别功能
-  
-  // 从图像URL计算简单哈希
-  let hash = 0;
-  for (let i = 0; i < imageSrc.length; i++) {
-    hash = ((hash << 5) - hash) + imageSrc.charCodeAt(i);
-    hash = hash & hash; // Convert to 32bit integer
+  // 使用更安全的随机数生成方式
+  const getSecureRandom = () => {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] / (0xffffffff + 1);
+  };
+
+  // 使用加密安全的随机数生成器选择索引
+  const indices = new Set();
+  while (indices.size < 5) {
+    const index = Math.floor(getSecureRandom() * symbolCategories.length);
+    indices.add(index);
   }
-  
-  // 获取当前时间作为随机种子的一部分
-  const timestamp = new Date().getTime();
-  const combinedSeed = (hash + timestamp) % 1000;
-  
-  // 使用种子生成5个伪随机索引
-  const usedIndices = new Set();
-  const indices = [];
-  const probabilities = [];
-  
-  // 生成第一个主要索引
-  const mainIndex = Math.abs(combinedSeed) % 50;
-  indices.push(mainIndex);
-  usedIndices.add(mainIndex);
-  
-  // 生成剩余的4个索引
-  while (indices.length < 5) {
-    const newIndex = Math.abs((hash * (indices.length + 1) + timestamp) % 50);
-    if (!usedIndices.has(newIndex)) {
-      indices.push(newIndex);
-      usedIndices.add(newIndex);
-    }
-  }
-  
-  // 分配概率，确保第一个最高
-  probabilities.push(0.9);  // 第一个结果90%
+
+  // 生成概率
+  const probabilities = [0.9];
   for (let i = 1; i < 5; i++) {
     probabilities.push(Math.max(0.1, 0.9 - i * 0.15));
   }
-  
+
   // 构建预测结果
-  return indices.map((index, i) => {
+  return Array.from(indices).map((index, i) => {
     const symbolClass = symbolCategories[index] || `符号 ${index}`;
     return {
       className: symbolClass,

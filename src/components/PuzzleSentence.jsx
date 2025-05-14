@@ -66,6 +66,14 @@ const PuzzleBox = styled(Box)(({ theme }) => ({
   minHeight: 'calc(100vh - 48px)',
   alignItems: 'flex-start',
   justifyContent: 'center',
+  padding: '0 20px',
+  boxSizing: 'border-box',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 20,
+    padding: '0 12px',
+  },
 }));
 const LeftPanel = styled(Box)(({ theme }) => ({
   width: 220,
@@ -73,6 +81,10 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   gap: 24,
   marginTop: 24,
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    maxWidth: 400,
+  },
 }));
 const CenterPanel = styled(Box)(({ theme }) => ({
   flex: 1,
@@ -80,6 +92,9 @@ const CenterPanel = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   marginTop: 24,
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
 }));
 const RightPanel = styled(Paper)(({ theme }) => ({
   width: 420,
@@ -91,12 +106,27 @@ const RightPanel = styled(Paper)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    maxWidth: 500,
+    minWidth: 'auto',
+  },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: 350,
+  },
 }));
 const HoleRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   gap: 36,
   marginBottom: 32,
+  [theme.breakpoints.down('md')]: {
+    justifyContent: 'center',
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: 16,
+    flexWrap: 'wrap',
+  },
 }));
 const Hole = styled(Paper)(({ theme }) => ({
   width: 150,
@@ -110,6 +140,13 @@ const Hole = styled(Paper)(({ theme }) => ({
   color: '#bbb',
   boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)',
   position: 'relative',
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    minWidth: 100,
+    maxWidth: 140,
+    height: 48,
+    fontSize: 13,
+  },
 }));
 const WordButton = styled(Button)(({ theme }) => ({
   borderRadius: 12,
@@ -125,6 +162,13 @@ const WordButton = styled(Button)(({ theme }) => ({
   '&:hover': {
     background: '#f7f7f9',
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 14,
+    margin: 3,
+    minWidth: 70,
+    minHeight: 36,
+    padding: '4px 10px',
+  },
 }));
 
 const langOrder = [
@@ -138,6 +182,22 @@ const PuzzleSentence = () => {
   const [dragWord, setDragWord] = useState(null);
   const [data, setData] = useState([]);
   const graphRef = React.useRef();
+  const containerRef = React.useRef();
+  const [graphSize, setGraphSize] = useState({ width: 420, height: 420 });
+
+  // 自适应调整图表大小
+  useEffect(() => {
+    const updateGraphSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const size = Math.min(containerWidth - 32, 420);
+      setGraphSize({ width: size, height: size });
+    };
+
+    updateGraphSize();
+    window.addEventListener('resize', updateGraphSize);
+    return () => window.removeEventListener('resize', updateGraphSize);
+  }, []);
 
   useEffect(() => {
     fetch('/reference/words_tokens_cleaned.csv')
@@ -201,10 +261,11 @@ const PuzzleSentence = () => {
     });
     // 2. 计算bits
     const s = tokenIdsList.map(arr => arr.join('_')).join('|');
-    const h = CryptoJS.MD5(s).toString();
+    const h = CryptoJS.SHA256(s).toString();
     const bits = h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
     // 3. 绘制
-    const width = 340, height = 340, margin = 36;
+    const { width, height } = graphSize;
+    const margin = Math.floor(width * 0.09);
     const svg = d3.select(graphRef.current)
       .attr('width', width)
       .attr('height', height)
@@ -212,7 +273,7 @@ const PuzzleSentence = () => {
       .attr('transform', `translate(${width/2},${height/2})`);
     const numSides = 17;
     const baseRadius = Math.min(width, height) / 2 - margin;
-    const radiusStep = 38;
+    const radiusStep = Math.min(38, baseRadius / filled.length / 1.2);
     // 多层多边形
     ratiosList.forEach((ratios, i) => {
       const r = baseRadius - i * radiusStep;
@@ -221,14 +282,14 @@ const PuzzleSentence = () => {
         x: r * Math.cos(angle),
         y: r * Math.sin(angle)
       }));
-      // 17边形轮廓
+      // 正17边形底（灰色）
       svg.append('path')
         .datum([...vertices, vertices[0]])
         .attr('d', d3.line().x(d => d.x).y(d => d.y))
         .attr('fill', 'rgba(200,200,200,0.12)')
         .attr('stroke', '#ccc')
         .attr('stroke-width', 1);
-      // 内部多边形
+      // 变形17边形点
       const points = vertices.map((vertex, j) => {
         const nextVertex = vertices[(j + 1) % numSides];
         const ratio = ratios[j];
@@ -237,13 +298,14 @@ const PuzzleSentence = () => {
           y: vertex.y * (1 - ratio) + nextVertex.y * ratio
         };
       });
+      // 变形17边形黑线
       svg.append('path')
         .datum([...points, points[0]])
         .attr('d', d3.line().x(d => d.x).y(d => d.y))
         .attr('fill', 'none')
         .attr('stroke', '#000')
         .attr('stroke-width', 1);
-      // 外圈点
+      // 变形17边形黑点
       svg.selectAll(`.node-${i}`)
         .data(points)
         .enter()
@@ -251,14 +313,14 @@ const PuzzleSentence = () => {
         .attr('class', `node-${i}`)
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
-        .attr('r', 7)
+        .attr('r', width < 350 ? 5 : 7)
         .attr('fill', '#000');
     });
     // 内部矩阵
     const rowCounts = [2, 4, 6, 6, 4, 2];
-    const dotR = 4;
-    const yGap = 8;
-    const xGap = 8;
+    const dotR = width < 350 ? 3 : 5;
+    const yGap = width < 350 ? 6 : 10;
+    const xGap = width < 350 ? 6 : 10;
     let bitIdx = 0;
     const totalRows = rowCounts.length;
     let firstDotPos = null;
@@ -289,71 +351,132 @@ const PuzzleSentence = () => {
         .attr('d', `M ${triX} ${triY} L ${triX - triangleBase} ${triY + triangleHeight/2} L ${triX - triangleBase} ${triY - triangleHeight/2} Z`)
         .attr('fill', 'red');
     }
-    // 词语标签
+    // 宣言标签
+    const sentence = filled.map(wordObj => wordObj.local_word).join(' ');
     svg.append('text')
       .attr('text-anchor', 'middle')
-      .attr('y', baseRadius + 30)
+      .attr('y', baseRadius + (width < 350 ? 20 : 30))
       .attr('fill', '#000')
-      .attr('font-size', 15)
-      .text(filled.map(w => w.local_word).join(' '));
-  }, [holes, data]);
+      .attr('font-size', width < 350 ? 13 : 15)
+      .text(sentence);
+  }, [holes, data, graphSize]);
+
+  // 检查词语是否已被使用
+  const isUsed = (wordObj) => {
+    return holes.some(h => h && h.main_word === wordObj.main_word);
+  };
 
   return (
     <PuzzleBox>
-      {/* 左侧语言选择 */}
       <LeftPanel>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>选择语言</Typography>
+        <Typography variant="h6" sx={{ 
+          fontWeight: 700, 
+          mb: 1,
+          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+        }}>
+          选择语言
+        </Typography>
         <Select
           value={language}
           onChange={e => {
             setLanguage(e.target.value);
-            setHoles([null, null, null]); // 切换语言时清空洞
+            setHoles([null, null, null]);
           }}
-          displayEmpty
-          sx={{ width: '100%', fontSize: 16, borderRadius: 2 }}
+          sx={{ 
+            width: '100%', 
+            borderRadius: '8px',
+            fontSize: { xs: 14, sm: 16 },
+            '.MuiSelect-select': {
+              padding: { xs: '10px 14px', sm: '14px 16px' }
+            }
+          }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300
+              }
+            }
+          }}
         >
           {languages.map(lang => (
             <MenuItem key={lang.code} value={lang.code}>{lang.name}</MenuItem>
           ))}
         </Select>
-      </LeftPanel>
-      {/* 中间拼图区 */}
-      <CenterPanel>
-        <HoleRow>
-          {holes.map((wordObj, idx) => (
-            <Hole
-              key={idx}
-              onDrop={() => handleDrop(idx)}
-              onDragOver={handleDragOver}
-            >
-              {wordObj ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 14, color: '#888', maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block', maxWidth: 90 }}>{wordObj.local_word}</span>
-                  <IconButton size="small" onClick={() => handleRemove(idx)} sx={{ ml: 0.5 }}>
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-              ) : (
-                <span style={{ color: '#bbb' }}>{`空${idx + 1}`}</span>
-              )}
-            </Hole>
-          ))}
-        </HoleRow>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', maxWidth: 600, justifyContent: 'center' }}>
-          {wordOptions.map(w => (
-            <WordButton
-              key={w.main_word + w.local_word}
-              draggable
-              onDragStart={() => handleDragStart(w.main_word, w.local_word)}
-              disabled={holes.some(h => h && h.main_word === w.main_word)}
-            >
-              {w.local_word}
-            </WordButton>
-          ))}
+
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 700, 
+            mb: 1,
+            fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          }}>
+            Omni-D宣言
+          </Typography>
+          <HoleRow>
+            {[0, 1, 2].map(idx => (
+              <Hole
+                key={idx}
+                onDrop={() => handleDrop(idx)}
+                onDragOver={handleDragOver}
+              >
+                {holes[idx] ? (
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    width: '100%', 
+                    px: 1 
+                  }}>
+                    <span style={{ flex: 1, textAlign: 'center' }}>{holes[idx].local_word}</span>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => handleRemove(idx)}
+                      sx={{ p: { xs: 0.3, sm: 0.5 } }}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <span>空{idx + 1}</span>
+                )}
+              </Hole>
+            ))}
+          </HoleRow>
         </Box>
-      </CenterPanel>
-      {/* 右侧可视化区 */}
-      <RightPanel>
+
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 700, 
+            mb: 1,
+            fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          }}>
+            词语列表
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            justifyContent: 'center', 
+            background: '#f7f7f9', 
+            p: 1.5, 
+            borderRadius: 2,
+            maxHeight: { xs: 200, sm: 300, md: 400 },
+            overflowY: 'auto' 
+          }}>
+            {wordOptions.map((wordObj, idx) => (
+              <WordButton
+                key={idx}
+                draggable
+                onDragStart={() => handleDragStart(wordObj.main_word, wordObj.local_word)}
+                disabled={isUsed(wordObj)}
+                sx={{ opacity: isUsed(wordObj) ? 0.4 : 1 }}
+              >
+                {wordObj.local_word}
+              </WordButton>
+            ))}
+          </Box>
+        </Box>
+      </LeftPanel>
+
+      <RightPanel ref={containerRef}>
         <svg ref={graphRef}></svg>
       </RightPanel>
     </PuzzleBox>

@@ -14,6 +14,14 @@ const MainBox = styled(Box)(({ theme }) => ({
   minHeight: 'calc(100vh - 48px)',
   alignItems: 'flex-start',
   justifyContent: 'center',
+  padding: '0 20px',
+  boxSizing: 'border-box',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    gap: 20,
+    alignItems: 'center',
+    padding: '0 12px',
+  },
 }));
 const LeftPanel = styled(Box)(({ theme }) => ({
   width: 520,
@@ -23,6 +31,10 @@ const LeftPanel = styled(Box)(({ theme }) => ({
   paddingTop: 24,
   paddingBottom: 24,
   alignItems: 'flex-start',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    maxWidth: 520,
+  },
 }));
 const RightPanel = styled(Paper)(({ theme }) => ({
   width: 480,
@@ -35,6 +47,14 @@ const RightPanel = styled(Paper)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    minWidth: 'auto',
+    maxWidth: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: 350,
+  },
 }));
 const HoleRow = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,6 +63,10 @@ const HoleRow = styled(Box)(({ theme }) => ({
   marginBottom: 2,
   marginTop: 0,
   justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    gap: 16,
+    flexWrap: 'wrap',
+  },
 }));
 const Hole = styled(Paper)(({ theme }) => ({
   width: 80,
@@ -56,6 +80,11 @@ const Hole = styled(Paper)(({ theme }) => ({
   color: '#bbb',
   boxShadow: '0 1px 4px 0 rgba(0,0,0,0.04)',
   position: 'relative',
+  [theme.breakpoints.down('sm')]: {
+    width: 60,
+    height: 48,
+    fontSize: 16,
+  },
 }));
 const LetterButton = styled(Button)(({ theme }) => ({
   borderRadius: 12,
@@ -77,6 +106,12 @@ const LetterButton = styled(Button)(({ theme }) => ({
     boxShadow: '0 4px 16px 0 rgba(0,0,0,0.18)',
     zIndex: 2,
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 16,
+    minWidth: 40,
+    minHeight: 36,
+    margin: 4,
+  },
 }));
 
 const upperLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
@@ -88,6 +123,22 @@ const NameVisualizer = () => {
   const [dragging, setDragging] = useState(null);
   const [tokenMap, setTokenMap] = useState({});
   const graphRef = React.useRef();
+  const containerRef = React.useRef();
+  const [graphSize, setGraphSize] = useState({ width: 440, height: 440 });
+
+  // 自适应调整图表大小
+  useEffect(() => {
+    const updateGraphSize = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const size = Math.min(containerWidth - 32, 440);
+      setGraphSize({ width: size, height: size });
+    };
+
+    updateGraphSize();
+    window.addEventListener('resize', updateGraphSize);
+    return () => window.removeEventListener('resize', updateGraphSize);
+  }, []);
 
   // 读取csv，建立字母-token映射
   useEffect(() => {
@@ -130,10 +181,11 @@ const NameVisualizer = () => {
     });
     // 2. bits整体hash
     const s = tokenIdsList.map(arr => arr.join('_')).join('|');
-    const h = CryptoJS.MD5(s).toString();
+    const h = CryptoJS.SHA256(s).toString();
     const bits = h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
     // 3. 绘制多圈
-    const width = 440, height = 440, margin = 48;
+    const { width, height } = graphSize;
+    const margin = Math.floor(width * 0.11);
     const svg = d3.select(graphRef.current)
       .attr('width', width)
       .attr('height', height)
@@ -141,7 +193,7 @@ const NameVisualizer = () => {
       .attr('transform', `translate(${width/2},${height/2})`);
     const numSides = 17;
     const baseRadius = Math.min(width, height) / 2 - margin;
-    const radiusStep = 38;
+    const radiusStep = Math.min(38, baseRadius / filled.length / 1.2);
     ratiosList.forEach((ratios, i) => {
       const r = baseRadius - i * radiusStep;
       const angles = d3.range(numSides).map(j => j * (2 * Math.PI / numSides));
@@ -179,14 +231,14 @@ const NameVisualizer = () => {
         .attr('class', `node-${i}`)
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
-        .attr('r', 7)
+        .attr('r', width < 350 ? 5 : 7)
         .attr('fill', '#000');
     });
     // 内部矩阵
     const rowCounts = [2, 4, 6, 6, 4, 2];
-    const dotR = 8;
-    const yGap = 16;
-    const xGap = 16;
+    const dotR = width < 350 ? 6 : 8;
+    const yGap = width < 350 ? 12 : 16;
+    const xGap = width < 350 ? 12 : 16;
     let bitIdx = 0;
     const totalRows = rowCounts.length;
     let firstDotPos = null;
@@ -217,22 +269,23 @@ const NameVisualizer = () => {
         .attr('d', `M ${triX} ${triY} L ${triX - triangleBase} ${triY + triangleHeight/2} L ${triX - triangleBase} ${triY - triangleHeight/2} Z`)
         .attr('fill', 'red');
     }
-    // 洞内字母标签
+    // 名字标签
     svg.append('text')
       .attr('text-anchor', 'middle')
-      .attr('y', baseRadius + 38)
+      .attr('y', baseRadius + (width < 350 ? 20 : 30))
       .attr('fill', '#000')
-      .attr('font-size', 18)
-      .text(filled.join(' '));
-  }, [holes, tokenMap]);
+      .attr('font-size', width < 350 ? 14 : 16)
+      .text(filled.join(''));
+  }, [holes, tokenMap, graphSize]);
 
-  // 拖拽到洞位
+  // 拖拽到洞
   const handleDrop = (idx) => {
     if (dragLetter) {
       const newHoles = [...holes];
       newHoles[idx] = dragLetter;
       setHoles(newHoles);
       setDragLetter(null);
+      setDragging(null);
     }
   };
   // 允许放置
@@ -246,65 +299,120 @@ const NameVisualizer = () => {
     setHoles(newHoles);
   };
 
+  // 判断字母是否已被使用
+  const isUsed = (l) => holes.includes(l);
+
   return (
     <MainBox>
-      {/* 左侧：洞+字母区 */}
       <LeftPanel>
-        <HoleRow sx={{ width: 480 }}>
-          {holes.map((letter, idx) => (
-            <Hole key={idx} onDrop={() => handleDrop(idx)} onDragOver={handleDragOver}>
-              {letter ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 18, color: '#888', maxWidth: 60, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <span>{letter}</span>
-                  <IconButton size="small" sx={{ ml: 0.5 }} onClick={() => handleRemove(idx)}>
+        <Typography variant="h5" sx={{ 
+          fontWeight: 700, 
+          mb: 3, 
+          fontSize: { xs: '1.3rem', sm: '1.5rem' }
+        }}>
+          拖拽字母生成个性化标识
+        </Typography>
+        
+        <Typography variant="h6" sx={{ 
+          fontWeight: 600, 
+          mb: 1,
+          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+        }}>
+          填入身份符号
+        </Typography>
+        
+        <HoleRow>
+          {[0, 1, 2, 3].map(idx => (
+            <Hole
+              key={idx}
+              onDrop={() => handleDrop(idx)}
+              onDragOver={handleDragOver}
+            >
+              {holes[idx] ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', px: 1 }}>
+                  <span style={{ flex: 1, textAlign: 'center' }}>{holes[idx]}</span>
+                  <IconButton 
+                    size="small" 
+                    onClick={() => handleRemove(idx)}
+                    sx={{ p: { xs: 0.3, sm: 0.5 } }}
+                  >
                     <CloseIcon fontSize="small" />
                   </IconButton>
                 </Box>
               ) : (
-                <span style={{ color: '#bbb' }}>{`空${idx + 1}`}</span>
+                <span>_</span>
               )}
             </Hole>
           ))}
         </HoleRow>
-        <Box sx={{ width: 480, textAlign: 'center', color: '#bbb', fontSize: 13, mb: 0.5, mt: 0, lineHeight: 1.5 }}>
-          拖拽字母到上方的空位，组合你的名字
-        </Box>
-        <Box sx={{ width: 480, mt: 1, mb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, mt: 1 }}>大写字母</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', maxWidth: 480 }}>
-            {upperLetters.map(l => (
+
+        <Box sx={{ mt: 3, mb: 1 }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 600, 
+            mb: 1,
+            fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          }}>
+            大写字母
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            justifyContent: 'center', 
+            background: '#f7f7f9', 
+            p: 1.5, 
+            borderRadius: 2 
+          }}>
+            {upperLetters.map(letter => (
               <LetterButton
-                key={l}
+                key={letter}
                 draggable
-                onDragStart={() => { setDragLetter(l); setDragging(l); }}
+                onDragStart={() => { setDragLetter(letter); setDragging(letter); }}
                 onDragEnd={() => setDragging(null)}
-                className={clsx({ dragging: dragging === l })}
+                className={clsx({ dragging: dragging === letter })}
+                disabled={isUsed(letter)}
+                sx={{ opacity: isUsed(letter) ? 0.4 : 1 }}
               >
-                {l}
+                {letter}
               </LetterButton>
             ))}
           </Box>
         </Box>
-        <Box sx={{ width: 480, mt: 1, mb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, mt: 1 }}>小写字母</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', maxWidth: 480 }}>
-            {lowerLetters.map(l => (
+
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 600, 
+            mb: 1,
+            fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          }}>
+            小写字母
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            justifyContent: 'center', 
+            background: '#f7f7f9', 
+            p: 1.5, 
+            borderRadius: 2 
+          }}>
+            {lowerLetters.map(letter => (
               <LetterButton
-                key={l}
+                key={letter}
                 draggable
-                onDragStart={() => { setDragLetter(l); setDragging(l); }}
+                onDragStart={() => { setDragLetter(letter); setDragging(letter); }}
                 onDragEnd={() => setDragging(null)}
-                className={clsx({ dragging: dragging === l })}
+                className={clsx({ dragging: dragging === letter })}
+                disabled={isUsed(letter)}
+                sx={{ opacity: isUsed(letter) ? 0.4 : 1 }}
               >
-                {l}
+                {letter}
               </LetterButton>
             ))}
           </Box>
         </Box>
       </LeftPanel>
-      {/* 右侧：可视化区 */}
-      <RightPanel>
-        <svg ref={graphRef} style={{ width: 440, height: 440 }}></svg>
+
+      <RightPanel ref={containerRef}>
+        <svg ref={graphRef}></svg>
       </RightPanel>
     </MainBox>
   );

@@ -90,13 +90,13 @@ def stretch_ratio(r, low=0.05, high=0.95):
     return low + (high - low) * r
 
 def word_to_bits(word):
-    h = hashlib.md5(word.encode()).hexdigest()
+    h = hashlib.sha256(word.encode()).hexdigest()
     bits = [int(x, 16) % 2 for x in h[:24]]
     return bits
 
 def tokens_to_bits(token_ids):
     s = '_'.join(str(t) for t in token_ids)
-    h = hashlib.md5(s.encode()).hexdigest()
+    h = hashlib.sha256(s.encode()).hexdigest()
     bits = [int(x, 16) % 2 for x in h[:24]]
     return bits
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#50e3c2" />
+  <text x="150" y="150" font-family="Arial" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">句子拼接</text>
+  <circle cx="150" cy="200" r="60" fill="white" opacity="0.2" />
+  <polygon points="100,130 200,130 150,80" fill="white" opacity="0.3" />
+</svg> 
