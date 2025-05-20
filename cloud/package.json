@@ -1,0 +1,15 @@
+{
+  "name": "cos-sts-cloud-function",
+  "version": "1.0.0",
+  "description": "腾讯云COS临时密钥云函数",
+  "main": "index.js",
+  "dependencies": {
+    "qcloud-cos-sts": "^3.1.0",
+    "tencentcloud-sdk-nodejs": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+} 

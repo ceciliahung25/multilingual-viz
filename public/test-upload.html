@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>腾讯云COS上传测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0b5ed7;
+    }
+    input[type="file"] {
+      margin: 20px 0;
+      display: block;
+    }
+    .progress {
+      height: 20px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #0d6efd;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .result {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    .success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #842029;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>腾讯云COS上传测试</h1>
+  
+  <div class="container">
+    <h2>1. 配置</h2>
+    <p>请填写腾讯云COS配置信息：</p>
+    <div>
+      <label for="bucket">Bucket：</label>
+      <input type="text" id="bucket" placeholder="your-bucket-123456">
+    </div>
+    <div>
+      <label for="region">Region：</label>
+      <input type="text" id="region" placeholder="ap-guangzhou">
+    </div>
+    <div>
+      <label for="domain">域名：</label>
+      <input type="text" id="domain" placeholder="https://your-bucket-123456.cos.ap-guangzhou.myqcloud.com">
+    </div>
+    <div>
+      <label for="apiUrl">API URL：</label>
+      <input type="text" id="apiUrl" placeholder="https://service-xxx.gz.apigw.tencentcs.com/release/cos-sts">
+    </div>
+  </div>
+  
+  <div class="container">
+    <h2>2. 选择文件</h2>
+    <input type="file" id="fileInput" accept="image/*">
+    <button id="uploadBtn">上传文件</button>
+    
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div id="resultBox"></div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js"></script>
+  <script>
+    // 页面元素
+    const bucketInput = document.getElementById('bucket');
+    const regionInput = document.getElementById('region');
+    const domainInput = document.getElementById('domain');
+    const apiUrlInput = document.getElementById('apiUrl');
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const progressBar = document.getElementById('progressBar');
+    const resultBox = document.getElementById('resultBox');
+    
+    // 尝试从localStorage读取配置
+    try {
+      const savedConfig = localStorage.getItem('cosConfig');
+      if (savedConfig) {
+        const config = JSON.parse(savedConfig);
+        bucketInput.value = config.bucket || '';
+        regionInput.value = config.region || '';
+        domainInput.value = config.domain || '';
+        apiUrlInput.value = config.apiUrl || '';
+      }
+    } catch (e) {
+      console.error('读取配置失败', e);
+    }
+    
+    // 上传按钮点击事件
+    uploadBtn.addEventListener('click', async () => {
+      const bucket = bucketInput.value.trim();
+      const region = regionInput.value.trim();
+      const domain = domainInput.value.trim();
+      const apiUrl = apiUrlInput.value.trim();
+      const file = fileInput.files[0];
+      
+      if (!bucket || !region || !domain || !apiUrl) {
+        showResult('请填写完整的配置信息', 'error');
+        return;
+      }
+      
+      if (!file) {
+        showResult('请选择文件', 'error');
+        return;
+      }
+      
+      // 保存配置
+      try {
+        localStorage.setItem('cosConfig', JSON.stringify({
+          bucket, region, domain, apiUrl
+        }));
+      } catch (e) {
+        console.error('保存配置失败', e);
+      }
+      
+      // 开始上传
+      uploadFile(bucket, region, domain, apiUrl, file);
+    });
+    
+    // 上传文件
+    async function uploadFile(bucket, region, domain, apiUrl, file) {
+      try {
+        // 重置进度条
+        progressBar.style.width = '0%';
+        resultBox.innerHTML = '';
+        
+        // 获取临时密钥
+        showResult('获取临时上传凭证...', '');
+        const credential = await getCredential(apiUrl);
+        showResult('获取临时上传凭证成功', 'success');
+        
+        // 初始化COS实例
+        const cos = new COS({
+          getAuthorization: function(options, callback) {
+            callback({
+              TmpSecretId: credential.credentials.tmpSecretId,
+              TmpSecretKey: credential.credentials.tmpSecretKey,
+              XCosSecurityToken: credential.credentials.sessionToken,
+              ExpiredTime: credential.expiredTime,
+            });
+          }
+        });
+        
+        // 生成随机文件名
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const fileName = `${timestamp}_${randomStr}_${file.name}`;
+        const key = `uploads/${fileName}`;
+        
+        // 执行上传
+        showResult('开始上传文件...', '');
+        await new Promise((resolve, reject) => {
+          cos.putObject({
+            Bucket: bucket,
+            Region: region,
+            Key: key,
+            Body: file,
+            onProgress: function(progressData) {
+              const percent = Math.floor(progressData.percent * 100);
+              progressBar.style.width = `${percent}%`;
+              showResult(`上传进度: ${percent}%`, '');
+            }
+          }, function(err, data) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
+        
+        // 上传成功
+        const fileUrl = `${domain}/${key}`;
+        showResult(
+          `上传成功！<br>文件URL: <a href="${fileUrl}" target="_blank">${fileUrl}</a><br>` +
+          `<img src="${fileUrl}" style="max-width: 100%; max-height: 300px; margin-top: 10px;">`,
+          'success'
+        );
+        
+      } catch (error) {
+        console.error('上传失败', error);
+        showResult(`上传失败: ${error.message}<br><pre>${JSON.stringify(error, null, 2)}</pre>`, 'error');
+      }
+    }
+    
+    // 获取临时凭证
+    async function getCredential(apiUrl) {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`获取临时凭证失败，状态码: ${response.status}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('获取临时凭证错误', error);
+        throw new Error(`获取临时凭证失败: ${error.message}`);
+      }
+    }
+    
+    // 显示结果
+    function showResult(message, type) {
+      resultBox.innerHTML = `<div class="result ${type}">${message}</div>`;
+    }
+  </script>
+</body>
+</html> 

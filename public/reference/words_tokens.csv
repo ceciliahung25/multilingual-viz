@@ -1,0 +1,851 @@
+,Language,Word,Token ID
+love,Arabic,حب,[68050]
+love,German,Liebe,[26408]
+love,English,love,[1300]
+love,Spanish,amor,[15633]
+love,French,amour,[24855]
+love,Hindi,प्यार,"[20121, 185195, 132788]"
+love,Indonesian,cinta,[46654]
+love,Italian,amore,[18815]
+love,Japanese,愛,[14232]
+love,Dutch,liefde,[87363]
+love,Portuguese,amor,[15633]
+love,Russian,любовь,[69649]
+love,Thai,รัก,"[86592, 137270, 181902]"
+love,Turkish,aşk,[171063]
+love,Vietnamese,tình yêu,"[19257, 29081]"
+love,Chinese,爱,[62885]
+love,Korean,사랑,"[9919, 100881]"
+peace,Arabic,سلام,[78459]
+peace,German,Frieden,[41010]
+peace,English,peace,[8043]
+peace,Spanish,paz,[24566]
+peace,French,paix,[27346]
+peace,Hindi,शांति,[173653]
+peace,Indonesian,damai,"[3879, 751]"
+peace,Italian,pace,[12170]
+peace,Japanese,平和,"[8523, 576]"
+peace,Dutch,vrede,[97571]
+peace,Portuguese,paz,[24566]
+peace,Russian,мир,[20932]
+peace,Thai,สันติภาพ,"[142074, 137270, 115360, 157882, 146076, 183177, 78059, 190121]"
+peace,Turkish,barış,[156211]
+peace,Vietnamese,hòa bình,"[19206, 15003]"
+peace,Chinese,和平,"[576, 8523]"
+peace,Korean,평화,"[136628, 21383]"
+courage,Arabic,شجاعة,"[5522, 165757]"
+courage,German,Mut,[122323]
+courage,English,courage,[27244]
+courage,Spanish,coraje,"[1168, 12505]"
+courage,French,courage,[27244]
+courage,Hindi,साहस,"[33154, 104723]"
+courage,Indonesian,keberanian,"[3246, 1151, 16226]"
+courage,Italian,coraggio,[99259]
+courage,Japanese,勇気,"[49830, 16061]"
+courage,Dutch,moed,"[972, 107]"
+courage,Portuguese,coragem,"[1168, 16099]"
+courage,Russian,мужество,[71689]
+courage,Thai,กล้าหาญ,"[141404, 184705, 159072, 78059, 160085, 78059, 190737]"
+courage,Turkish,cesaret,"[10002, 44735]"
+courage,Vietnamese,can đảm,"[225, 58405]"
+courage,Chinese,勇气,"[49830, 46579]"
+courage,Korean,용기,"[32158, 6726]"
+hope,Arabic,أمل,[159006]
+hope,German,Hoffnung,[69835]
+hope,English,hope,[4833]
+hope,Spanish,esperanza,[75874]
+hope,French,espoir,[63944]
+hope,Hindi,आशा,"[20459, 138554]"
+hope,Indonesian,harapan,"[1497, 64582]"
+hope,Italian,speranza,[82439]
+hope,Japanese,希望,"[36131, 15366]"
+hope,Dutch,hoop,[75511]
+hope,Portuguese,esperança,[132232]
+hope,Russian,надежда,"[27135, 107908]"
+hope,Thai,ความหวัง,"[170625, 145702, 78059, 141499, 160085, 145702, 137270, 174117]"
+hope,Turkish,umut,"[948, 2380]"
+hope,Vietnamese,hy vọng,"[31327, 68162]"
+hope,Chinese,希望,"[36131, 15366]"
+hope,Korean,희망,"[90124, 143210]"
+fear,Arabic,خوف,"[7698, 63865]"
+fear,German,Angst,[65724]
+fear,English,fear,[5504]
+fear,Spanish,miedo,[89226]
+fear,French,peur,[47144]
+fear,Hindi,भय,[183508]
+fear,Indonesian,ketakutan,"[9493, 897, 13489]"
+fear,Italian,paura,[78549]
+fear,Japanese,恐れ,"[120203, 135]"
+fear,Dutch,angst,[105960]
+fear,Portuguese,medo,[82163]
+fear,Russian,страх,"[9999, 4401]"
+fear,Thai,ความกลัว,"[170625, 145702, 78059, 141499, 141404, 155193, 137270, 185949]"
+fear,Turkish,korku,[173694]
+fear,Vietnamese,sợ hãi,"[83591, 365, 75015]"
+fear,Chinese,恐惧,"[120203, 170235]"
+fear,Korean,두려움,"[16589, 33120, 116975]"
+happiness,Arabic,سعادة,"[5949, 35907]"
+happiness,German,Glück,[70074]
+happiness,English,happiness,[29788]
+happiness,Spanish,felicidad,[148778]
+happiness,French,bonheur,[104059]
+happiness,Hindi,खुशी,"[86175, 104922]"
+happiness,Indonesian,kebahagiaan,"[72089, 2107, 14411, 671]"
+happiness,Italian,felicità,"[5641, 52945]"
+happiness,Japanese,幸福,"[47615, 21410]"
+happiness,Dutch,geluk,"[2155, 8334]"
+happiness,Portuguese,felicidade,"[5641, 65750]"
+happiness,Russian,счастье,"[118579, 10351]"
+happiness,Thai,ความสุข,"[170625, 145702, 78059, 141499, 142074, 159094, 190447]"
+happiness,Turkish,mutluluk,"[4110, 173909]"
+happiness,Vietnamese,hạnh phúc,"[140086, 138313]"
+happiness,Chinese,幸福,"[47615, 21410]"
+happiness,Korean,행복,"[51127, 81018]"
+knowledge,Arabic,معرفة,[112956]
+knowledge,German,Wissen,[50814]
+knowledge,English,knowledge,[6537]
+knowledge,Spanish,conocimiento,[33280]
+knowledge,French,connaissance,[24572]
+knowledge,Hindi,ज्ञान,"[26425, 185195, 54358]"
+knowledge,Indonesian,pengetahuan,"[1469, 4999, 21239, 52]"
+knowledge,Italian,conoscenza,[35600]
+knowledge,Japanese,知識,"[4071, 55595]"
+knowledge,Dutch,kennis,[64685]
+knowledge,Portuguese,conhecimento,[50934]
+knowledge,Russian,знание,[134023]
+knowledge,Thai,ความรู้,"[170625, 145702, 78059, 141499, 86592, 189169, 159072]"
+knowledge,Turkish,bilgi,[49049]
+knowledge,Vietnamese,kiến thức,"[28800, 13201]"
+knowledge,Chinese,知识,"[4071, 107323]"
+knowledge,Korean,지식,"[7601, 27427]"
+thirst,Arabic,عطش,"[151483, 14100]"
+thirst,German,Durst,"[9991, 1346]"
+thirst,English,thirst,"[16033, 1346]"
+thirst,Spanish,sed,[1075]
+thirst,French,soif,"[1355, 246]"
+thirst,Hindi,प्यास,"[20121, 185195, 91965]"
+thirst,Indonesian,haus,[7459]
+thirst,Italian,sete,[33925]
+thirst,Japanese,渇き,"[173344, 1531]"
+thirst,Dutch,dorst,"[3829, 1346]"
+thirst,Portuguese,sede,[4096]
+thirst,Russian,жажда,"[7588, 107908]"
+thirst,Thai,กระหายน้ำ,"[141404, 86592, 159863, 160085, 78059, 150718, 168540, 159072, 192636]"
+thirst,Turkish,susuzluk,"[941, 178101]"
+thirst,Vietnamese,khát,"[1877, 43113]"
+thirst,Chinese,口渴,"[5893, 185876]"
+thirst,Korean,갈증,"[100720, 114678]"
+truth,Arabic,حقيقة,[148272]
+truth,German,Wahrheit,[68204]
+truth,English,truth,[6038]
+truth,Spanish,verdad,[57834]
+truth,French,vérité,[62579]
+truth,Hindi,सच,[171162]
+truth,Indonesian,kebenaran,"[277, 42827, 15882]"
+truth,Italian,verità,[53623]
+truth,Japanese,真実,"[18289, 20637]"
+truth,Dutch,waarheid,"[23067, 15383]"
+truth,Portuguese,verdade,[48481]
+truth,Russian,правда,[101497]
+truth,Thai,ความจริง,"[170625, 145702, 78059, 141499, 173996, 86592, 146076, 174117]"
+truth,Turkish,gerçek,[101063]
+truth,Vietnamese,sự thật,"[3709, 59133]"
+truth,Chinese,真相,"[18289, 8959]"
+truth,Korean,진실,"[19662, 63384]"
+freedom,Arabic,حرية,[133824]
+freedom,Chinese,自由,"[8885, 1866]"
+freedom,Dutch,vrijheid,[100260]
+freedom,English,freedom,[11653]
+freedom,French,liberté,[30136]
+freedom,German,Freiheit,[43452]
+freedom,Hindi,आज़ादी,"[188155, 196404, 47667, 22418]"
+freedom,Indonesian,kebebasan,"[3246, 545, 112704]"
+freedom,Italian,libertà,[41370]
+freedom,Japanese,自由,"[8885, 1866]"
+freedom,Korean,자유,"[9351, 62007]"
+freedom,Portuguese,liberdade,[72156]
+freedom,Russian,свобода,"[30420, 568]"
+freedom,Spanish,libertad,[31402]
+freedom,Thai,เสรีภาพ,"[126772, 142074, 86592, 167130, 183177, 78059, 190121]"
+freedom,Turkish,özgürlük,"[151577, 95619]"
+freedom,Vietnamese,tự do,"[8297, 89]"
+compassion,Arabic,شفقة,"[5522, 114595]"
+compassion,German,Mitgefühl,"[4892, 87738, 420]"
+compassion,English,compassion,"[4964, 655, 2676]"
+compassion,Spanish,compasión,"[1508, 87130]"
+compassion,French,compassion,"[4964, 655, 2676]"
+compassion,Hindi,दया,"[26892, 8765]"
+compassion,Indonesian,kasih sayang,"[277, 4998, 572, 23109, 2077]"
+compassion,Italian,compassione,"[4964, 10018, 120]"
+compassion,Japanese,思いやり,"[12414, 6275, 16443, 276]"
+compassion,Dutch,mededogen,"[60813, 304, 11569]"
+compassion,Portuguese,compaixão,"[4964, 145453]"
+compassion,Russian,сострадание,"[1960, 9999, 127538]"
+compassion,Thai,ความเมตตา,"[170625, 145702, 78059, 141499, 126772, 141499, 157882, 157882, 177495]"
+compassion,Turkish,şefkat,"[180548, 15745]"
+compassion,Vietnamese,tình cảm,"[19257, 32098]"
+compassion,Chinese,慈悲,"[113456, 149232]"
+compassion,Korean,동정,"[22564, 19193]"
+faith,Arabic,إيمان,"[7605, 156353]"
+faith,German,Glaube,"[46627, 100]"
+faith,English,faith,[13468]
+faith,Spanish,fe,[4638]
+faith,French,foi,[539]
+faith,Hindi,विश्वास,"[19998, 31634, 185195, 46834]"
+faith,Indonesian,iman,[48622]
+faith,Italian,fede,[55038]
+faith,Japanese,信仰,"[9463, 121608]"
+faith,Dutch,geloof,[105303]
+faith,Portuguese,fé,[78659]
+faith,Russian,вера,[60319]
+faith,Thai,ศรัทธา,"[178619, 86592, 137270, 152919, 180664, 177495]"
+faith,Turkish,iman,[48622]
+faith,Vietnamese,tín ngưỡng,"[46239, 150667]"
+faith,Chinese,信仰,"[9463, 121608]"
+faith,Korean,믿음,"[3, 60221]"
+smart,Arabic,ذكي,"[14884, 18708]"
+smart,German,klug,"[31726, 633]"
+smart,English,smart,[20046]
+smart,Spanish,inteligente,[90230]
+smart,French,intelligent,[30931]
+smart,Hindi,चतुर,[171449]
+smart,Indonesian,pintar,[135054]
+smart,Italian,intelligente,[107677]
+smart,Japanese,スマート,[91497]
+smart,Dutch,slim,"[228, 34769]"
+smart,Portuguese,inteligente,[90230]
+smart,Russian,умный,"[32186, 1368]"
+smart,Thai,ฉลาด,"[193192, 155193, 78059, 184790]"
+smart,Turkish,akıllı,[177321]
+smart,Vietnamese,thông minh,"[11975, 26317]"
+smart,Chinese,聪明,"[178221, 6192]"
+smart,Korean,똑똑한,"[198009, 198009, 2081]"
+beauty,Arabic,جمال,[105811]
+beauty,German,Schönheit,[104899]
+beauty,English,beauty,[13941]
+beauty,Spanish,belleza,[63441]
+beauty,French,beauté,[75975]
+beauty,Hindi,सौंदर्य,"[117735, 140626, 12280, 185195, 3630]"
+beauty,Indonesian,kecantikan,"[277, 1099, 2384, 976]"
+beauty,Italian,bellezza,[84056]
+beauty,Japanese,美しさ,"[7351, 7979, 174]"
+beauty,Dutch,schoonheid,"[79930, 15383]"
+beauty,Portuguese,beleza,[109404]
+beauty,Russian,красота,"[86722, 1096]"
+beauty,Thai,ความงาม,"[170625, 145702, 78059, 141499, 142265, 78059, 178457]"
+beauty,Turkish,güzellik,[179947]
+beauty,Vietnamese,vẻ đẹp,"[105561, 68584]"
+beauty,Chinese,美丽,"[7351, 91424]"
+beauty,Korean,아름다움,"[19856, 96987, 9832, 116975]"
+honor,Arabic,شرف,[92944]
+honor,German,Ehre,[111828]
+honor,English,honor,[5773]
+honor,Spanish,honor,[5773]
+honor,French,honneur,[14637]
+honor,Hindi,शान,[155899]
+honor,Indonesian,kehormatan,"[38858, 466, 1249, 52]"
+honor,Italian,onore,[27145]
+honor,Japanese,名誉,"[1176, 98142]"
+honor,Dutch,eer,[9648]
+honor,Portuguese,honra,[85494]
+honor,Russian,честь,[13905]
+honor,Thai,เกียรติยศ,"[126772, 141404, 167130, 150718, 86592, 157882, 146076, 150718, 190723]"
+honor,Turkish,onur,"[438, 1743]"
+honor,Vietnamese,vinh dự,"[123672, 20064]"
+honor,Chinese,荣誉,"[103799, 98142]"
+honor,Korean,명예,"[18589, 84289]"
+survival,Arabic,نجاة,"[108479, 16121]"
+survival,German,Überleben,"[4338, 9525]"
+survival,English,survival,[25951]
+survival,Spanish,supervivencia,[122984]
+survival,French,survie,[102783]
+survival,Hindi,जीवन बचाना,"[69941, 181710, 24824]"
+survival,Indonesian,kelangsungan hidup,"[4750, 50634, 96791, 1433, 1074, 556]"
+survival,Italian,sopravvivenza,[130937]
+survival,Japanese,生存,"[2222, 30179]"
+survival,Dutch,overleving,"[979, 165649]"
+survival,Portuguese,sobrevivência,[152548]
+survival,Russian,выживание,"[75163, 8535]"
+survival,Thai,การอยู่รอด,"[141404, 78059, 86592, 129582, 150718, 189169, 156218, 86592, 129582, 184790]"
+survival,Turkish,yaşam,[135581]
+survival,Vietnamese,sự sống còn,"[3709, 10011, 6684]"
+survival,Chinese,生存,"[2222, 30179]"
+survival,Korean,생존,"[53360, 65147]"
+adventure,Arabic,مغامرة,"[71714, 155097]"
+adventure,German,Abenteuer,[96397]
+adventure,English,adventure,[24158]
+adventure,Spanish,aventura,[40573]
+adventure,French,aventure,[43483]
+adventure,Hindi,साहसिक कार्य,"[168586, 129678, 110028, 185195, 3630]"
+adventure,Indonesian,petualangan,"[3772, 541, 339, 72667]"
+adventure,Italian,avventura,[73405]
+adventure,Japanese,冒険,"[125085, 185994]"
+adventure,Dutch,avontuur,"[99721, 62806]"
+adventure,Portuguese,aventura,[40573]
+adventure,Russian,приключение,"[80701, 23456]"
+adventure,Thai,การผจญภัย,"[141404, 78059, 86592, 188906, 173996, 187994, 183177, 137270, 176142]"
+adventure,Turkish,macera,"[4528, 260]"
+adventure,Vietnamese,phiêu lưu,"[13923, 53686, 28979]"
+adventure,Chinese,冒险,"[125085, 139253]"
+adventure,Korean,모험,"[62378, 126548]"
+blessings,Arabic,بركات,"[1493, 106623]"
+blessings,German,Segen,"[243, 8572]"
+blessings,English,blessings,"[38051, 971]"
+blessings,Spanish,bendiciones,"[96730, 38465]"
+blessings,French,bénédictions,"[47352, 4734, 1521]"
+blessings,Hindi,आशीर्वाद,"[20459, 126218, 12280, 185195, 85826]"
+blessings,Indonesian,berkat,"[1151, 15745]"
+blessings,Italian,benedizioni,"[3305, 35831]"
+blessings,Japanese,祝福,"[72831, 21410]"
+blessings,Dutch,zegeningen,"[440, 19018, 1502]"
+blessings,Portuguese,bênçãos,"[426, 41241, 6928, 96510]"
+blessings,Russian,благословения,"[28680, 48334, 7956]"
+blessings,Thai,บารมี,"[164019, 78059, 86592, 141499, 178857]"
+blessings,Turkish,kutlama,"[30259, 27441]"
+blessings,Vietnamese,phúc lộc,"[138313, 450, 67192]"
+blessings,Chinese,祝福,"[72831, 21410]"
+blessings,Korean,축복,"[136995, 81018]"
+good health,Arabic,صحة جيدة,"[150377, 142119]"
+good health,German,gute Gesundheit,"[30616, 65164]"
+good health,English,good health,"[738, 4145]"
+good health,Spanish,buena salud,"[25166, 31557]"
+good health,French,bonne santé,"[19658, 22277]"
+good health,Hindi,अच्छी सेहत,"[16962, 33066, 185195, 150753, 45301, 139015]"
+good health,Indonesian,kesehatan yang baik,"[10573, 2798, 42338, 31633, 37737, 453]"
+good health,Italian,buona salute,"[35814, 38449]"
+good health,Japanese,健康,"[54546, 24760]"
+good health,Dutch,goede gezondheid,"[38993, 120631]"
+good health,Portuguese,boa saúde,"[33938, 48118]"
+good health,Russian,здоровье,[122303]
+good health,Thai,สุขภาพดี,"[142074, 159094, 180245, 183177, 78059, 152902, 164665, 178857]"
+good health,Turkish,iyi sağlık,"[34505, 44006]"
+good health,Vietnamese,sức khỏe tốt,"[33673, 108376, 30834]"
+good health,Chinese,健康,"[54546, 24760]"
+good health,Korean,건강,"[69784, 40716]"
+success,Arabic,نجاح,[140044]
+success,German,Erfolg,[12419]
+success,English,success,[3498]
+success,Spanish,éxito,[10511]
+success,French,succès,[7856]
+success,Hindi,सफलता,[155626]
+success,Indonesian,sukses,"[57190, 428]"
+success,Italian,successo,[8537]
+success,Japanese,成功,"[3234, 30904]"
+success,Dutch,succes,[32805]
+success,Portuguese,sucesso,[17925]
+success,Russian,успех,[49470]
+success,Thai,ความสำเร็จ,"[170625, 145702, 78059, 141499, 142074, 180939, 126772, 174449, 187338, 187496]"
+success,Turkish,başarı,[145034]
+success,Vietnamese,thành công,"[2150, 3318]"
+success,Chinese,成功,"[3234, 30904]"
+success,Korean,성공,"[12735, 50036]"
+prosperity,Arabic,ازدهار,"[156228, 78859]"
+prosperity,German,Wohlstand,"[40604, 1657]"
+prosperity,English,prosperity,"[25139, 588]"
+prosperity,Spanish,prosperidad,"[128762, 2988]"
+prosperity,French,prospérité,[121736]
+prosperity,Hindi,समृद्धि,"[83905, 154555, 26892, 185195, 72107]"
+prosperity,Indonesian,kemakmuran,"[29817, 897, 1789, 1188]"
+prosperity,Italian,prosperità,"[25139, 6438]"
+prosperity,Japanese,繁栄,"[90164, 68865]"
+prosperity,Dutch,welvaart,"[4317, 50138]"
+prosperity,Portuguese,prosperidade,"[128762, 12156]"
+prosperity,Russian,процветание,"[1590, 25632, 10783]"
+prosperity,Thai,ความเจริญรุ่งเรือง,"[170625, 145702, 78059, 141499, 126772, 173996, 86592, 146076, 187994, 86592, 189409, 156218, 142265, 126772, 86592, 185603, 129582, 174117]"
+prosperity,Turkish,refah,"[185, 123237]"
+prosperity,Vietnamese,thịnh vượng,"[149135, 566, 80542]"
+prosperity,Chinese,繁荣,"[90164, 103799]"
+prosperity,Korean,번영,"[40025, 45846]"
+joy,Arabic,فرح,"[17828, 11222]"
+joy,German,Freude,[113117]
+joy,English,joy,[22612]
+joy,Spanish,alegría,[143828]
+joy,French,joie,[90439]
+joy,Hindi,खुशहाली,"[86175, 31634, 56898, 20599]"
+joy,Indonesian,kegembiraan,"[57640, 748, 650, 553, 52]"
+joy,Italian,gioia,"[1095, 35382]"
+joy,Japanese,喜び,"[30784, 13369]"
+joy,Dutch,vreugde,"[50200, 3561, 18]"
+joy,Portuguese,alegria,[161424]
+joy,Russian,радость,"[73774, 11587]"
+joy,Thai,ความสุขของใจ,"[170625, 145702, 78059, 141499, 142074, 159094, 180245, 180245, 129582, 142265, 187544, 187496]"
+joy,Turkish,sevinç,"[639, 3640, 30762]"
+joy,Vietnamese,niềm vui,"[143806, 122985]"
+joy,Chinese,喜悦,"[30784, 149027]"
+joy,Korean,기쁨,"[6726, 194072]"
+kindness,Arabic,لطف,"[2225, 126046]"
+kindness,German,Freundlichkeit,"[118329, 18723]"
+kindness,English,kindness,"[25368, 1797]"
+kindness,Spanish,amabilidad,"[531, 43482]"
+kindness,French,bonté,"[426, 4384, 229]"
+kindness,Hindi,दया,"[26892, 8765]"
+kindness,Indonesian,kebaikan,"[72089, 1839, 976]"
+kindness,Italian,gentilezza,"[69529, 27066]"
+kindness,Japanese,親切,"[23559, 15130]"
+kindness,Dutch,vriendelijkheid,"[50867, 15406, 76757]"
+kindness,Portuguese,amabilidade,"[531, 67434]"
+kindness,Russian,доброта,"[50078, 1096]"
+kindness,Thai,ความเมตตา,"[170625, 145702, 78059, 141499, 126772, 141499, 157882, 157882, 177495]"
+kindness,Turkish,hoşgörü,"[160862, 45204, 15977]"
+kindness,Vietnamese,tình thân ái,"[19257, 17862, 38516]"
+kindness,Chinese,善良,"[35862, 11570]"
+kindness,Korean,친절,"[71005, 111958]"
+harmony,Arabic,الانسجام,"[173393, 157479]"
+harmony,German,Harmonie,"[1553, 91792]"
+harmony,English,harmony,"[10752, 44]"
+harmony,Spanish,armonía,[136409]
+harmony,French,harmonie,[76952]
+harmony,Hindi,सद्भाव,"[186549, 185195, 150003]"
+harmony,Indonesian,keselarasan,"[10573, 394, 78711, 52]"
+harmony,Italian,armonia,[138539]
+harmony,Japanese,ハーモニー,[140935]
+harmony,Dutch,harmonie,[76952]
+harmony,Portuguese,harmonia,[143113]
+harmony,Russian,гармония,"[19992, 2366, 12800]"
+harmony,Thai,ความสอดคล้องกัน,"[170625, 145702, 78059, 141499, 142074, 129582, 164665, 170625, 184705, 159072, 129582, 142265, 141404, 137270, 168540]"
+harmony,Turkish,uyum,[176679]
+harmony,Vietnamese,hài hòa,"[93080, 19206]"
+harmony,Chinese,和谐,"[576, 167691]"
+harmony,Korean,조화,"[22753, 21383]"
+friendship,Arabic,صداقة,"[6647, 164970]"
+friendship,German,Freundschaft,[65118]
+friendship,English,friendship,[22429]
+friendship,Spanish,amistad,[61322]
+friendship,French,amitié,[56200]
+friendship,Hindi,दोस्ती,"[89639, 16758, 185195, 29053]"
+friendship,Indonesian,persahabatan,"[25443, 2107, 410, 42338]"
+friendship,Italian,amicizia,[54559]
+friendship,Japanese,友情,"[22260, 17980]"
+friendship,Dutch,vriendschap,"[117211, 19716]"
+friendship,Portuguese,amizade,[122704]
+friendship,Russian,дружба,"[75717, 9498]"
+friendship,Thai,มิตรภาพ,"[141499, 146076, 157882, 86592, 183177, 78059, 190121]"
+friendship,Turkish,arkadaşlık,"[131869, 29395]"
+friendship,Vietnamese,tình bạn,"[19257, 42671]"
+friendship,Chinese,友谊,"[22260, 163704]"
+friendship,Korean,우정,"[42479, 19193]"
+wealth,Arabic,ثروة,"[10957, 127752]"
+wealth,German,Reichtum,"[9357, 104060]"
+wealth,English,wealth,[20511]
+wealth,Spanish,riqueza,[55569]
+wealth,French,richesse,[77834]
+wealth,Hindi,धन,[109912]
+wealth,Indonesian,kekayaan,"[153699, 2219, 671]"
+wealth,Italian,ricchezza,[107883]
+wealth,Japanese,富,[28361]
+wealth,Dutch,rijkdom,"[117785, 5839]"
+wealth,Portuguese,riqueza,[55569]
+wealth,Russian,богатство,"[21474, 72421]"
+wealth,Thai,ความมั่งคั่ง,"[170625, 145702, 78059, 141499, 141499, 191165, 156218, 142265, 170625, 191165, 156218, 174117]"
+wealth,Turkish,servet,"[11631, 58]"
+wealth,Vietnamese,giàu có,"[109586, 669]"
+wealth,Chinese,财富,"[169279, 28361]"
+wealth,Korean,부,[16844]
+patience,Arabic,صبر,"[6647, 24325]"
+patience,German,Geduld,"[48775, 23312]"
+patience,English,patience,"[16032, 1543]"
+patience,Spanish,paciencia,"[26771, 9566]"
+patience,French,patience,"[16032, 1543]"
+patience,Hindi,धैर्य,"[39218, 125805, 12280, 185195, 3630]"
+patience,Indonesian,kesabaran,"[10573, 410, 15882]"
+patience,Italian,pazienza,"[58785, 7478]"
+patience,Japanese,忍耐,"[88771, 134385]"
+patience,Dutch,geduld,"[90795, 23312]"
+patience,Portuguese,paciência,"[26771, 12859]"
+patience,Russian,терпение,"[9429, 2458, 7356]"
+patience,Thai,ความอดทน,"[170625, 145702, 78059, 141499, 129582, 164665, 152919, 168540]"
+patience,Turkish,sabır,"[5784, 22872]"
+patience,Vietnamese,kiên nhẫn,"[154306, 5302, 108195]"
+patience,Chinese,耐心,"[134385, 7485]"
+patience,Korean,인내심,"[3650, 37312, 97726]"
+generosity,Arabic,كرم,[160032]
+generosity,German,Großzügigkeit,"[5994, 59501, 139218]"
+generosity,English,generosity,"[3439, 21402]"
+generosity,Spanish,generosidad,"[3439, 85473]"
+generosity,French,générosité,"[33448, 458, 134176]"
+generosity,Hindi,उदारता,"[171765, 81333, 19417]"
+generosity,Indonesian,kemurahan hati,"[29817, 15689, 885, 365, 938]"
+generosity,Italian,generosità,"[3439, 66578]"
+generosity,Japanese,気前の良さ,"[16061, 1827, 32, 11570, 174]"
+generosity,Dutch,geven,[23442]
+generosity,Portuguese,generosidade,"[3439, 107005]"
+generosity,Russian,щедрость,"[16143, 20606, 11587]"
+generosity,Thai,ความเมตตา,"[170625, 145702, 78059, 141499, 126772, 141499, 157882, 157882, 177495]"
+generosity,Turkish,cömertlik,"[536, 2160, 1135, 323, 13677]"
+generosity,Vietnamese,vị tha,"[7926, 12283]"
+generosity,Chinese,慷慨,"[195910, 158446]"
+generosity,Korean,관대함,"[31919, 12604, 74586]"
+humility,Arabic,تواضع,"[72413, 71140]"
+humility,German,Demut,"[6823, 2380]"
+humility,English,humility,"[6570, 22826]"
+humility,Spanish,humildad,"[132322, 2988]"
+humility,French,humilité,"[6570, 72080]"
+humility,Hindi,विनम्रता,"[19998, 18131, 15090, 185195, 78385]"
+humility,Indonesian,kerendahan hati,"[2365, 251, 1156, 885, 365, 938]"
+humility,Italian,umiltà,"[948, 868, 96196]"
+humility,Japanese,謙虚,"[133139, 146738]"
+humility,Dutch,nederigheid,"[51881, 124291]"
+humility,Portuguese,humildade,"[132322, 12156]"
+humility,Russian,смирение,"[1460, 27481, 7356]"
+humility,Thai,ความเบิกบานใจ,"[170625, 145702, 78059, 141499, 126772, 164019, 146076, 141404, 164019, 78059, 115360, 187544, 187496]"
+humility,Turkish,alçakgönüllülük,"[339, 143832, 184539, 450, 171850]"
+humility,Vietnamese,khiêm tốn,"[68717, 38203, 156029]"
+humility,Chinese,谦逊,"[166810, 95680]"
+humility,Korean,겸손,"[96537, 110922]"
+gratitude,Arabic,امتنان,"[93037, 59709]"
+gratitude,German,Dankbarkeit,"[5319, 277, 27521]"
+gratitude,English,gratitude,"[14244, 13865]"
+gratitude,Spanish,gratitud,"[14244, 72750]"
+gratitude,French,gratitude,"[14244, 13865]"
+gratitude,Hindi,कृतज्ञता,"[136634, 24454, 26425, 185195, 171434, 19417]"
+gratitude,Indonesian,berterima kasih,"[1151, 916, 8778, 277, 4998, 572]"
+gratitude,Italian,gratitudine,"[14244, 101807]"
+gratitude,Japanese,感謝,"[12200, 107239]"
+gratitude,Dutch,dankbaarheid,"[2073, 277, 86451]"
+gratitude,Portuguese,gratidão,"[78233, 64934]"
+gratitude,Russian,благодарность,"[100894, 5309]"
+gratitude,Thai,ความขอบคุณ,"[170625, 145702, 78059, 141499, 180245, 129582, 164019, 170625, 159094, 190130]"
+gratitude,Turkish,minnettarlık,"[1451, 8157, 2548, 29395]"
+gratitude,Vietnamese,biết ơn,"[16439, 93198]"
+gratitude,Chinese,感恩,"[12200, 23179]"
+gratitude,Korean,감사,"[107295, 9919]"
+observation,Arabic,ملاحظة,[161561]
+observation,German,Beobachtung,[101102]
+observation,English,observation,[20021]
+observation,Spanish,observación,[99486]
+observation,French,observation,[20021]
+observation,Hindi,अवलोकन,"[84073, 41655, 70528]"
+observation,Indonesian,observasi,"[10003, 9489]"
+observation,Italian,osservazione,[79307]
+observation,Japanese,観察,"[31482, 41532]"
+observation,Dutch,observatie,"[10003, 4463]"
+observation,Portuguese,observação,[140584]
+observation,Russian,наблюдение,"[70730, 7356]"
+observation,Thai,การสังเกตการณ์,"[141404, 78059, 86592, 142074, 137270, 142265, 126772, 141404, 157882, 141404, 78059, 86592, 190130, 166902]"
+observation,Turkish,gözlem,[183137]
+observation,Vietnamese,quan sát,"[6213, 21139]"
+observation,Chinese,观察,"[54760, 41532]"
+observation,Korean,관찰,"[31919, 151886]"
+exploration,Arabic,استكشاف,"[12111, 157647]"
+exploration,German,Erforschung,[69137]
+exploration,English,exploration,[28943]
+exploration,Spanish,exploración,[107393]
+exploration,French,exploration,[28943]
+exploration,Hindi,अन्वेषण,"[103909, 185195, 46665, 43466]"
+exploration,Indonesian,eksplorasi,"[72672, 9567, 9489]"
+exploration,Italian,esplorazione,[144662]
+exploration,Japanese,探検,"[36734, 101935]"
+exploration,Dutch,verkenning,"[10152, 4731, 109]"
+exploration,Portuguese,exploração,[93084]
+exploration,Russian,исследование,[84393]
+exploration,Thai,การสำรวจ,"[141404, 78059, 86592, 142074, 180939, 86592, 145702, 187496]"
+exploration,Turkish,keşif,[179962]
+exploration,Vietnamese,khám phá,"[118971, 28299]"
+exploration,Chinese,探索,"[36734, 31164]"
+exploration,Korean,탐색,"[185936, 49622]"
+perception,Arabic,إدراك,"[7605, 155191]"
+perception,German,Wahrnehmung,[96296]
+perception,English,perception,[33037]
+perception,Spanish,percepción,[129854]
+perception,French,perception,[33037]
+perception,Hindi,अनुभूति,"[51391, 179406]"
+perception,Indonesian,persepsi,"[767, 23722, 232]"
+perception,Italian,percezione,"[60505, 5153]"
+perception,Japanese,知覚,"[4071, 57867]"
+perception,Dutch,waarneming,"[97464, 109]"
+perception,Portuguese,percepção,[155965]
+perception,Russian,восприятие,"[106119, 19771]"
+perception,Thai,การรับรู้,"[141404, 78059, 86592, 86592, 137270, 164019, 86592, 189169, 159072]"
+perception,Turkish,algı,"[10971, 8930]"
+perception,Vietnamese,nhận thức,"[9469, 13201]"
+perception,Chinese,知觉,"[4071, 117848]"
+perception,Korean,지각,"[7601, 29782]"
+creation,Arabic,خلق,[104583]
+creation,German,Schöpfung,"[31517, 71017]"
+creation,English,creation,[8791]
+creation,Spanish,creación,[16858]
+creation,French,création,[9044]
+creation,Hindi,सृजन,"[179708, 26421]"
+creation,Indonesian,penciptaan,"[1469, 1093, 476, 161876]"
+creation,Italian,creazione,[36630]
+creation,Japanese,創造,"[34768, 13836]"
+creation,Dutch,creatie,"[1541, 4463]"
+creation,Portuguese,criação,[28564]
+creation,Russian,создание,[39697]
+creation,Thai,สร้าง,"[142074, 174449, 159072, 78059, 174117]"
+creation,Turkish,yaratma,"[72800, 439]"
+creation,Vietnamese,sáng tạo,"[16281, 11546]"
+creation,Chinese,创造,"[102087, 13836]"
+creation,Korean,창조,"[110480, 22753]"
+push,Arabic,دفع,[68618]
+push,German,Druck,[31894]
+push,English,push,[12274]
+push,Spanish,empuje,"[73107, 1263]"
+push,French,poussée,[105582]
+push,Hindi,धक्का,"[39218, 18751, 185195, 2174]"
+push,Indonesian,dorong,"[3829, 2319]"
+push,Italian,spinta,[98943]
+push,Japanese,押す,"[50587, 1565]"
+push,Dutch,duwen,"[1074, 12291]"
+push,Portuguese,empurrar,"[157393, 8459]"
+push,Russian,толкать,"[23122, 1686, 1510]"
+push,Thai,การผลัก,"[141404, 78059, 86592, 188906, 155193, 137270, 181902]"
+push,Turkish,itme,"[638, 127]"
+push,Vietnamese,đẩy,[69258]
+push,Chinese,推动,"[46922, 29425]"
+push,Korean,밀어내기,"[144121, 10332, 37312, 6726]"
+poetry,Arabic,شعر,[123805]
+poetry,German,Poesie,"[1940, 59784]"
+poetry,English,poetry,[12543]
+poetry,Spanish,poesía,[45096]
+poetry,French,poésie,[48178]
+poetry,Hindi,कविता,[159274]
+poetry,Indonesian,puisi,"[1803, 10400]"
+poetry,Italian,poesia,[42494]
+poetry,Japanese,詩,[28924]
+poetry,Dutch,poëzie,"[126472, 5083]"
+poetry,Portuguese,poesia,[42494]
+poetry,Russian,поэзия,"[24586, 29800]"
+poetry,Thai,บทกวี,"[164019, 152919, 141404, 145702, 178857]"
+poetry,Turkish,şiir,[157940]
+poetry,Vietnamese,thơ,[53309]
+poetry,Chinese,诗歌,"[76943, 7273]"
+poetry,Korean,시,[10019]
+experience,Arabic,تجربة,[142129]
+experience,German,Erfahrung,[65946]
+experience,English,experience,[4546]
+experience,Spanish,experiencia,[32753]
+experience,French,expérience,[27073]
+experience,Hindi,अनुभव,[158905]
+experience,Indonesian,pengalaman,"[1469, 4199, 21468]"
+experience,Italian,esperienza,[28999]
+experience,Japanese,経験,"[9122, 144915]"
+experience,Dutch,ervaring,[126730]
+experience,Portuguese,experiência,[61300]
+experience,Russian,опыт,[63729]
+experience,Thai,ประสบการณ์,"[175358, 86592, 159863, 142074, 164019, 141404, 78059, 86592, 190130, 166902]"
+experience,Turkish,deneyim,"[114900, 113]"
+experience,Vietnamese,kinh nghiệm,"[15867, 40003]"
+experience,Chinese,经验,"[26114, 126635]"
+experience,Korean,경험,"[33617, 126548]"
+wisdom,Arabic,حكمة,"[5890, 96271]"
+wisdom,German,Weisheit,"[5285, 3766, 9268]"
+wisdom,English,wisdom,"[13146, 5839]"
+wisdom,Spanish,sabiduría,"[145283, 133980]"
+wisdom,French,sagesse,"[10448, 4986]"
+wisdom,Hindi,बुद्धि,"[64402, 26892, 185195, 72107]"
+wisdom,Indonesian,kebijaksanaan,"[3246, 650, 13990, 2655, 671]"
+wisdom,Italian,saggezza,"[10448, 15517, 974]"
+wisdom,Japanese,知恵,"[4071, 59574]"
+wisdom,Dutch,wijsheid,"[17664, 143361]"
+wisdom,Portuguese,sabedoria,"[5784, 1020, 9439]"
+wisdom,Russian,мудрость,"[5954, 20606, 11587]"
+wisdom,Thai,ปัญญา,"[175358, 137270, 187994, 187994, 177495]"
+wisdom,Turkish,bilgelik,"[2562, 2155, 4827]"
+wisdom,Vietnamese,trí tuệ,"[16097, 1200, 67402]"
+wisdom,Chinese,智慧,"[34993, 102274]"
+wisdom,Korean,지혜,"[7601, 155046]"
+dream,Arabic,حلم,"[5890, 7874]"
+dream,German,Traum,[102949]
+dream,English,dream,[9691]
+dream,Spanish,sueño,[66020]
+dream,French,rêve,[71001]
+dream,Hindi,सपना,"[16758, 155238]"
+dream,Indonesian,mimpi,"[1042, 4737, 27]"
+dream,Italian,sogno,[81739]
+dream,Japanese,夢,[29812]
+dream,Dutch,droom,[120831]
+dream,Portuguese,sonho,[132113]
+dream,Russian,мечта,"[52251, 1096]"
+dream,Thai,ฝัน,"[196698, 137270, 168540]"
+dream,Turkish,hayal,[174592]
+dream,Vietnamese,giấc mơ,"[1095, 156860, 147037]"
+dream,Chinese,梦想,"[122127, 16887]"
+dream,Korean,꿈,[185085]
+leader,Arabic,زعيم,[150915]
+leader,German,Führer,[43539]
+leader,English,leader,[3135]
+leader,Spanish,líder,[16654]
+leader,French,chef,[5184]
+leader,Hindi,नेता,[155952]
+leader,Indonesian,pemimpin,"[476, 748, 5543, 19]"
+leader,Italian,capo,[14731]
+leader,Japanese,リーダー,[66147]
+leader,Dutch,leider,[43067]
+leader,Portuguese,líder,[16654]
+leader,Russian,лидер,[84009]
+leader,Thai,ผู้นำ,"[188906, 189169, 159072, 115360, 192636]"
+leader,Turkish,lider,[81453]
+leader,Vietnamese,người lãnh đạo,"[1290, 26214, 15185]"
+leader,Chinese,领导,"[85612, 73627]"
+leader,Korean,지도자,"[7601, 4665, 9351]"
+teach,Arabic,تعليم,[139561]
+teach,German,lehren,"[529, 31253]"
+teach,English,teach,[18246]
+teach,Spanish,enseñar,[143196]
+teach,French,enseigner,[114499]
+teach,Hindi,पढ़ाना,"[20121, 88380, 196404, 47667, 24824]"
+teach,Indonesian,ajar,[78692]
+teach,Italian,insegnare,[138095]
+teach,Japanese,教える,"[7954, 16168, 71]"
+teach,Dutch,leren,[63119]
+teach,Portuguese,ensinar,[164050]
+teach,Russian,обучать,"[61839, 1510]"
+teach,Thai,สอน,"[142074, 129582, 168540]"
+teach,Turkish,öğretmek,"[160054, 26413]"
+teach,Vietnamese,giảng dạy,"[95472, 76516]"
+teach,Chinese,教导,"[7954, 73627]"
+teach,Korean,가르치다,"[2877, 23085, 22329, 9832]"
+despair,Arabic,يأس,"[3466, 80157]"
+despair,German,Verzweiflung,"[672, 11093, 1442, 809]"
+despair,English,despair,"[10229, 1050]"
+despair,Spanish,desesperación,"[135802, 1584]"
+despair,French,désespoir,"[1153, 13951, 643, 2614]"
+despair,Hindi,निराशा,"[177079, 138554]"
+despair,Indonesian,putus asa,"[16154, 238, 8889]"
+despair,Italian,disperazione,"[14907, 2032]"
+despair,Japanese,絶望,"[56969, 15366]"
+despair,Dutch,wanhoop,"[8164, 75511]"
+despair,Portuguese,desespero,"[1339, 551, 1351]"
+despair,Russian,отчаяние,"[121968, 90358]"
+despair,Thai,ความหมดหวัง,"[170625, 145702, 78059, 141499, 160085, 141499, 164665, 160085, 145702, 137270, 174117]"
+despair,Turkish,umutsuzluk,"[948, 883, 178101]"
+despair,Vietnamese,tuyệt vọng,"[70752, 68162]"
+despair,Chinese,绝望,"[136946, 15366]"
+despair,Korean,절망,"[111958, 143210]"
+unforgettable,Arabic,لا يُنْسَى,"[4859, 23310, 146846, 114580, 13155]"
+unforgettable,German,unvergesslich,"[39633, 3950, 90609]"
+unforgettable,English,unforgettable,"[208, 839, 4999, 2014]"
+unforgettable,Spanish,inolvidable,"[115411, 29108, 417]"
+unforgettable,French,inoubliable,"[226, 70191, 417]"
+unforgettable,Hindi,भुला नहीं सकता,"[138535, 29551, 15676, 34414]"
+unforgettable,Indonesian,tak terlupakan,"[12585, 916, 1331, 29267, 52]"
+unforgettable,Italian,indimenticabile,"[4809, 3968, 691, 11191]"
+unforgettable,Japanese,忘れられない,"[143342, 21150, 19346, 21150, 13071, 86]"
+unforgettable,Dutch,onvergetelijk,"[438, 320, 4999, 25119]"
+unforgettable,Portuguese,inolvidável,"[115411, 29108, 19649]"
+unforgettable,Russian,незабываемый,"[86951, 10240, 111375]"
+unforgettable,Thai,ไม่ลืมได้,"[178480, 178457, 156218, 155193, 185603, 141499, 178480, 184790, 159072]"
+unforgettable,Turkish,unutulmaz,"[181208, 57883]"
+unforgettable,Vietnamese,không thể quên,"[2502, 3340, 1302, 46440]"
+unforgettable,Chinese,难忘,"[69673, 143342]"
+unforgettable,Korean,잊을 수 없는,"[3, 1491, 3735, 3, 1865]"
+fresh,Arabic,طازج,"[24661, 173676]"
+fresh,German,frisch,"[381, 29871]"
+fresh,English,fresh,[11468]
+fresh,Spanish,fresco,[53410]
+fresh,French,fraîche,"[109047, 154]"
+fresh,Hindi,ताजगी,"[30364, 26425, 104509]"
+fresh,Indonesian,segar,"[9633, 275]"
+fresh,Italian,fresco,[53410]
+fresh,Japanese,新鮮な,"[2342, 117663, 138]"
+fresh,Dutch,vers,[1244]
+fresh,Portuguese,fresco,[53410]
+fresh,Russian,свежий,"[26933, 102932]"
+fresh,Thai,สดใหม่,"[142074, 164665, 187544, 160085, 178457, 156218]"
+fresh,Turkish,taze,"[323, 36296]"
+fresh,Vietnamese,tươi,[149574]
+fresh,Chinese,新鲜,"[2342, 168999]"
+fresh,Korean,신선한,"[31648, 19948, 2081]"
+resilient,Arabic,مرونة,"[107761, 19300]"
+resilient,German,robust,"[9284, 7617]"
+resilient,English,resilient,"[1752, 3347, 486]"
+resilient,Spanish,resistente,[94808]
+resilient,French,résistant,[117855]
+resilient,Hindi,लचीला,"[21743, 139998, 29551]"
+resilient,Indonesian,tahan lama,"[44890, 52, 27441]"
+resilient,Italian,resistente,[94808]
+resilient,Japanese,弾力性のある,"[21287, 3427, 1696, 12849, 20095]"
+resilient,Dutch,veerkrachtig,"[76875, 6202, 67547]"
+resilient,Portuguese,resiliente,"[1752, 3347, 1979]"
+resilient,Russian,жизнестойкий,"[116682, 56182, 15225]"
+resilient,Thai,ทนทาน,"[152919, 115360, 152919, 78059, 168540]"
+resilient,Turkish,esnek,"[551, 39793]"
+resilient,Vietnamese,bền vững,"[153648, 123275]"
+resilient,Chinese,坚韧,"[150892, 190507]"
+resilient,Korean,탄력있는,"[91185, 35458, 196485, 1865]"
+smile,Arabic,ابتسامة,"[100470, 173519]"
+smile,German,Lächeln,"[341, 22560, 8618]"
+smile,English,smile,[2629]
+smile,Spanish,sonrisa,"[2667, 96865]"
+smile,French,sourire,"[3974, 59827]"
+smile,Hindi,मुस्कुराहट,"[52549, 16758, 185195, 42144, 178597, 5325]"
+smile,Indonesian,senyum,"[1412, 70543]"
+smile,Italian,sorriso,"[2596, 104313]"
+smile,Japanese,微笑み,"[34444, 44250, 3678]"
+smile,Dutch,glimlach,"[5560, 464, 32351]"
+smile,Portuguese,sorriso,"[2596, 104313]"
+smile,Russian,улыбка,"[1161, 12215, 74327]"
+smile,Thai,ยิ้ม,"[150718, 186235, 159072, 178457]"
+smile,Turkish,gülümseme,"[75232, 17303, 4660, 43]"
+smile,Vietnamese,nụ cười,"[447, 68510, 536, 156294]"
+smile,Chinese,微笑,"[34444, 44250]"
+smile,Korean,미소,"[31722, 26128]"
+future,Arabic,مستقبل,[167458]
+future,German,Zukunft,[41396]
+future,English,future,[3161]
+future,Spanish,futuro,[12594]
+future,French,avenir,[61621]
+future,Hindi,भविष्य,"[45830, 162064, 185195, 3630]"
+future,Indonesian,masa depan,"[30246, 300, 14252]"
+future,Italian,futuro,[12594]
+future,Japanese,未来,"[10599, 6046]"
+future,Dutch,toekomst,[106265]
+future,Portuguese,futuro,[12594]
+future,Russian,будущее,[119377]
+future,Thai,อนาคต,"[129582, 115360, 78059, 170625, 186270]"
+future,Turkish,gelecek,[167453]
+future,Vietnamese,tương lai,"[20761, 33657]"
+future,Chinese,未来,"[10599, 6046]"
+future,Korean,미래,"[31722, 85674]"
+brilliant,Arabic,لامع,"[7920, 2395]"
+brilliant,German,glänzend,"[76248, 56683]"
+brilliant,English,brilliant,"[21384, 584]"
+brilliant,Spanish,brillante,[39243]
+brilliant,French,brillant,[122693]
+brilliant,Hindi,उल्लेखनीय,"[184415, 185195, 164435]"
+brilliant,Indonesian,brilian,"[2862, 29577]"
+brilliant,Italian,brillante,[39243]
+brilliant,Japanese,輝かしい,"[39379, 6938, 7979, 86]"
+brilliant,Dutch,briljant,"[90562, 423, 584]"
+brilliant,Portuguese,brilhante,[136716]
+brilliant,Russian,блестящий,"[89595, 18771]"
+brilliant,Thai,ยอดเยี่ยม,"[150718, 129582, 164665, 126772, 150718, 178857, 156218, 150718, 178457]"
+brilliant,Turkish,parlak,[162740]
+brilliant,Vietnamese,tuyệt vời,"[70752, 159988]"
+brilliant,Chinese,辉煌,"[142355, 132987]"
+brilliant,Korean,빛나는,"[171519, 11243, 1865]"
+stillness,Arabic,هدوء,"[6186, 175796]"
+stillness,German,Stille,[129291]
+stillness,English,stillness,"[28420, 1797]"
+stillness,Spanish,quietud,"[99611, 8902]"
+stillness,French,calme,[105135]
+stillness,Hindi,शांति,[173653]
+stillness,Indonesian,ketenangan,"[9493, 251, 72667]"
+stillness,Italian,immobilità,"[65617, 6438]"
+stillness,Japanese,静けさ,"[64924, 21775, 174]"
+stillness,Dutch,stilte,"[13710, 239]"
+stillness,Portuguese,tranquilidade,"[55760, 66906]"
+stillness,Russian,спокойствие,"[99121, 33508]"
+stillness,Thai,ความเงียบ,"[170625, 145702, 78059, 141499, 126772, 142265, 167130, 150718, 187586]"
+stillness,Turkish,sessizlik,"[13951, 166219]"
+stillness,Vietnamese,tĩnh lặng,"[150725, 450, 117376]"
+stillness,Chinese,寂静,"[152320, 64924]"
+stillness,Korean,고요,"[6057, 56882]"
+majestic,Arabic,جليل,"[101445, 12458]"
+majestic,German,majestätisch,"[44294, 8615, 1564]"
+majestic,English,majestic,"[44294, 1060]"
+majestic,Spanish,majestuoso,"[17473, 13127, 3496]"
+majestic,French,majestueux,"[17473, 13127, 4394]"
+majestic,Hindi,शानदार,"[56048, 18131, 85767]"
+majestic,Indonesian,megah,"[14831, 1364]"
+majestic,Italian,maestoso,"[79886, 3496]"
+majestic,Japanese,荘厳な,"[60951, 123253, 138]"
+majestic,Dutch,majestueus,"[17473, 13127, 8453]"
+majestic,Portuguese,majestoso,"[44294, 3496]"
+majestic,Russian,величественный,"[3612, 55769, 29039]"
+majestic,Thai,งดงาม,"[142265, 164665, 142265, 78059, 178457]"
+majestic,Turkish,muhteşem,"[144406, 180114]"
+majestic,Vietnamese,tráng lệ,"[1682, 51985, 24675]"
+majestic,Chinese,威严,"[31352, 138498]"
+majestic,Korean,웅장한,"[167517, 13585, 2081]"
