@@ -24,42 +24,6 @@ const SpaceGallery = () => {
       title: "紧急出口",
       image: "/images/exit.png",
       description: "太空站紧急出口标识"
-    },
-    {
-      id: 4,
-      title: "设备标识",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "太空设备上的标识符号"
-    },
-    {
-      id: 5,
-      title: "安全警告",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "太空站安全警告标识"
-    },
-    {
-      id: 6,
-      title: "操作指示",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "设备操作指示标识"
-    },
-    {
-      id: 7,
-      title: "区域标识",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "太空站不同区域标识"
-    },
-    {
-      id: 8,
-      title: "设备开关",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "设备开关标识"
-    },
-    {
-      id: 9,
-      title: "维护标识",
-      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E",
-      description: "设备维护标识"
     }
   ];
 
@@ -73,15 +37,15 @@ const SpaceGallery = () => {
           <Box key={scene.id} sx={{ 
             display: 'flex', 
             flexDirection: 'column',
-            borderRadius: 3, // 减小圆角，从原来的3(18px)减小到2(12px)
+            borderRadius: 3,
             overflow: 'hidden',
             backgroundColor: '#fff',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)', // 小阴影
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
             height: '100%',
             transition: 'all 0.25s ease',
             '&:hover': {
               transform: 'translateY(-4px)',
-              boxShadow: '0 6px 16px rgba(0,0,0,0.12)', // 悬浮时增加阴影
+              boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
             }
           }}>
             <Box sx={{ width: '100%', height: 180, overflow: 'hidden' }}>
