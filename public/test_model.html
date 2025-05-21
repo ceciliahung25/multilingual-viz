@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>符号识别模型测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .log {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        .warning {
+            color: orange;
+        }
+        button {
+            padding: 10px 15px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        .dropzone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        #preview {
+            max-width: 224px;
+            max-height: 224px;
+            margin: 10px auto;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>符号识别模型测试</h1>
+    
+    <div>
+        <button id="loadModel">加载模型</button>
+        <button id="testModel" disabled>测试模型</button>
+    </div>
+    
+    <div class="dropzone" id="dropzone">
+        拖拽图片到此处或点击上传
+        <input type="file" id="fileInput" style="display:none" accept="image/*">
+    </div>
+    
+    <img id="preview" alt="预览">
+    
+    <div id="results"></div>
+    
+    <div class="log" id="log"></div>
+    
+    <script>
+        // 日志函数
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = type;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${type}]`, message);
+        }
+        
+        // 全局变量
+        let model = null;
+        let classMapping = {};
+        
+        // 加载模型
+        async function loadModel() {
+            try {
+                log('开始加载模型...');
+                
+                // 尝试两个可能的路径
+                let modelPath = '/model.json';
+                try {
+                    model = await tf.loadLayersModel(modelPath, {
+                        strict: false,
+                        onProgress: progress => {
+                            log(`加载进度: ${Math.round(progress * 100)}%`);
+                        }
+                    });
+                } catch (e) {
+                    log(`从 ${modelPath} 加载失败，尝试备用路径`, 'warning');
+                    modelPath = '/web_model/model.json';
+                    model = await tf.loadLayersModel(modelPath, {
+                        strict: false,
+                        onProgress: progress => {
+                            log(`加载进度: ${Math.round(progress * 100)}%`);
+                        }
+                    });
+                }
+                
+                log(`模型从 ${modelPath} 加载成功`, 'success');
+                
+                // 输出模型摘要
+                log('模型结构:');
+                model.summary((line) => log(line));
+                
+                // 测试模型
+                const testTensor = tf.zeros([1, 224, 224, 3]);
+                const testResult = model.predict(testTensor);
+                log(`模型输出形状: [${testResult.shape}]`);
+                testTensor.dispose();
+                testResult.dispose();
+                
+                // 加载类别映射
+                try {
+                    const response = await fetch('/class_mapping.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    classMapping = await response.json();
+                    log(`类别映射加载成功，共 ${Object.keys(classMapping).length} 个类别`, 'success');
+                } catch (e) {
+                    log(`类别映射加载失败: ${e.message}`, 'warning');
+                }
+                
+                // 启用测试按钮
+                document.getElementById('testModel').disabled = false;
+                
+                return true;
+            } catch (error) {
+                log(`模型加载失败: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // 测试模型
+        async function testModel() {
+            try {
+                if (!model) {
+                    log('模型未加载，请先加载模型', 'error');
+                    return;
+                }
+                
+                log('创建测试张量...');
+                const testTensor = tf.randomNormal([1, 224, 224, 3]);
+                
+                log('执行预测...');
+                const startTime = performance.now();
+                const predictions = await model.predict(testTensor);
+                const endTime = performance.now();
+                
+                log(`预测完成，耗时: ${(endTime - startTime).toFixed(2)}ms`, 'success');
+                
+                // 获取预测结果
+                const predictionData = await predictions.data();
+                
+                // 获取前5个最高概率
+                const topIndices = Array.from(predictionData)
+                    .map((value, index) => ({value, index}))
+                    .sort((a, b) => b.value - a.value)
+                    .slice(0, 5);
+                
+                log('预测结果:');
+                topIndices.forEach(({value, index}) => {
+                    const className = classMapping[index] || `类别 ${index}`;
+                    log(`${className}: ${(value * 100).toFixed(2)}%`);
+                });
+                
+                // 清理
+                testTensor.dispose();
+                predictions.dispose();
+            } catch (error) {
+                log(`测试失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 预处理图像
+        function preprocessImage(imgElement) {
+            return tf.tidy(() => {
+                log('预处理图像...');
+                
+                // 从图像创建张量
+                let tensor = tf.browser.fromPixels(imgElement);
+                log(`原始图像形状: [${tensor.shape}]`);
+                
+                // 调整大小
+                tensor = tensor.resizeBilinear([224, 224]);
+                
+                // 归一化
+                tensor = tensor.toFloat().div(tf.scalar(255));
+                
+                // 添加批次维度
+                tensor = tensor.expandDims(0);
+                log(`预处理后图像形状: [${tensor.shape}]`);
+                
+                return tensor;
+            });
+        }
+        
+        // 预测图像
+        async function predictImage(imgElement) {
+            try {
+                if (!model) {
+                    log('模型未加载，请先加载模型', 'error');
+                    return;
+                }
+                
+                // 预处理图像
+                const tensor = preprocessImage(imgElement);
+                
+                // 执行预测
+                log('执行预测...');
+                const startTime = performance.now();
+                const predictions = await model.predict(tensor);
+                const endTime = performance.now();
+                
+                log(`预测完成，耗时: ${(endTime - startTime).toFixed(2)}ms`, 'success');
+                
+                // 获取预测结果
+                const predictionData = await predictions.data();
+                
+                // 获取前5个最高概率
+                const topIndices = Array.from(predictionData)
+                    .map((value, index) => ({value, index}))
+                    .sort((a, b) => b.value - a.value)
+                    .slice(0, 5);
+                
+                // 显示结果
+                const resultsElement = document.getElementById('results');
+                resultsElement.innerHTML = '<h3>预测结果:</h3>';
+                
+                topIndices.forEach(({value, index}) => {
+                    const className = classMapping[index] || `类别 ${index}`;
+                    const probability = value * 100;
+                    
+                    const resultItem = document.createElement('div');
+                    resultItem.style.marginBottom = '10px';
+                    
+                    const label = document.createElement('div');
+                    label.style.display = 'flex';
+                    label.style.justifyContent = 'space-between';
+                    label.innerHTML = `<span>${className}</span><span>${probability.toFixed(2)}%</span>`;
+                    
+                    const progressContainer = document.createElement('div');
+                    progressContainer.style.height = '8px';
+                    progressContainer.style.backgroundColor = '#eee';
+                    progressContainer.style.borderRadius = '4px';
+                    progressContainer.style.overflow = 'hidden';
+                    progressContainer.style.marginTop = '4px';
+                    
+                    const progressBar = document.createElement('div');
+                    progressBar.style.height = '100%';
+                    progressBar.style.width = `${probability}%`;
+                    progressBar.style.backgroundColor = index === 0 ? '#4285f4' : '#a0c3ff';
+                    progressBar.style.borderRadius = '4px';
+                    
+                    progressContainer.appendChild(progressBar);
+                    resultItem.appendChild(label);
+                    resultItem.appendChild(progressContainer);
+                    resultsElement.appendChild(resultItem);
+                });
+                
+                // 清理
+                tensor.dispose();
+                predictions.dispose();
+            } catch (error) {
+                log(`预测失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 事件监听
+        document.getElementById('loadModel').addEventListener('click', loadModel);
+        document.getElementById('testModel').addEventListener('click', testModel);
+        
+        // 拖放区域
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        
+        dropzone.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        preview.style.display = 'block';
+                        
+                        // 图像加载完成后预测
+                        preview.onload = () => {
+                            if (model) {
+                                predictImage(preview);
+                            } else {
+                                log('请先加载模型', 'warning');
+                            }
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+        
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#4285f4';
+            dropzone.style.backgroundColor = '#f8f9fa';
+        });
+        
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = '#ccc';
+            dropzone.style.backgroundColor = '';
+        });
+        
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#ccc';
+            dropzone.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        preview.style.display = 'block';
+                        
+                        // 图像加载完成后预测
+                        preview.onload = () => {
+                            if (model) {
+                                predictImage(preview);
+                            } else {
+                                log('请先加载模型', 'warning');
+                            }
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+        
+        // 初始日志
+        log('测试页面已加载，请点击"加载模型"按钮开始测试');
+    </script>
+</body>
+</html> 
