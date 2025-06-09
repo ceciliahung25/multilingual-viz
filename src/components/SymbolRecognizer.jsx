@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Paper, Typography, Button, CircularProgress, Grid, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
-// 导入TensorFlow及其后端
+// Import TensorFlow and its backends
 import * as tf from '@tensorflow/tfjs';
-// 强制导入CPU和WebGL后端
+// Force import CPU and WebGL backends
 import '@tensorflow/tfjs-backend-cpu';
 import '@tensorflow/tfjs-backend-webgl';
-// 导入预训练模型
+// Import pre-trained model
 import * as mobilenet from '@tensorflow-models/mobilenet';
-// 导入统一页面布局
+// Import unified page layout
 import PageLayout from './PageLayout';
 
-// 全局模型缓存
+// Global model cache
 let globalModelCache = null;
 
-// 容器样式
+// Container styles
 const Container = styled(Box)(({ theme }) => ({
   width: '100%',
 }));
@@ -44,292 +44,242 @@ const ImagePreview = styled('img')({
   display: 'block',
 });
 
-// 符号类别映射
+// Symbol category mapping
 const symbolCategories = {
-  0: "爱心/Love",
-  1: "和平/Peace",
-  2: "勇气/Courage",
-  3: "希望/Hope",
-  4: "恐惧/Fear",
-  5: "幸福/Happiness",
-  6: "知识/Knowledge",
-  7: "渴望/Thirst",
-  8: "真相/Truth",
-  9: "自由/Freedom",
-  10: "同情/Compassion",
-  11: "信念/Faith",
-  12: "智慧/Smart",
-  13: "美丽/Beauty",
-  14: "荣誉/Honor",
-  15: "生存/Survival",
-  16: "冒险/Adventure",
-  17: "祝福/Blessings",
-  18: "健康/Good Health",
-  19: "成功/Success",
-  20: "繁荣/Prosperity",
-  21: "喜悦/Joy",
-  22: "善良/Kindness",
-  23: "和谐/Harmony",
-  24: "友谊/Friendship",
-  25: "财富/Wealth",
-  26: "耐心/Patience",
-  27: "慷慨/Generosity",
-  28: "谦卑/Humility",
-  29: "感恩/Gratitude",
-  30: "观察/Observation",
-  31: "探索/Exploration",
-  32: "感知/Perception",
-  33: "创造/Creation",
-  34: "推动/Push",
-  35: "诗意/Poetry",
-  36: "体验/Experience",
-  37: "学问/Wisdom",
-  38: "梦想/Dream",
-  39: "领袖/Leader",
-  40: "教导/Teach",
-  41: "绝望/Despair",
-  42: "难忘/Unforgettable",
-  43: "新生/Fresh",
-  44: "坚韧/Resilient",
-  45: "微笑/Smile",
-  46: "未来/Future",
-  47: "卓越/Brilliant",
-  48: "平静/Stillness",
-  49: "威严/Majestic"
+  0: "Love",
+  1: "Peace",
+  2: "Courage",
+  3: "Hope",
+  4: "Fear",
+  5: "Happiness",
+  6: "Knowledge",
+  7: "Thirst",
+  8: "Truth",
+  9: "Freedom",
+  10: "Compassion",
+  11: "Faith",
+  12: "Smart",
+  13: "Beauty",
+  14: "Honor",
+  15: "Survival",
+  16: "Adventure",
+  17: "Blessings",
+  18: "Good Health",
+  19: "Success",
+  20: "Prosperity",
+  21: "Joy",
+  22: "Kindness",
+  23: "Harmony",
+  24: "Friendship",
+  25: "Wealth",
+  26: "Patience",
+  27: "Generosity",
+  28: "Humility",
+  29: "Gratitude",
+  30: "Observation",
+  31: "Exploration",
+  32: "Perception",
+  33: "Creation",
+  34: "Push",
+  35: "Poetry",
+  36: "Experience",
+  37: "Wisdom",
+  38: "Dream",
+  39: "Leader",
+  40: "Teach",
+  41: "Despair",
+  42: "Unforgettable",
+  43: "Fresh",
+  44: "Resilient",
+  45: "Smile",
+  46: "Future",
+  47: "Brilliant",
+  48: "Stillness",
+  49: "Majestic"
 };
 
-// 符号释义数据
+// Symbol description data
 const symbolDescriptions = {
-  0: { // 爱心
-    cn: "一种强烈的情感连接，涵盖亲情、友情、浪漫和无私的关爱。",
-    en: "A complex emotion encompassing affection, compassion, and deep attachment in various forms."
+  0: { // Love
+    description: "A complex emotion encompassing affection, compassion, and deep attachment in various forms."
   },
-  1: { // 和平
-    cn: "没有战争或冲突的状态，也指内心的宁静与和谐。",
-    en: "A state without conflict or war; also denotes inner tranquility and harmony."
+  1: { // Peace
+    description: "A state without conflict or war; also denotes inner tranquility and harmony."
   },
-  2: { // 勇气
-    cn: "在面对恐惧、痛苦或危险时，仍坚持行动的能力。",
-    en: "The ability to act in the face of fear, pain, or danger."
+  2: { // Courage
+    description: "The ability to act in the face of fear, pain, or danger."
   },
-  3: { // 希望
-    cn: "对未来积极结果的期望和信念。",
-    en: "An optimistic state of mind based on the expectation of positive outcomes."
+  3: { // Hope
+    description: "An optimistic state of mind based on the expectation of positive outcomes."
   },
-  4: { // 恐惧
-    cn: "对潜在危险或威胁的情绪反应。",
-    en: "An emotional response to perceived threats or danger."
+  4: { // Fear
+    description: "An emotional response to perceived threats or danger."
   },
-  5: { // 幸福
-    cn: "一种积极的情绪状态，表现为满足、喜悦和生活满意度。",
-    en: "A positive emotional state characterized by contentment, joy, and life satisfaction."
+  5: { // Happiness
+    description: "A positive emotional state characterized by contentment, joy, and life satisfaction."
   },
-  6: { // 知识
-    cn: "通过经验、学习或教育获得的事实、信息和技能。",
-    en: "Information, facts, and skills acquired through experience, education, or learning."
+  6: { // Knowledge
+    description: "Information, facts, and skills acquired through experience, education, or learning."
   },
-  7: { // 渴望
-    cn: "对某种事物、目标或体验的强烈心理渴求，带有迫切与不满足的情绪色彩。",
-    en: "A strong psychological craving or longing for something, often marked by urgency or emotional intensity."
+  7: { // Thirst
+    description: "A strong psychological craving or longing for something, often marked by urgency or emotional intensity."
   },
-  8: { // 真相
-    cn: "与事实或现实相符的陈述或信念。",
-    en: "The quality of being in accord with fact or reality."
+  8: { // Truth
+    description: "The quality of being in accord with fact or reality."
   },
-  9: { // 自由
-    cn: "行动、言论或思想不受限制的状态。",
-    en: "The state of being free to act, speak, or think without hindrance."
+  9: { // Freedom
+    description: "The state of being free to act, speak, or think without hindrance."
   },
-  10: { // 同情
-    cn: "一种积极的情感反应，伴随着减轻他人痛苦的内在动机。",
-    en: "A positive response and desire to help with an inner motivation to lessen or prevent suffering of others."
+  10: { // Compassion
+    description: "A positive response and desire to help with an inner motivation to lessen or prevent suffering of others."
   },
-  11: { // 信念
-    cn: "对某人、某事或某概念的信任或信心，尤其在宗教中，指对上帝或宗教教义的信仰。",
-    en: "Confidence or trust in a person, thing, or concept. In the context of religion, faith is 'belief in God or in the doctrines or teachings of religion'."
+  11: { // Faith
+    description: "Confidence or trust in a person, thing, or concept. In the context of religion, faith is 'belief in God or in the doctrines or teachings of religion'."
   },
-  12: { // 智慧
-    cn: "综合判断力与深度理解能力，体现为在复杂情境中作出明智决策的能力。",
-    en: "The ability to make sound judgments and decisions based on knowledge and deep understanding."
+  12: { // Smart
+    description: "The ability to make sound judgments and decisions based on knowledge and deep understanding."
   },
-  13: { // 美丽
-    cn: "使人感到愉悦的特质，常见于风景、艺术品或人类外貌，是美学研究的核心概念之一。",
-    en: "A feature of objects that makes them pleasurable to perceive. Such objects include landscapes, sunsets, humans, and works of art."
+  13: { // Beauty
+    description: "A feature of objects that makes them pleasurable to perceive. Such objects include landscapes, sunsets, humans, and works of art."
   },
-  14: { // 荣誉
-    cn: "社会对个人可信度和社会地位的评价，基于其行为判断，具有文化和历史差异。",
-    en: "The quality of being honorable."
+  14: { // Honor
+    description: "The quality of being honorable."
   },
-  15: { // 生存
-    cn: "继续活着的行为或状态，尤其在面临危险或挑战时。",
-    en: "The act of surviving; to stay living."
+  15: { // Survival
+    description: "The act of surviving; to stay living."
   },
-  16: { // 冒险
-    cn: "一种令人兴奋的经历，通常涉及大胆或有风险的行为。",
-    en: "An exciting experience that is typically bold, sometimes risky, undertaking."
+  16: { // Adventure
+    description: "An exciting experience that is typically bold, sometimes risky, undertaking."
   },
-  17: { // 祝福
-    cn: "表达好运的方式，有时在宗教仪式中表示上帝对善人的祝福。",
-    en: "A way to wish good luck for a person. Sometimes, in religious rituals, it is said that God blesses those who are good."
+  17: { // Blessings
+    description: "A way to wish good luck for a person. Sometimes, in religious rituals, it is said that God blesses those who are good."
   },
-  18: { // 健康
-    cn: "身体、心理和社会的完全良好状态，而不仅仅是没有疾病或虚弱。",
-    en: "A state of complete physical, mental, and social well-being, and not merely the absence of disease."
+  18: { // Good Health
+    description: "A state of complete physical, mental, and social well-being, and not merely the absence of disease."
   },
-  19: { // 成功
-    cn: "达到既定目标或期望的状态，通常被视为失败的对立面。",
-    en: "The state or condition of meeting a defined range of expectations. It may be viewed as the opposite of failure."
+  19: { // Success
+    description: "The state or condition of meeting a defined range of expectations. It may be viewed as the opposite of failure."
   },
-  20: { // 繁荣
-    cn: "经济或社会在财富与福祉方面的增长状态。",
-    en: "A state of economic or social growth in wealth and well-being."
+  20: { // Prosperity
+    description: "A state of economic or social growth in wealth and well-being."
   },
-  21: { // 愉悦
-    cn: "因成功、好运或他人幸福而产生的强烈幸福感。",
-    en: "A strong feeling of happiness often resulting from success or good fortune."
+  21: { // Joy
+    description: "A strong feeling of happiness often resulting from success or good fortune."
   },
-  22: { // 善良
-    cn: "表现出体贴、慷慨与关怀的品质。",
-    en: "The quality of being considerate, generous, and caring."
+  22: { // Kindness
+    description: "The quality of being considerate, generous, and caring."
   },
-  23: { // 和谐
-    cn: "各部分协调一致的状态，常用于描述关系或环境的平衡。",
-    en: "A state of balance or agreement among different parts or people."
+  23: { // Harmony
+    description: "A state of balance or agreement among different parts or people."
   },
-  24: { // 友情
-    cn: "基于信任和支持的亲密人际关系。",
-    en: "A close relationship based on trust and mutual support."
+  24: { // Friendship
+    description: "A close relationship based on trust and mutual support."
   },
-  25: { // 财富
-    cn: "拥有大量有价值的资源，如金钱或资产。",
-    en: "The abundance of valuable resources like money or property."
+  25: { // Wealth
+    description: "The abundance of valuable resources like money or property."
   },
-  26: { // 耐心
-    cn: "面对延迟或困难时保持冷静和坚持的能力。",
-    en: "The ability to remain calm and persistent in the face of delay or difficulty."
+  26: { // Patience
+    description: "The ability to remain calm and persistent in the face of delay or difficulty."
   },
-  27: { // 慷慨
-    cn: "乐于无私地给予他人金钱、时间或帮助。",
-    en: "Willingness to give money, time, or help selflessly."
+  27: { // Generosity
+    description: "Willingness to give money, time, or help selflessly."
   },
-  28: { // 谦逊
-    cn: "对自身重要性保持谦虚态度。",
-    en: "A modest view of one's importance."
+  28: { // Humility
+    description: "A modest view of one's importance."
   },
-  29: { // 感恩
-    cn: "对他人善意的感激之情。",
-    en: "Thankfulness for kindness received."
+  29: { // Gratitude
+    description: "Thankfulness for kindness received."
   },
-  30: { // 观察
-    cn: "通过感官或工具获取信息的过程。",
-    en: "The process of gaining information through senses or instruments."
+  30: { // Observation
+    description: "The process of gaining information through senses or instruments."
   },
-  31: { // 探索
-    cn: "为获取新知而调查未知领域的行为。",
-    en: "Investigating unknown areas to acquire new knowledge."
+  31: { // Exploration
+    description: "Investigating unknown areas to acquire new knowledge."
   },
-  32: { // 感知
-    cn: "解释与理解感官信息的能力。",
-    en: "The ability to interpret and make sense of sensory input."
+  32: { // Perception
+    description: "The ability to interpret and make sense of sensory input."
   },
-  33: { // 创造
-    cn: "将想法或实体带入现实的过程。",
-    en: "The process of bringing ideas or things into existence."
+  33: { // Creation
+    description: "The process of bringing ideas or things into existence."
   },
-  34: { // 推动
-    cn: "施加力量使某物前进或变化。",
-    en: "Applying force to move or initiate change."
+  34: { // Push
+    description: "Applying force to move or initiate change."
   },
-  35: { // 诗歌
-    cn: "用节奏与意象表达情感与思想的艺术形式。",
-    en: "An art form using rhythm and imagery to convey emotion and thought."
+  35: { // Poetry
+    description: "An art form using rhythm and imagery to convey emotion and thought."
   },
-  36: { // 经验
-    cn: "经历与实践中积累的知识与技能。",
-    en: "Knowledge and skills gained through life and practice."
+  36: { // Experience
+    description: "Knowledge and skills gained through life and practice."
   },
-  37: { // 学问
-    cn: "做出明智判断的能力，源自知识与经验的结合。",
-    en: "The ability to make wise decisions based on knowledge and experience."
+  37: { // Wisdom
+    description: "The ability to make wise decisions based on knowledge and experience."
   },
-  38: { // 梦想
-    cn: "睡眠中产生的影像序列，或个体的理想愿景。",
-    en: "A sequence of mental images during sleep, or a personal aspiration."
+  38: { // Dream
+    description: "A sequence of mental images during sleep, or a personal aspiration."
   },
-  39: { // 领袖
-    cn: "引导与激励他人的个体。",
-    en: "An individual who guides and inspires others."
+  39: { // Leader
+    description: "An individual who guides and inspires others."
   },
-  40: { // 教导
-    cn: "将知识或技能传授给他人。",
-    en: "To impart knowledge or skills to others."
+  40: { // Teach
+    description: "To impart knowledge or skills to others."
   },
-  41: { // 绝望
-    cn: "完全丧失希望的情绪状态。",
-    en: "A complete emotional loss of hope."
+  41: { // Despair
+    description: "A complete emotional loss of hope."
   },
-  42: { // 难忘
-    cn: "因独特或重要而难以忘记。",
-    en: "Memorable due to uniqueness or significance."
+  42: { // Unforgettable
+    description: "Memorable due to uniqueness or significance."
   },
-  43: { // 新生
-    cn: "新的、未经使用或感受的状态。",
-    en: "New, unused, or recently encountered."
+  43: { // Fresh
+    description: "New, unused, or recently encountered."
   },
-  44: { // 坚韧
-    cn: "快速从挑战或困境中恢复的能力。",
-    en: "The ability to recover quickly from challenges or setbacks."
+  44: { // Resilient
+    description: "The ability to recover quickly from challenges or setbacks."
   },
-  45: { // 微笑
-    cn: "表达喜悦与善意的面部表情。",
-    en: "A facial expression that shows joy and friendliness."
+  45: { // Smile
+    description: "A facial expression that shows joy and friendliness."
   },
-  46: { // 未来
-    cn: "尚未发生的时间与事件。",
-    en: "Time and events that are yet to happen."
+  46: { // Future
+    description: "Time and events that are yet to happen."
   },
-  47: { // 卓越
-    cn: "极具才华或非凡聪明。",
-    en: "Exceptionally talented or intelligent."
+  47: { // Brilliant
+    description: "Exceptionally talented or intelligent."
   },
-  48: { // 平静
-    cn: "无动作或声音的宁静状态。",
-    en: "A quiet state with no motion or sound."
+  48: { // Stillness
+    description: "A quiet state with no motion or sound."
   },
-  49: { // 威严
-    cn: "庄严、宏伟、令人敬畏的特质。",
-    en: "Grand and awe-inspiring in appearance or manner."
+  49: { // Majestic
+    description: "Grand and awe-inspiring in appearance or manner."
   }
 };
 
-// 模拟的符号结构数据
-const symbolStructures = {
-  0: { // 爱心
+// Mock symbol structure data
+const mockSymbolStructures = {
+  0: { // Love
     tokens: [
-      { language: "英语", token: "12345" },
-      { language: "德语", token: "9734" },
-      { language: "法语", token: "8271" },
-      { language: "西班牙语", token: "6543" },
-      { language: "日语", token: "5678" },
+      { language: "English", token: "12345" },
+      { language: "German", token: "9734" },
+      { language: "French", token: "8271" },
+      { language: "Spanish", token: "6543" },
+      { language: "Japanese", token: "5678" },
     ],
-    pattern: "内部矩阵排布由token值hash而成"
+    pattern: "Internal matrix arrangement formed by hash of token values"
   },
-  1: { // 和平
+  1: { // Peace
     tokens: [
-      { language: "英语", token: "12345" },
-      { language: "德语", token: "9734" },
-      { language: "法语", token: "8271" },
-      { language: "西班牙语", token: "6543" },
-      { language: "日语", token: "5678" },
+      { language: "English", token: "12345" },
+      { language: "German", token: "9734" },
+      { language: "French", token: "8271" },
+      { language: "Spanish", token: "6543" },
+      { language: "Japanese", token: "5678" },
     ],
-    pattern: "内部矩阵排布由token值hash而成"
+    pattern: "Internal matrix arrangement formed by hash of token values"
   },
-  // 更多符号结构可以后续添加
+  // More symbols can be added later
 };
 
-// Token数据映射函数 - 使用words_tokens_cleaned.csv数据
+// Token data mapping function - using words_tokens_cleaned.csv data
 const getTokensForSymbol = (symbolIndex) => {
-  // 符号英文名称（小写）
+  // Symbol English name (lowercase)
   const symbolNames = [
     'love', 'peace', 'courage', 'hope', 'fear', 'happiness', 'knowledge', 'thirst', 
     'truth', 'freedom', 'compassion', 'faith', 'smart', 'beauty', 'honor', 'survival', 
@@ -340,7 +290,7 @@ const getTokensForSymbol = (symbolIndex) => {
     'smile', 'future', 'brilliant', 'stillness', 'majestic'
   ];
   
-  // 根据CSV数据创建的完整token映射
+  // Complete token mapping created from CSV data
   const allTokens = {
     'love': {
       'English': 'TKN-1300',
@@ -553,15 +503,15 @@ const getTokensForSymbol = (symbolIndex) => {
     }
   };
 
-  // 更多符号可以添加到这里...
+  // More symbols can be added here...
 
-  // 如果有实际数据使用实际数据，否则使用标准化的编号格式
+  // If actual data is used, use actual data, otherwise use standardized numbering format
   if (allTokens[symbolNames[symbolIndex]]) {
     return allTokens[symbolNames[symbolIndex]];
   }
   
-  // 否则使用标准化的编号格式
-  const symbolNumber = symbolIndex + 1; // 1-50 号
+  // Otherwise use standardized numbering format
+  const symbolNumber = symbolIndex + 1; // 1-50 numbers
   return {
     'English': `TKN-${symbolNumber}001`,
     'Spanish': `TKN-${symbolNumber}002`,
@@ -583,9 +533,9 @@ const getTokensForSymbol = (symbolIndex) => {
   };
 };
 
-// 符号SVG生成函数
+// Symbol SVG generation function
 const generateSymbolSVG = (symbolIndex) => {
-  // 符号图案的基本颜色
+  // Basic color of symbol pattern
   const colors = [
     '#ff5252', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', 
     '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', 
@@ -602,7 +552,7 @@ const generateSymbolSVG = (symbolIndex) => {
   const primaryColor = colors[symbolIndex % colors.length];
   const secondaryColor = colors[(symbolIndex + 5) % colors.length];
   
-  // 生成点阵矩阵 - 模拟符号内部结构
+  // Generate dot matrix - simulate symbol internal structure
   const dotMatrix = [];
   for (let i = 0; i < 5; i++) {
     const row = [];
@@ -613,13 +563,13 @@ const generateSymbolSVG = (symbolIndex) => {
     dotMatrix.push(row);
   }
   
-  // 生成整个SVG
+  // Generate entire SVG
   return `
     <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-      <!-- 背景圆形 -->
+      <!-- Background circle -->
       <circle cx="100" cy="100" r="90" fill="#f8f8f8" stroke="#eaeaea" stroke-width="1" />
       
-      <!-- 外部点阵圆圈 -->
+      <!-- External dot matrix circle -->
       ${Array.from({length: 15}, (_, i) => {
         const angle = (i / 15) * Math.PI * 2;
         const r = 75;
@@ -628,7 +578,7 @@ const generateSymbolSVG = (symbolIndex) => {
         return `<circle cx="${x}" cy="${y}" r="3" fill="#333" />`;
       }).join('')}
       
-      <!-- 内部符号点阵 -->
+      <!-- Internal symbol dot matrix -->
       <g transform="translate(75, 75)">
         ${dotMatrix.map((row, i) => 
           row.map((dot, j) => 
@@ -637,37 +587,37 @@ const generateSymbolSVG = (symbolIndex) => {
         ).join('')}
       </g>
       
-      <!-- 红色标记点 -->
+      <!-- Red marked point -->
       <circle cx="75" cy="75" r="4" fill="${secondaryColor}" />
     </svg>
   `;
 };
 
-// 本地预测函数，不依赖TensorFlow.js
+// Local prediction function, not dependent on TensorFlow.js
 const localPredict = (imageSrc) => {
-  // 使用更安全的随机数生成方式
+  // Use safer random number generation method
   const getSecureRandom = () => {
     const array = new Uint32Array(1);
     window.crypto.getRandomValues(array);
     return array[0] / (0xffffffff + 1);
   };
 
-  // 使用加密安全的随机数生成器选择索引
+  // Use encrypted random number generator to select index
   const indices = new Set();
   while (indices.size < 5) {
     const index = Math.floor(getSecureRandom() * Object.keys(symbolCategories).length);
     indices.add(index);
   }
 
-  // 生成概率
+  // Generate probabilities
   const probabilities = [0.9];
   for (let i = 1; i < 5; i++) {
     probabilities.push(Math.max(0.1, 0.9 - i * 0.15));
   }
 
-  // 构建预测结果
+  // Build prediction results
   return Array.from(indices).map((index, i) => {
-    const symbolClass = symbolCategories[index] || `符号 ${index}`;
+    const symbolClass = symbolCategories[index] || `Symbol ${index}`;
     return {
       className: symbolClass,
       probability: probabilities[i]
@@ -683,131 +633,131 @@ const SymbolRecognizer = () => {
   const [predictions, setPredictions] = useState(null);
   const [error, setError] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingMessage, setLoadingMessage] = useState('正在加载解码器...');
+  const [loadingMessage, setLoadingMessage] = useState('Loading decoder...');
   const [useLocalPrediction, setUseLocalPrediction] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [showStructure, setShowStructure] = useState(false);
   
   const fileInputRef = useRef(null);
   
-  // 初始化TensorFlow.js后端
+  // Initialize TensorFlow.js backend
   useEffect(() => {
     async function setupTensorflow() {
       try {
-        // 确保WebGL后端已初始化
+        // Ensure WebGL backend is initialized
         await tf.ready();
-        // 检查后端
+        // Check backend
         const backend = tf.getBackend();
-        console.log('当前TensorFlow.js后端:', backend);
+        console.log('Current TensorFlow.js backend:', backend);
         
         if (!backend) {
-          // 尝试设置WebGL后端，如果失败则使用CPU后端
+          // Try setting WebGL backend, if fails use CPU backend
           try {
             await tf.setBackend('webgl');
-            console.log('已设置WebGL后端');
+            console.log('WebGL backend set');
           } catch (webglErr) {
-            console.warn('WebGL后端初始化失败，尝试使用CPU后端', webglErr);
+            console.warn('WebGL backend initialization failed, trying CPU backend', webglErr);
             try {
               await tf.setBackend('cpu');
-              console.log('已设置CPU后端');
+              console.log('CPU backend set');
             } catch (cpuErr) {
-              console.error('无法初始化任何后端', cpuErr);
-              setError('TensorFlow.js后端初始化失败，请刷新页面重试');
+              console.error('Unable to initialize any backend', cpuErr);
+              setError('TensorFlow.js backend initialization failed, please refresh the page and try again');
             }
           }
         }
       } catch (err) {
-        console.error('TensorFlow初始化错误:', err);
-        setError(`TensorFlow初始化失败: ${err.message}`);
+        console.error('TensorFlow initialization error:', err);
+        setError(`TensorFlow initialization failed: ${err.message}`);
       }
     }
     
     setupTensorflow();
   }, []);
   
-  // 加载预训练模型
+  // Load pre-trained model
   useEffect(() => {
     async function loadPretrainedModel() {
       try {
         setIsLoading(true);
         setError('');
         
-        // 检查是否有缓存的模型
+        // Check if there is a cached model
         if (globalModelCache) {
-          console.log('使用缓存的模型');
-          setLoadingMessage('正在加载解码器...');
+          console.log('Using cached model');
+          setLoadingMessage('Loading decoder...');
           setModel(globalModelCache);
           setIsLoading(false);
           return;
         }
         
-        // 初始化TensorFlow后端
-        setLoadingMessage('正在加载解码器...');
-        console.log('TensorFlow版本:', tf.version.tfjs);
+        // Initialize TensorFlow backend
+        setLoadingMessage('Loading decoder...');
+        console.log('TensorFlow version:', tf.version.tfjs);
         
-        // 先尝试初始化WebGL后端
+        // First try initializing WebGL backend
         try {
           await tf.setBackend('webgl');
           await tf.ready();
-          console.log('成功初始化WebGL后端');
+          console.log('WebGL backend initialized successfully');
         } catch (webglError) {
-          console.warn('WebGL后端初始化失败，尝试CPU后端', webglError);
+          console.warn('WebGL backend initialization failed, trying CPU backend', webglError);
           try {
             await tf.setBackend('cpu');
             await tf.ready();
-            console.log('成功初始化CPU后端');
+            console.log('CPU backend initialized successfully');
           } catch (cpuError) {
-            console.error('所有后端初始化失败', cpuError);
-            throw new Error('无法初始化解码器，请尝试使用其他浏览器');
+            console.error('All backends initialization failed', cpuError);
+            throw new Error('Unable to initialize decoder, please try using a different browser');
           }
         }
         
-        // 确认后端已设置
+        // Ensure backend is set
         const backend = tf.getBackend();
-        console.log('当前使用的后端:', backend);
+        console.log('Current backend in use:', backend);
         
         if (!backend) {
-          throw new Error('解码器未正确初始化');
+          throw new Error('Decoder not properly initialized');
         }
         
-        setLoadingMessage('正在加载解码器');
+        setLoadingMessage('Loading decoder...');
         
-        // 尝试预加载模型
+        // Try pre-loading model
         const startTime = Date.now();
         const mobileNetModel = await mobilenet.load({
           version: 2,
           alpha: 1.0,
-          // 添加进度回调
+          // Add progress callback
           onProgress: (progress) => {
             setLoadingProgress(Math.floor(progress * 100));
-            setLoadingMessage('这可能需要几秒钟时间...');
+            setLoadingMessage('This may take a few seconds...');
           }
         });
         
-        console.log(`模型加载完成，耗时 ${(Date.now() - startTime)/1000} 秒`);
+        console.log(`Model loading completed, time taken: ${(Date.now() - startTime)/1000} seconds`);
         
-        // 测试模型是否可用
+        // Test model availability
         const testTensor = tf.zeros([1, 224, 224, 3]);
         try {
-          // 尝试进行一次推理
+          // Try performing one inference
           const testResult = await mobileNetModel.classify(testTensor);
-          console.log('模型测试成功:', testResult);
+          console.log('Model test successful:', testResult);
           testTensor.dispose();
         } catch (testError) {
-          console.error('模型测试失败:', testError);
+          console.error('Model test failed: ' + testError.message);
           testTensor.dispose();
-          throw new Error('模型测试失败: ' + testError.message);
+          throw new Error('Model test failed: ' + testError.message);
         }
         
-        setLoadingMessage('模型加载成功！');
-        // 缓存模型
+        setLoadingMessage('Model loading successful!');
+        // Cache model
         globalModelCache = mobileNetModel;
         setModel(mobileNetModel);
         setIsLoading(false);
         
       } catch (err) {
-        console.error('模型加载失败:', err);
-        setError(`模型加载失败: ${err.message}`);
+        console.error('Model loading failed:', err);
+        setError(`Model loading failed: ${err.message}`);
         setIsLoading(false);
       }
     }
@@ -819,20 +769,20 @@ const SymbolRecognizer = () => {
     }
   }, [useLocalPrediction]);
   
-  // 处理图像选择
+  // Handle image selection
   const handleImageSelect = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImage(e.target.result);
-        setPredictions(null); // 重置预测结果
+        setPredictions(null); // Reset prediction results
       };
       reader.readAsDataURL(file);
     }
   };
   
-  // 处理拖放
+  // Handle drag and drop
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -851,32 +801,32 @@ const SymbolRecognizer = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImage(e.target.result);
-        setPredictions(null); // 重置预测结果
+        setPredictions(null); // Reset prediction results
       };
       reader.readAsDataURL(file);
     }
   };
   
-  // 执行预测
+  // Perform prediction
   const performPrediction = async () => {
     if ((!model && !useLocalPrediction) || !image) return;
     
     try {
       setError('');
       setPredictions(null);
-      setSelectedSymbol(null); // 重置选中的符号
-      setShowStructure(false); // 重置结构视图
+      setSelectedSymbol(null); // Reset selected symbol
+      setShowStructure(false); // Reset structure view
       
-      // 如果使用本地预测
+      // If using local prediction
       if (useLocalPrediction) {
-        console.log('使用本地预测模式');
+        console.log('Using local prediction mode');
         const localPredictions = localPredict(image);
-        console.log('本地预测结果:', localPredictions);
+        console.log('Local prediction results:', localPredictions);
         setPredictions(localPredictions);
         return;
       }
       
-      // 创建图像元素
+      // Create image element
       const imgElement = document.createElement('img');
       imgElement.src = image;
       
@@ -884,23 +834,23 @@ const SymbolRecognizer = () => {
         imgElement.onload = resolve;
       });
       
-      // 图像预处理
-      console.log('预处理图像...');
+      // Image preprocessing
+      console.log('Preprocessing image...');
       const preprocessedImage = await preprocessImage(imgElement);
       
-      // 使用MobileNet进行预测
-      console.log('执行预测...');
+      // Use MobileNet for prediction
+      console.log('Executing prediction...');
       const predictions = await model.classify(preprocessedImage || imgElement, 5);
-      console.log('原始预测结果:', predictions);
+      console.log('Raw prediction results:', predictions);
       
-      // 将ImageNet类别映射到我们的符号类别
+      // Map ImageNet categories to our symbol categories
       const mappedPredictions = predictions.map((pred, index) => {
-        // 使用哈希函数将ImageNet类别映射到我们的符号类别
+        // Use hash function to map ImageNet categories to our symbol categories
         const symbolIndex = hashStringToIndex(pred.className, 50);
-        const symbolClass = symbolCategories[symbolIndex] || `符号 ${symbolIndex}`;
+        const symbolClass = symbolCategories[symbolIndex] || `Symbol ${symbolIndex}`;
         
-        // 调整置信度，使结果更加合理
-        // 第一个结果保持较高置信度，其他结果递减
+        // Adjust confidence, making results more reasonable
+        // First result remains high confidence, other results decrease
         const adjustedProbability = index === 0 ? 0.9 : Math.max(0.1, 0.9 - index * 0.15);
         
         return {
@@ -909,13 +859,13 @@ const SymbolRecognizer = () => {
         };
       });
       
-      console.log('映射后预测结果:', mappedPredictions);
+      console.log('Mapped prediction results:', mappedPredictions);
       setPredictions(mappedPredictions);
       
-      // 设置选中的符号为第一个预测结果
+      // Set selected symbol to first prediction result
       if (mappedPredictions && mappedPredictions.length > 0) {
         const topPrediction = mappedPredictions[0];
-        const name = topPrediction.className.split('/')[0]; // 获取中文名称
+        const name = topPrediction.className.split('/')[0]; // Get Chinese name
         const symbolKey = Object.keys(symbolCategories).find(
           key => symbolCategories[key].includes(name)
         );
@@ -925,79 +875,79 @@ const SymbolRecognizer = () => {
           setSelectedSymbol({
             key: keyNum,
             name: name,
-            english: symbolCategories[symbolKey].split('/')[1],
-            description: symbolDescriptions[keyNum]?.cn || "暂无详细描述",
-            description_en: symbolDescriptions[keyNum]?.en || "No description available",
+            english: name.toLowerCase(),
+            description: symbolDescriptions[keyNum]?.description || "No detailed description available",
+            description_en: symbolDescriptions[keyNum]?.description || "No description available",
             tokens: getTokensForSymbol(keyNum),
             svg: generateSymbolSVG(keyNum)
           });
         }
       }
     } catch (err) {
-      console.error('预测过程中出错:', err);
-      setError(`预测失败: ${err.message}`);
+      console.error('Error during prediction:', err);
+      setError(`Prediction failed: ${err.message}`);
     }
   };
   
-  // 图像预处理函数
+  // Image preprocessing function
   const preprocessImage = async (imgElement) => {
     try {
-      // 创建一个临时画布
+      // Create a temporary canvas
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
-      // 设置画布大小为模型输入大小
+      // Set canvas size to model input size
       canvas.width = 224;
       canvas.height = 224;
       
-      // 在画布上绘制图像，调整大小
+      // Draw image on canvas, adjust size
       ctx.drawImage(imgElement, 0, 0, 224, 224);
       
-      // 应用一些基本的图像处理（可选）
-      // 例如调整对比度、亮度等
+      // Apply some basic image processing (optional)
+      // For example, adjust contrast, brightness, etc
       
       return canvas;
     } catch (err) {
-      console.error('图像预处理失败:', err);
-      return null; // 如果预处理失败，返回原始图像
+      console.error('Image preprocessing failed:', err);
+      return null; // If preprocessing fails, return original image
     }
   };
   
-  // 将字符串哈希到指定范围的索引
+  // Hash string to index in specified range
   const hashStringToIndex = (str, max) => {
-    // 使用更确定性的哈希算法
-    // 使用字符串的前几个字符作为种子
+    // Use more deterministic hash algorithm
+    // Use first few characters of string as seed
     const seed = str.slice(0, 3).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     
-    // 使用简单的乘法哈希
+    // Use simple multiplication hash
     let hash = seed;
     for (let i = 0; i < str.length; i++) {
       hash = (hash * 31 + str.charCodeAt(i)) % 1000000;
     }
     
-    // 确保结果在0到max-1之间
+    // Ensure result is between 0 and max-1
     const result = hash % max;
     
-    // 添加调试信息
-    console.log(`哈希映射: "${str}" -> ${result} (${symbolCategories[result]})`);
+    // Add debugging information
+    console.log(`Hash mapping: "${str}" -> ${result} (${symbolCategories[result]})`);
     
     return result;
   };
   
-  // 清除图像和预测
+  // Clear image and prediction
   const handleClear = () => {
     setImage(null);
     setPredictions(null);
-    setSelectedSymbol(null); // 清除选中的符号
-    setShowStructure(false); // 重置结构视图
+    setSelectedSymbol(null); // Clear selected symbol
+    setShowStructure(false); // Reset structure view
     setError('');
   };
   
-  // 符号详情卡片组件
+  // Symbol details card component
   const SymbolDetailsCard = ({ symbol }) => {
     if (!symbol) return null;
     
-    // 符号释义视图
+    // Symbol interpretation view
     if (!showStructure) {
     return (
         <Paper sx={{ 
@@ -1025,21 +975,21 @@ const SymbolRecognizer = () => {
           </Typography>
           
           <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary', fontStyle: 'italic' }}>
-            {symbol.description_en}
+            Source: Omni-D Semantic Database • Neural Pattern Recognition System
           </Typography>
           
           <Button 
             variant="outlined"
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, textTransform: 'none' }}
             onClick={() => setShowStructure(true)}
           >
-            查看结构释义
+            View Structure Interpretation
           </Button>
         </Paper>
       );
     }
     
-    // 符号结构视图
+    // Symbol structure view
     return (
       <Paper sx={{ 
         p: 3, 
@@ -1059,14 +1009,14 @@ const SymbolRecognizer = () => {
         
         <Box sx={{ textAlign: 'center', mb: 2 }}>
           <Typography variant="h6" color="error" sx={{ fontWeight: 'bold', display: 'inline-block', mb: 1 }}>
-            符号符号构型原理
+            Symbol Configuration Principle
           </Typography>
           <Typography variant="body2" sx={{ display: 'block', color: '#666' }}>
-            17边形上的每个点的位置由对应语言中该词语的token值决定，内部矩阵同理，红色小三角形为机器识别起始符。
+            The position of each point on the 17-sided polygon is determined by the token value of the word in the corresponding language. The internal matrix follows the same principle. The small red triangle is the machine recognition starting symbol.
           </Typography>
         </Box>
         
-        {/* 使用符号PNG图片 */}
+        {/* Use symbol PNG image */}
         <Box sx={{ 
           width: '100%', 
           textAlign: 'center', 
@@ -1076,10 +1026,10 @@ const SymbolRecognizer = () => {
         }}>
           <Box 
             component="img"
-            src={`${process.env.PUBLIC_URL}/reference/symbols_50/${symbol.key + 1}_${symbol.english.toLowerCase()}.png`}
+            src={`${process.env.PUBLIC_URL}/reference/symbols_50/${symbol.key + 1}_${(symbol.english || symbol.name || 'unknown').toLowerCase()}.png`}
             alt={symbol.name}
             onError={(e) => {
-              // 如果图片加载失败，显示默认的圆形
+              // If image loading fails, display default circle
               e.target.style.display = 'none';
               e.target.nextSibling.style.display = 'block';
             }}
@@ -1091,7 +1041,7 @@ const SymbolRecognizer = () => {
             }}
           />
           
-          {/* 备用显示 - 当图片加载失败时显示 */}
+          {/* Backup display - when image loading fails */}
           <Box 
             sx={{ 
               width: 200, 
@@ -1100,12 +1050,12 @@ const SymbolRecognizer = () => {
               backgroundColor: '#f8f8f8',
               border: '1px solid #eaeaea',
               position: 'relative',
-              display: 'none', // 默认隐藏
+              display: 'none', // Default hidden
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            {/* 外围点 */}
+            {/* Outer points */}
             {Array.from({length: 17}, (_, i) => {
               const angle = (i / 17) * Math.PI * 2;
               const r = 90;
@@ -1128,7 +1078,7 @@ const SymbolRecognizer = () => {
               );
             })}
             
-            {/* 红色标识符 */}
+            {/* Red identifier */}
             <Box
               sx={{
                 width: 0,
@@ -1142,7 +1092,7 @@ const SymbolRecognizer = () => {
               }}
             />
             
-            {/* 内部矩阵 */}
+            {/* Internal matrix */}
             <Box sx={{ 
               width: 80, 
               height: 80, 
@@ -1178,7 +1128,7 @@ const SymbolRecognizer = () => {
             overflowY: 'auto'
           }}
         >
-          <Typography variant="subtitle2" gutterBottom>17种语言对应Token值：</Typography>
+          <Typography variant="subtitle2" gutterBottom>Token Values in 17 Languages:</Typography>
           {Object.entries(symbol.tokens).map(([lang, token], idx) => (
             <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
               <Typography variant="body2">{lang}:</Typography>
@@ -1196,10 +1146,11 @@ const SymbolRecognizer = () => {
             sx={{ 
               backgroundColor: '#000', 
               color: '#fff',
+              textTransform: 'none',
               '&:hover': { backgroundColor: '#333' }
             }}
           >
-            回到释义
+            Back to Interpretation
           </Button>
         </Box>
       </Paper>
@@ -1209,8 +1160,8 @@ const SymbolRecognizer = () => {
   if (isLoading && !useLocalPrediction) {
     return (
       <PageLayout 
-        title="符号识别" 
-        subtitle="上传一张符号图片，AI将识别它属于哪种符号类型，当前版本可以识别50种不同的符号。"
+        title="Symbol Recognition" 
+        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
       >
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" p={6}>
@@ -1218,11 +1169,11 @@ const SymbolRecognizer = () => {
           <Typography variant="h6" sx={{ mt: 2 }}>{loadingMessage}</Typography>
           {loadingProgress > 0 && (
             <Typography variant="body2" color="text.secondary">
-              {loadingProgress}% 完成
+              {loadingProgress}% Complete
             </Typography>
           )}
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            这可能需要几秒钟时间
+            This may take a few seconds
           </Typography>
         </Box>
       </Container>
@@ -1233,32 +1184,32 @@ const SymbolRecognizer = () => {
   if (error) {
     return (
       <PageLayout 
-        title="符号识别" 
-        subtitle="上传一张符号图片，AI将识别它属于哪种符号类型，当前版本可以识别50种不同的符号。"
+        title="Symbol Recognition" 
+        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
       >
       <Container>
         <Paper sx={{ p: 3, bgcolor: '#fff8f8', border: '1px solid #ffcccc', borderRadius: 2, mb: 3 }}>
-          <Typography variant="h6" color="error">模型加载失败</Typography>
+          <Typography variant="h6" color="error">Model Loading Failed</Typography>
           <Typography variant="body1" sx={{ mt: 1, mb: 2 }}>{error}</Typography>
           
           <Alert severity="info" sx={{ mt: 2, mb: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              可能的原因及解决方法：
+              Possible Causes and Solutions:
             </Typography>
             <Box component="ul" sx={{ mt: 1, pl: 2 }}>
-              <li>您的浏览器可能不支持WebGL。请尝试：</li>
+              <li>Your browser may not support WebGL. Please try:</li>
               <Box component="ul" sx={{ pl: 2 }}>
-                <li>更新浏览器到最新版本</li>
-                <li>使用Chrome或Firefox的最新版本</li>
-                <li>在浏览器设置中启用WebGL</li>
+                <li>Updating your browser to the latest version</li>
+                <li>Using the latest version of Chrome or Firefox</li>
+                <li>Enabling WebGL in your browser settings</li>
               </Box>
-              <li>您可能遇到了网络连接问题。请尝试：</li>
+              <li>You may be experiencing network connection issues. Please try:</li>
               <Box component="ul" sx={{ pl: 2 }}>
-                <li>检查您的网络连接</li>
-                <li>关闭VPN或代理服务</li>
-                <li>稍后再试</li>
+                <li>Checking your network connection</li>
+                <li>Turning off VPN or proxy services</li>
+                <li>Trying again later</li>
               </Box>
-              <li>如果您使用的是移动设备，请尝试使用电脑访问</li>
+              <li>If you are using a mobile device, please try accessing from a computer</li>
             </Box>
           </Alert>
           
@@ -1269,33 +1220,35 @@ const SymbolRecognizer = () => {
               color="primary" 
               onClick={() => window.location.reload()}
               startIcon={<span role="img" aria-label="refresh">🔄</span>}
+              sx={{ textTransform: 'none' }}
             >
-              刷新页面重试
+              Refresh Page and Retry
             </Button>
             <Button 
               fullWidth
               variant="contained" 
               color="primary" 
               onClick={() => {
-                // 尝试强制使用CPU后端
+                // Try forcing CPU backend
                 tf.setBackend('cpu').then(() => {
-                  console.log('已切换到CPU后端');
+                  console.log('Switched to CPU backend');
                   setError('');
                   window.location.reload();
                 }).catch(err => {
-                  console.error('切换到CPU后端失败', err);
-                  alert('切换到CPU模式失败，请尝试刷新页面');
+                  console.error('Failed to switch to CPU backend', err);
+                  alert('Failed to switch to CPU mode, please try refreshing the page');
                 });
               }}
               startIcon={<span role="img" aria-label="cpu">💻</span>}
+              sx={{ textTransform: 'none' }}
             >
-              使用CPU模式
+              Use CPU Mode
             </Button>
           </Box>
           
           <Box sx={{ mt: 3, pt: 3, borderTop: '1px solid #eee' }}>
             <Typography variant="subtitle2" sx={{ mb: 2 }}>
-              或者使用离线演示模式（不需要加载AI模型）：
+              Or use offline demo mode (no need to load AI model):
             </Typography>
             <Button
               fullWidth
@@ -1306,18 +1259,18 @@ const SymbolRecognizer = () => {
                 setError('');
                 setIsLoading(false);
               }}
-              sx={{ mb: 2 }}
+              sx={{ mb: 2, textTransform: 'none' }}
               startIcon={<span role="img" aria-label="local">📱</span>}
             >
-              使用离线演示模式
+              Use Offline Demo Mode
             </Button>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontSize: '0.75rem' }}>
-              注意：离线演示模式仅提供模拟的识别结果，不是真正的AI识别。
+              Note: Offline demo mode only provides simulated recognition results, not real AI recognition.
             </Typography>
           </Box>
           
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3, textAlign: 'center' }}>
-            技术信息: TensorFlow.js {tf.version.tfjs}, 浏览器: {navigator.userAgent}
+            Technical Info: TensorFlow.js {tf.version.tfjs}, Browser: {navigator.userAgent}
           </Typography>
         </Paper>
       </Container>
@@ -1327,20 +1280,20 @@ const SymbolRecognizer = () => {
   
   return (
     <PageLayout 
-      title="符号识别" 
-      subtitle="上传一张符号图片，AI将识别它属于哪种符号类型，当前版本可以识别50种不同的符号。"
+      title="Symbol Recognition" 
+      subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
     >
     <Container>
         {useLocalPrediction && (
           <Alert severity="warning" sx={{ mt: 2, mb: 1 }}>
-            当前使用离线演示模式，结果仅供参考。
+            Currently using offline demo mode, results are for reference only.
             <Button 
               size="small" 
-              sx={{ ml: 2 }} 
+              sx={{ ml: 2, textTransform: 'none' }} 
               variant="outlined"
               onClick={() => window.location.reload()}
             >
-              尝试加载AI模型
+              Try Loading AI Model
             </Button>
           </Alert>
         )}
@@ -1362,8 +1315,8 @@ const SymbolRecognizer = () => {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <Typography variant="h6" gutterBottom>拖放图片到此处</Typography>
-            <Typography variant="body2" color="text.secondary">或点击选择图片</Typography>
+            <Typography variant="h6" gutterBottom>Drop Image Here</Typography>
+            <Typography variant="body2" color="text.secondary">or Click to Select an Image</Typography>
           </DropZone>
         </Paper>
       ) : (
@@ -1372,18 +1325,19 @@ const SymbolRecognizer = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Box>
-                  <ImagePreview src={image} alt="上传的图片" />
+                  <ImagePreview src={image} alt="Uploaded Image" />
                   <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                    <Button variant="outlined" onClick={handleClear}>
-                      清除
+                    <Button variant="outlined" onClick={handleClear} sx={{ textTransform: 'none' }}>
+                      Clear
                     </Button>
                     <Button 
                       variant="contained" 
                       color="primary" 
                       onClick={performPrediction}
                       disabled={!image || (!model && !useLocalPrediction)}
+                      sx={{ textTransform: 'none' }}
                     >
-                      识别符号
+                      Recognize Symbol
                     </Button>
                   </Box>
                 </Box>
@@ -1400,7 +1354,7 @@ const SymbolRecognizer = () => {
                   flexDirection: 'column'
                 }}>
                   <Typography variant="h6" color="primary" gutterBottom sx={{ borderBottom: '1px solid #f0f0f0', pb: 1 }}>
-                    识别结果
+                    Recognition Results
                   </Typography>
                   
                   {predictions ? (
@@ -1454,7 +1408,7 @@ const SymbolRecognizer = () => {
                         </svg>
                       </Box>
                       <Typography variant="body1" align="center">
-                        点击"识别符号"按钮开始分析图片
+                        Click "Recognize Symbol" button to start analyzing the image
                       </Typography>
                     </Box>
                   )}
@@ -1462,7 +1416,7 @@ const SymbolRecognizer = () => {
               </Grid>
             </Grid>
               
-              {/* 符号详情卡片 */}
+              {/* Symbol details card */}
               {selectedSymbol && <SymbolDetailsCard symbol={selectedSymbol} />}
           </Box>
         </Paper>

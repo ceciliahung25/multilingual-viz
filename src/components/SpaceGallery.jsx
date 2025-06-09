@@ -9,28 +9,28 @@ const SpaceGallery = () => {
   const scenes = [
     {
       id: 1,
-      title: "太空厕所标识",
+      title: "Space Restroom",
       image: "/images/toilet.png",
-      description: "太空站厕所门口的标识符号"
+      description: "Symbolic signage for restroom doors in orbital stations"
     },
     {
       id: 2,
-      title: "控制面板",
+      title: "Control Panel",
       image: "/images/panel.png",
-      description: "太空站控制面板上的操作标识"
+      description: "Interface markings used on space control panels"
     },
     {
       id: 3,
-      title: "紧急出口",
+      title: "Emergency Exit",
       image: "/images/exit.png",
-      description: "太空站紧急出口标识"
+      description: "Symbols indicating emergency exits in space station corridors"
     }
   ];
 
   return (
     <PageLayout
-      title="太空场景图库"
-      subtitle="探索太空站和航天器中使用的各种符号和标识"
+      title="Omni-D in Space"
+      subtitle="Explore symbolic signage used in space stations and spacecraft environments."
     >
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 3, p: 1 }}>
         {scenes.map(scene => (
@@ -52,7 +52,7 @@ const SpaceGallery = () => {
               <img src={scene.image} alt={scene.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </Box>
             <Box sx={{ padding: '16px 20px', width: '100%', flexGrow: 1 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: 18, mb: 1 }}>{scene.title}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: 18, mb: 0.5 }}>{scene.title}</Typography>
               <Typography variant="body2" color="text.secondary">{scene.description}</Typography>
             </Box>
           </Box>

@@ -19,8 +19,9 @@ const MainCard = styled(Paper)(({ theme }) => ({
   boxShadow: '0 2px 8px 0 rgba(0,0,0,0.06)',
   background: '#fff',
   width: '100%',
-  padding: '40px',
-  maxWidth: 1200,
+  padding: '40px 24px',
+  maxWidth: 1280,
+  minHeight: '660px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -35,6 +36,9 @@ const TitleSection = styled(Box)(({ theme }) => ({
 
 const ContentSection = styled(Box)(({ theme }) => ({
   width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 }));
 
 const SectionCard = styled(Paper)(({ theme }) => ({
@@ -80,7 +84,7 @@ const ImageBox = styled(Box)(({ theme }) => ({
 
 const FunctionButton = styled(Paper)(({ theme }) => ({
   borderRadius: 8,
-  padding: '10px 12px',
+  padding: '10px 16px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   backgroundColor: '#A9A9A9', // 中灰色背景
@@ -96,6 +100,7 @@ const FunctionButton = styled(Paper)(({ theme }) => ({
   color: 'white',
   height: '50px',
   width: '100%',
+  whiteSpace: 'nowrap',
 }));
 
 const IconBox = styled(Box)(({ theme }) => ({
@@ -104,7 +109,8 @@ const IconBox = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   marginRight: '12px',
   fontSize: '18px',
-  minWidth: '24px',
+  width: '32px',
+  minWidth: '32px',
   color: 'white',
 }));
 
@@ -120,26 +126,26 @@ const HomePage = ({ setActivePage }) => {
   const modules = [
     {
       id: 'tokengenerator',
-      name: 'Omni-D宣言',
+      name: 'Omni-D Declaration',
       component: 'tokengenerator',
       image: '/images/图片2.jpg',
-      description: '选择语言，在线查词'
+      description: 'Select language, look up words online'
     },
     {
       id: 'sentencecomposer',
-      name: '句子拼接',
+      name: 'Sentence Composer',
       component: 'sentencecomposer',
       icon: <FaPuzzlePiece />
     },
     {
       id: 'namevisualizer',
-      name: '身份生成',
+      name: 'Identity Generator',
       component: 'namevisualizer',
       icon: <FaFont />
     },
     {
       id: 'space',
-      name: '太空图库',
+      name: 'Space Symbol Archive',
       component: 'space',
       icon: <FaRocket />
     }
@@ -180,13 +186,18 @@ const HomePage = ({ setActivePage }) => {
             Omni-D: Semiotic Engine
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            多语言可视化系统
+            Multilingual Visualization System
           </Typography>
         </TitleSection>
 
         <ContentSection>
           {/* 主要内容区域 - 分为三部分 */}
-          <Grid container spacing={4} sx={{ width: '100%' }}>
+          <Grid container spacing={3} sx={{ 
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}>
             {/* 左侧大图部分 */}
             <Grid item xs={12} md={5}>
               <SectionCard>
@@ -203,10 +214,10 @@ const HomePage = ({ setActivePage }) => {
             </Grid>
 
             {/* 中间功能模块部分 */}
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3.5}>
               <SectionCard sx={{ padding: '24px' }}>
                 <SectionTitle variant="h5">
-                  功能模块
+                  Explore Tools
                 </SectionTitle>
                 
                 <Box sx={{ 
@@ -220,8 +231,8 @@ const HomePage = ({ setActivePage }) => {
                     <Grid item>
                       <FunctionButton onClick={() => handleModuleClick('sentencecomposer')}>
                         <IconBox>{modules[1].icon}</IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          句子拼接
+                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
+                          Sentence Builder
                         </Typography>
                       </FunctionButton>
                     </Grid>
@@ -230,8 +241,8 @@ const HomePage = ({ setActivePage }) => {
                     <Grid item>
                       <FunctionButton onClick={() => handleModuleClick('namevisualizer')}>
                         <IconBox>{modules[2].icon}</IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          身份生成
+                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
+                          Identity Generator
                         </Typography>
                       </FunctionButton>
                     </Grid>
@@ -240,8 +251,8 @@ const HomePage = ({ setActivePage }) => {
                     <Grid item>
                       <FunctionButton onClick={() => handleModuleClick('space')}>
                         <IconBox>{modules[3].icon}</IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          太空图库
+                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
+                          Omni-D in Space
                         </Typography>
                       </FunctionButton>
                     </Grid>
@@ -251,18 +262,18 @@ const HomePage = ({ setActivePage }) => {
             </Grid>
 
             {/* 右侧Omni-D宣言卡片 */}
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3.5}>
               <ModuleCard onClick={() => handleModuleClick('tokengenerator')}>
                 <SectionTitle variant="h5">
-                  Omni-D宣言
+                  Omni-D Lexicon
                 </SectionTitle>
                 
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
                   <ImageBox>
-                    <ModuleImage src="/images/图片2.jpg" alt="Omni-D宣言" />
+                    <ModuleImage src="/images/图片2.jpg" alt="Omni-D Declaration" />
                   </ImageBox>
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                    选择语言，在线查词
+                    Select language, look up words online
                   </Typography>
                 </Box>
               </ModuleCard>

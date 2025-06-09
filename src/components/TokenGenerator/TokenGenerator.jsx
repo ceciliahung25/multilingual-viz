@@ -7,23 +7,23 @@ import PageLayout from '../PageLayout';
 
 // 语言映射
 const languages = [
-  { code: 'ar', name: '阿拉伯语', nameEn: 'Arabic' },
-  { code: 'de', name: '德语', nameEn: 'German' },
-  { code: 'en', name: '英语', nameEn: 'English' },
-  { code: 'es', name: '西班牙语', nameEn: 'Spanish' },
-  { code: 'fr', name: '法语', nameEn: 'French' },
-  { code: 'hi', name: '印地语', nameEn: 'Hindi' },
-  { code: 'id', name: '印度尼西亚语', nameEn: 'Indonesian' },
-  { code: 'it', name: '意大利语', nameEn: 'Italian' },
-  { code: 'ja', name: '日语', nameEn: 'Japanese' },
-  { code: 'nl', name: '荷兰语', nameEn: 'Dutch' },
-  { code: 'pt', name: '葡萄牙语', nameEn: 'Portuguese' },
-  { code: 'ru', name: '俄语', nameEn: 'Russian' },
-  { code: 'th', name: '泰语', nameEn: 'Thai' },
-  { code: 'tr', name: '土耳其语', nameEn: 'Turkish' },
-  { code: 'vi', name: '越南语', nameEn: 'Vietnamese' },
+  { code: 'ar', name: 'العربية', nameEn: 'Arabic' },
+  { code: 'de', name: 'Deutsch', nameEn: 'German' },
+  { code: 'en', name: 'English', nameEn: 'English' },
+  { code: 'es', name: 'Español', nameEn: 'Spanish' },
+  { code: 'fr', name: 'Français', nameEn: 'French' },
+  { code: 'hi', name: 'हिन्दी', nameEn: 'Hindi' },
+  { code: 'id', name: 'Bahasa Indonesia', nameEn: 'Indonesian' },
+  { code: 'it', name: 'Italiano', nameEn: 'Italian' },
+  { code: 'ja', name: '日本語', nameEn: 'Japanese' },
+  { code: 'nl', name: 'Nederlands', nameEn: 'Dutch' },
+  { code: 'pt', name: 'Português', nameEn: 'Portuguese' },
+  { code: 'ru', name: 'Русский', nameEn: 'Russian' },
+  { code: 'th', name: 'ไทย', nameEn: 'Thai' },
+  { code: 'tr', name: 'Türkçe', nameEn: 'Turkish' },
+  { code: 'vi', name: 'Tiếng Việt', nameEn: 'Vietnamese' },
   { code: 'zh', name: '中文', nameEn: 'Chinese' },
-  { code: 'ko', name: '朝鲜语', nameEn: 'Korean' }
+  { code: 'ko', name: '한국어', nameEn: 'Korean' }
 ];
 
 // 解析csv为映射对象
@@ -353,76 +353,76 @@ const TokenGenerator = () => {
 
   return (
     <PageLayout
-      title="查找词语"
-      subtitle="选择语言和词语，生成多语言的符号可视化"
+      title="Word Visualizer"
+      subtitle="Select a language and word to generate multilingual symbolic representations."
     >
       <ContentBox ref={containerRef}>
-        {/* 左侧表单区 */}
-        <MinimalPaper sx={{ 
-          width: { xs: '100%', md: 280 }, 
-          minWidth: { xs: 'auto', md: 180 }, 
-          mr: { xs: 0, md: 2 }, 
-          mb: { xs: 2, md: 0 },
-          boxSizing: 'border-box', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          justifyContent: 'flex-start', 
-          p: 2 
-        }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
-            <MinimalSelect
-              value={sourceLanguage}
-              onChange={(e) => {
-                setSourceLanguage(e.target.value);
-                setWord('');
-              }}
-              displayEmpty
-              sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
-            >
-              <MinimalMenuItem value="">选择源语言</MinimalMenuItem>
-              {languages.map(lang => (
-                <MinimalMenuItem key={lang.code} value={lang.nameEn}>{lang.name}</MinimalMenuItem>
-              ))}
-            </MinimalSelect>
-            <MinimalSelect
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              displayEmpty
-              sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
-              disabled={!sourceLanguage}
-            >
-              <MinimalMenuItem value="">选择词语</MinimalMenuItem>
-              {wordOptions.map((w, idx) => (
-                <MinimalMenuItem key={w.local_word + idx} value={w.main_word + '|' + w.local_word}>{w.local_word}</MinimalMenuItem>
-              ))}
-            </MinimalSelect>
-            <MinimalButton
-              variant="contained" 
-              onClick={handleGenerate}
-              disabled={!word || !sourceLanguage}
-              sx={{ height: { xs: 38, md: 40 }, fontSize: { xs: 14, md: 15 }, minWidth: { xs: 90, md: 100 } }}
-            >
-              生成可视化
-            </MinimalButton>
-          </Box>
+      {/* 左侧表单区 */}
+      <MinimalPaper sx={{ 
+        width: { xs: '100%', md: 280 }, 
+        minWidth: { xs: 'auto', md: 180 }, 
+        mr: { xs: 0, md: 2 }, 
+        mb: { xs: 2, md: 0 },
+        boxSizing: 'border-box', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        p: 2 
+      }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+          <MinimalSelect
+            value={sourceLanguage}
+            onChange={(e) => {
+              setSourceLanguage(e.target.value);
+              setWord('');
+            }}
+            displayEmpty
+            sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
+          >
+            <MinimalMenuItem value="">Select Source Language</MinimalMenuItem>
+            {languages.map(lang => (
+              <MinimalMenuItem key={lang.code} value={lang.nameEn}>{lang.name}</MinimalMenuItem>
+            ))}
+          </MinimalSelect>
+          <MinimalSelect
+            value={word}
+            onChange={(e) => setWord(e.target.value)}
+            displayEmpty
+            sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
+            disabled={!sourceLanguage}
+          >
+            <MinimalMenuItem value="">Select Word</MinimalMenuItem>
+            {wordOptions.map((w, idx) => (
+              <MinimalMenuItem key={w.local_word + idx} value={w.main_word + '|' + w.local_word}>{w.local_word}</MinimalMenuItem>
+            ))}
+          </MinimalSelect>
+          <MinimalButton
+            variant="contained" 
+            onClick={handleGenerate}
+            disabled={!word || !sourceLanguage}
+            sx={{ height: { xs: 38, md: 40 }, fontSize: { xs: 14, md: 15 }, minWidth: { xs: 90, md: 100 } }}
+          >
+            Generate
+          </MinimalButton>
+        </Box>
           <Typography variant="body2" sx={{ color: '#777', fontSize: { xs: 12, md: 13 } }}>
-            请选择语言和词语，词语列表会根据语言自动变化。
-          </Typography>
-        </MinimalPaper>
-        {/* 右侧可视化区 */}
-        <MinimalPaper sx={{ 
-          flex: 1, 
-          minWidth: 0, 
-          maxWidth: { xs: '100%', md: 'none' },
-          boxSizing: 'border-box', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          p: { xs: 1, md: 2 }, 
-          mb: 0 
-        }}>
-          <svg ref={graphRef}></svg>
-        </MinimalPaper>
+          The word list will update based on the selected language.
+        </Typography>
+      </MinimalPaper>
+      {/* 右侧可视化区 */}
+      <MinimalPaper sx={{ 
+        flex: 1, 
+        minWidth: 0, 
+        maxWidth: { xs: '100%', md: 'none' },
+        boxSizing: 'border-box', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        p: { xs: 1, md: 2 }, 
+        mb: 0 
+      }}>
+        <svg ref={graphRef}></svg>
+      </MinimalPaper>
       </ContentBox>
     </PageLayout>
   );
