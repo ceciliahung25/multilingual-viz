@@ -255,13 +255,13 @@ const NameVisualizer = () => {
 
   return (
     <PageLayout
-      title="身份可视化"
-      subtitle="通过组合字母创建一个独特的视觉符号，代表你的名字或身份"
+      title="Identity Visualizer"
+      subtitle="Create a unique visual symbol by combining letters to represent your name or identity"
     >
       <ContentBox>
         <LeftPanel>
           <Typography variant="h6" fontWeight={600}>
-            组合字母
+            Combine Letters
           </Typography>
           <Box sx={{ 
             display: 'flex', 
@@ -289,14 +289,14 @@ const NameVisualizer = () => {
                     </IconButton>
                   </Box>
                 ) : (
-                  <span style={{ color: '#bbb' }}>空</span>
+                  <span style={{ color: '#bbb' }}>Empty</span>
                 )}
               </Hole>
             ))}
           </Box>
 
           <Typography variant="h6" fontWeight={600} sx={{ mt: 3 }}>
-            大写字母
+            Uppercase Letters
           </Typography>
           <Box sx={{ 
             display: 'flex', 
@@ -326,7 +326,7 @@ const NameVisualizer = () => {
           </Box>
 
           <Typography variant="h6" fontWeight={600}>
-            小写字母
+            Lowercase Letters
           </Typography>
           <Box sx={{ 
             display: 'flex', 

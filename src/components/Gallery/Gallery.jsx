@@ -194,18 +194,17 @@ const Gallery = () => {
 
   return (
     <PageLayout
-      title="视觉化图库"
-      subtitle="浏览不同词语的视觉符号表示，可以拖动和缩放查看更多细节"
+      title="Visualization Gallery"
+      subtitle="Browse visual symbol representations of different words. You can drag and zoom to view more details"
     >
       <Box sx={{
         width: '100%',
-        height: 'calc(100vh - 220px)',
+        height: 'calc(100vh - 180px)',
         overflow: 'hidden',
-        bgcolor: '#fff',
-        borderRadius: 4,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+        position: 'relative',
+        bgcolor: '#fff'
       }}>
-        <svg ref={svgRef}></svg>
+        <svg ref={svgRef} />
       </Box>
     </PageLayout>
   );
