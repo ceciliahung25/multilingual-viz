@@ -109,7 +109,7 @@ const WordButton = styled(Box)(({ theme }) => ({
 }));
 
 const languageOptions = [
-  { code: 'en', label: '英语',
+  { code: 'en', label: 'English',
     subjects: ['I', 'we', 'you', 'they', 'astronaut', 'robot', 'earthling', 'commander'],
     verbs: ['observe', 'build', 'repair', 'communicate', 'float', 'dream', 'share', 'explore'],
     objects: ['earth', 'station', 'experiment', 'food', 'data', 'star', 'story', 'future']
@@ -120,10 +120,9 @@ const languageOptions = [
     objects: ['地球', '空间站', '实验', '食物', '数据', '星星', '故事', '未来']
   }
 ];
-const roleNames = ['主语', '谓语', '宾语'];
 
 const SentenceComposer = () => {
-  // 当前语言
+  // 当前语言 - 默认设为英文
   const [language, setLanguage] = useState('en');
   // 洞的内容：主语、谓语、宾语
   const [holes, setHoles] = useState([null, null, null]);
@@ -207,8 +206,10 @@ const SentenceComposer = () => {
   const subjects = currentLang.subjects;
   const verbs = currentLang.verbs;
   const objects = currentLang.objects;
-  // 当前语言英文名
+  // 当前语言英文名称（用于CSV数据查找）
   const langName = language === 'zh' ? 'Chinese' : 'English';
+  // 根据当前语言显示相应的提示文字
+  const roleNames = language === 'zh' ? ['主语', '谓语', '宾语'] : ['Subject', 'Verb', 'Object'];
 
   // 根据 main_word 和当前语言，查找本地词
   const getLocalWord = (main_word) => {
@@ -373,14 +374,14 @@ const SentenceComposer = () => {
 
   return (
     <PageLayout
-      title="句子拼接"
-      subtitle="拖拽主语、谓语和宾语组成一个句子，生成多语言视觉符号"
+      title="Sentence Composer"
+      subtitle="Drag subject, verb and object to compose a sentence and generate a multilingual visual symbol."
     >
       <ContentBox>
-        <LeftPanel>
+      <LeftPanel>
           <Box sx={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 1 }}>
-              选择语言:
+              Select Language:
             </Typography>
             <StyledSelect
               value={language}
@@ -403,7 +404,7 @@ const SentenceComposer = () => {
             mt: 1,
             mb: 3,
             flexWrap: { xs: 'wrap', sm: 'nowrap' },
-            justifyContent: 'flex-start',
+            justifyContent: 'flex-start', 
             width: '100%'
           }}>
             {holes.map((word, idx) => (
@@ -422,23 +423,23 @@ const SentenceComposer = () => {
                       sx={{ position: 'absolute', top: -8, right: -8, background: '#f0f0f0', width: 18, height: 18 }}
                     >
                       <CloseIcon sx={{ fontSize: 14 }} />
-                    </IconButton>
-                  </Box>
-                ) : (
-                  <span style={{ color: '#bbb' }}>{roleNames[idx]}</span>
-                )}
-              </Hole>
-            ))}
+                      </IconButton>
+                    </Box>
+                  ) : (
+                    <span style={{ color: '#bbb' }}>{roleNames[idx]}</span>
+                  )}
+                </Hole>
+              ))}
           </Box>
 
           {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).subjects.length > 0 && (
             <InteractionBox>
               <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                主语
+                Subject
               </Typography>
-              <WordList>
+        <WordList>
                 {languageOptions.find(l => l.code === language).subjects.map(word => (
-                  <WordButton
+            <WordButton
                     key={word}
                     draggable={!isUsed(word)}
                     className={clsx({ dragging: dragging === word })}
@@ -446,24 +447,24 @@ const SentenceComposer = () => {
                       setDragWord(word);
                       setDragging(word);
                     }}
-                    onDragEnd={() => setDragging(null)}
+              onDragEnd={() => setDragging(null)}
                     sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-                  >
+            >
                     {word}
-                  </WordButton>
-                ))}
-              </WordList>
+            </WordButton>
+          ))}
+        </WordList>
             </InteractionBox>
           )}
 
           {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).verbs.length > 0 && (
             <InteractionBox>
               <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                谓语
+                Verb
               </Typography>
-              <WordList>
+        <WordList>
                 {languageOptions.find(l => l.code === language).verbs.map(word => (
-                  <WordButton
+            <WordButton
                     key={word}
                     draggable={!isUsed(word)}
                     className={clsx({ dragging: dragging === word })}
@@ -471,24 +472,24 @@ const SentenceComposer = () => {
                       setDragWord(word);
                       setDragging(word);
                     }}
-                    onDragEnd={() => setDragging(null)}
+              onDragEnd={() => setDragging(null)}
                     sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-                  >
+            >
                     {word}
-                  </WordButton>
-                ))}
-              </WordList>
+            </WordButton>
+          ))}
+        </WordList>
             </InteractionBox>
           )}
 
           {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).objects.length > 0 && (
             <InteractionBox>
               <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                宾语
+                Object
               </Typography>
-              <WordList>
+        <WordList>
                 {languageOptions.find(l => l.code === language).objects.map(word => (
-                  <WordButton
+            <WordButton
                     key={word}
                     draggable={!isUsed(word)}
                     className={clsx({ dragging: dragging === word })}
@@ -496,21 +497,21 @@ const SentenceComposer = () => {
                       setDragWord(word);
                       setDragging(word);
                     }}
-                    onDragEnd={() => setDragging(null)}
+              onDragEnd={() => setDragging(null)}
                     sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-                  >
+            >
                     {word}
-                  </WordButton>
-                ))}
-              </WordList>
+            </WordButton>
+          ))}
+        </WordList>
             </InteractionBox>
           )}
-        </LeftPanel>
+      </LeftPanel>
 
         <CenterPanel sx={{ pt: 2 }}>
-          <RightPanel ref={containerRef}>
+      <RightPanel ref={containerRef}>
             <svg ref={graphRef} width={graphSize.width} height={graphSize.height}></svg>
-          </RightPanel>
+      </RightPanel>
         </CenterPanel>
       </ContentBox>
     </PageLayout>
