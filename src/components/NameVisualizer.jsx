@@ -52,6 +52,14 @@ const LetterButton = styled(PrimaryButton)(({ theme }) => ({
   margin: 6,
   minWidth: 48,
   minHeight: 40,
+  cursor: 'grab',
+  transition: 'all 0.2s ease',
+  userSelect: 'none',
+  '&:hover': {
+    background: '#f7f7f9',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+  },
   '&.dragging': {
     transform: 'scale(1.18)',
     boxShadow: '0 4px 16px 0 rgba(0,0,0,0.18)',
