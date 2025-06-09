@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
-import Home from './components/Home';
 import HomePage from './components/HomePage';
 import SpaceGallery from './components/SpaceGallery';
 import SymbolRecognizer from './components/SymbolRecognizer';
@@ -40,8 +39,6 @@ function App() {
     switch (activePage) {
       case 'homepage':
         return <HomePage setActivePage={setActivePage} />;
-      case 'home':
-        return <Home />;
       case 'gallery':
         return <Gallery />;
       case 'tokengenerator':
