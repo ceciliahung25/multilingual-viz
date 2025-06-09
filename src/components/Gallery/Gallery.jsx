@@ -136,7 +136,7 @@ const Gallery = () => {
     if (!svgRef.current) return;
 
     const width = window.innerWidth;
-    const height = window.innerHeight - 180; // 为PageLayout的标题留出空间
+    const height = window.innerHeight - 220; // 同步修改，与Box容器高度一致
     const nodeSpacing = 150; // 词语之间的间距
 
     // 清除之前的内容
@@ -199,10 +199,12 @@ const Gallery = () => {
     >
       <Box sx={{
         width: '100%',
-        height: 'calc(100vh - 180px)',
+        height: 'calc(100vh - 220px)',
         overflow: 'hidden',
         position: 'relative',
-        bgcolor: '#fff'
+        bgcolor: '#fff',
+        borderRadius: 3,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
       }}>
         <svg ref={svgRef} />
       </Box>
