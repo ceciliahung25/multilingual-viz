@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaRocket, FaRobot, FaPuzzlePiece, FaFont, FaSearch, FaAtom, FaNetworkWired } from 'react-icons/fa';
+import { FaRocket, FaRobot, FaPuzzlePiece, FaFont, FaSearch, FaAtom, FaImages } from 'react-icons/fa';
 
 const Sidebar = ({ activePage, setActivePage }) => {
   return (
@@ -13,7 +13,7 @@ const Sidebar = ({ activePage, setActivePage }) => {
           onClick={() => setActivePage('gallery')}
           title="Visualization Gallery"
         >
-          <FaNetworkWired />
+          <FaImages />
         </button>
         <button
           className={activePage === 'tokengenerator' ? 'active' : ''}

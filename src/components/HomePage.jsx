@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Paper, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FaPuzzlePiece, FaFont, FaRocket } from 'react-icons/fa';
+import { FaPuzzlePiece, FaFont, FaRocket, FaImages } from 'react-icons/fa';
 
 // 样式定义
 const HomeContainer = styled(Box)(({ theme }) => ({
@@ -173,6 +173,9 @@ const HomePage = ({ setActivePage }) => {
       case 'tokengenerator':
         setActivePage('tokengenerator');
         break;
+      case 'gallery':
+        setActivePage('gallery');
+        break;
       default:
         break;
     }
@@ -226,7 +229,17 @@ const HomePage = ({ setActivePage }) => {
                   flex: 1,
                   justifyContent: 'flex-start'
                 }}>
-                  <Grid container spacing={3} direction="column">
+                  <Grid container spacing={1.5} direction="column">
+                    {/* Symbol Gallery按钮 - 移到最上面 */}
+                    <Grid item>
+                      <FunctionButton onClick={() => handleModuleClick('gallery')}>
+                        <IconBox><FaImages /></IconBox>
+                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
+                          Symbol Gallery
+                        </Typography>
+                      </FunctionButton>
+                    </Grid>
+
                     {/* 句子拼接按钮 */}
                     <Grid item>
                       <FunctionButton onClick={() => handleModuleClick('sentencecomposer')}>
@@ -250,7 +263,7 @@ const HomePage = ({ setActivePage }) => {
                     {/* 太空图库按钮 */}
                     <Grid item>
                       <FunctionButton onClick={() => handleModuleClick('space')}>
-                        <IconBox>{modules[3].icon}</IconBox>
+                        <IconBox><FaRocket /></IconBox>
                         <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
                           Omni-D in Space
                         </Typography>
