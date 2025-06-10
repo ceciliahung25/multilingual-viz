@@ -10,6 +10,8 @@ import '@tensorflow/tfjs-backend-webgl';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 // Import unified page layout
 import PageLayout from './PageLayout';
+// Import real token mapping data
+import { tokenMapping } from '../utils/tokenMapping';
 
 // Global model cache
 let globalModelCache = null;
@@ -277,7 +279,7 @@ const mockSymbolStructures = {
   // More symbols can be added later
 };
 
-// Token data mapping function - using words_tokens_cleaned.csv data
+// Token data mapping function - using real CSV data
 const getTokensForSymbol = (symbolIndex) => {
   // Symbol English name (lowercase)
   const symbolNames = [
@@ -290,246 +292,25 @@ const getTokensForSymbol = (symbolIndex) => {
     'smile', 'future', 'brilliant', 'stillness', 'majestic'
   ];
   
-  // Complete token mapping created from CSV data
-  const allTokens = {
-    'love': {
-      'English': 'TKN-1300',
-      'Spanish': 'TKN-15633',
-      'French': 'TKN-24855',
-      'Hindi': 'TKN-20121',
-      'Indonesian': 'TKN-46654',
-      'Italian': 'TKN-18815',
-      'Japanese': 'TKN-14232',
-      'Dutch': 'TKN-87363',
-      'Portuguese': 'TKN-15633',
-      'Russian': 'TKN-69649',
-      'Thai': 'TKN-86592',
-      'Turkish': 'TKN-171063',
-      'Vietnamese': 'TKN-19257',
-      'Chinese': 'TKN-62885',
-      'Korean': 'TKN-9919',
-      'Arabic': 'TKN-78459',
-      'German': 'TKN-41010'
-    },
-    'peace': {
-      'English': 'TKN-8043',
-      'Spanish': 'TKN-24566',
-      'French': 'TKN-27346',
-      'Hindi': 'TKN-173653',
-      'Indonesian': 'TKN-3879',
-      'Italian': 'TKN-12170',
-      'Japanese': 'TKN-8523',
-      'Dutch': 'TKN-97571',
-      'Portuguese': 'TKN-24566',
-      'Russian': 'TKN-20932',
-      'Thai': 'TKN-142074',
-      'Turkish': 'TKN-156211',
-      'Vietnamese': 'TKN-19206',
-      'Chinese': 'TKN-576',
-      'Korean': 'TKN-136628',
-      'Arabic': 'TKN-5522',
-      'German': 'TKN-122323'
-    },
-    'courage': {
-      'English': 'TKN-27244',
-      'Spanish': 'TKN-1168',
-      'French': 'TKN-27244',
-      'Hindi': 'TKN-33154',
-      'Indonesian': 'TKN-3246',
-      'Italian': 'TKN-99259',
-      'Japanese': 'TKN-49830',
-      'Dutch': 'TKN-972',
-      'Portuguese': 'TKN-1168',
-      'Russian': 'TKN-71689',
-      'Thai': 'TKN-141404',
-      'Turkish': 'TKN-10002',
-      'Vietnamese': 'TKN-225',
-      'Chinese': 'TKN-49830',
-      'Korean': 'TKN-32158',
-      'Arabic': 'TKN-159006',
-      'German': 'TKN-69835'
-    },
-    'hope': {
-      'English': 'TKN-4833',
-      'Spanish': 'TKN-75874',
-      'French': 'TKN-63944',
-      'Hindi': 'TKN-20459',
-      'Indonesian': 'TKN-1497',
-      'Italian': 'TKN-82439',
-      'Japanese': 'TKN-36131',
-      'Dutch': 'TKN-75511',
-      'Portuguese': 'TKN-132232',
-      'Russian': 'TKN-27135',
-      'Thai': 'TKN-170625',
-      'Turkish': 'TKN-948',
-      'Vietnamese': 'TKN-31327',
-      'Chinese': 'TKN-36131',
-      'Korean': 'TKN-90124',
-      'Arabic': 'TKN-7698',
-      'German': 'TKN-65724'
-    },
-    'fear': {
-      'English': 'TKN-5504',
-      'Spanish': 'TKN-89226',
-      'French': 'TKN-47144',
-      'Hindi': 'TKN-183508',
-      'Indonesian': 'TKN-9493',
-      'Italian': 'TKN-78549',
-      'Japanese': 'TKN-120203',
-      'Dutch': 'TKN-105960',
-      'Portuguese': 'TKN-82163',
-      'Russian': 'TKN-9999',
-      'Thai': 'TKN-170625',
-      'Turkish': 'TKN-173694',
-      'Vietnamese': 'TKN-83591',
-      'Chinese': 'TKN-120203',
-      'Korean': 'TKN-16589',
-      'Arabic': 'TKN-5949',
-      'German': 'TKN-70074'
-    },
-    'happiness': {
-      'English': 'TKN-29788',
-      'Spanish': 'TKN-148778',
-      'French': 'TKN-104059',
-      'Hindi': 'TKN-86175',
-      'Indonesian': 'TKN-72089',
-      'Italian': 'TKN-5641',
-      'Japanese': 'TKN-47615',
-      'Dutch': 'TKN-2155',
-      'Portuguese': 'TKN-5641',
-      'Russian': 'TKN-118579',
-      'Thai': 'TKN-170625',
-      'Turkish': 'TKN-4110',
-      'Vietnamese': 'TKN-140086',
-      'Chinese': 'TKN-47615',
-      'Korean': 'TKN-51127',
-      'Arabic': 'TKN-112956',
-      'German': 'TKN-50814'
-    },
-    'knowledge': {
-      'English': 'TKN-6537',
-      'Spanish': 'TKN-33280',
-      'French': 'TKN-24572',
-      'Hindi': 'TKN-26425',
-      'Indonesian': 'TKN-1469',
-      'Italian': 'TKN-35600',
-      'Japanese': 'TKN-4071',
-      'Dutch': 'TKN-64685',
-      'Portuguese': 'TKN-50934',
-      'Russian': 'TKN-134023',
-      'Thai': 'TKN-170625',
-      'Turkish': 'TKN-49049',
-      'Vietnamese': 'TKN-28800',
-      'Chinese': 'TKN-4071',
-      'Korean': 'TKN-7601',
-      'Arabic': 'TKN-151483',
-      'German': 'TKN-9991'
-    },
-    'thirst': {
-      'English': 'TKN-16033',
-      'Spanish': 'TKN-1075',
-      'French': 'TKN-1355',
-      'Hindi': 'TKN-20121',
-      'Indonesian': 'TKN-7459',
-      'Italian': 'TKN-33925',
-      'Japanese': 'TKN-173344',
-      'Dutch': 'TKN-3829',
-      'Portuguese': 'TKN-4096',
-      'Russian': 'TKN-7588',
-      'Thai': 'TKN-141404',
-      'Turkish': 'TKN-941',
-      'Vietnamese': 'TKN-1877',
-      'Chinese': 'TKN-5893',
-      'Korean': 'TKN-100720',
-      'Arabic': 'TKN-148272',
-      'German': 'TKN-68204'
-    },
-    'truth': {
-      'English': 'TKN-6038',
-      'Spanish': 'TKN-37780',
-      'French': 'TKN-52301',
-      'Hindi': 'TKN-117735',
-      'Indonesian': 'TKN-6831',
-      'Italian': 'TKN-35608',
-      'Japanese': 'TKN-97841',
-      'Dutch': 'TKN-968',
-      'Portuguese': 'TKN-37780',
-      'Russian': 'TKN-34982',
-      'Thai': 'TKN-177908',
-      'Turkish': 'TKN-177177',
-      'Vietnamese': 'TKN-1517',
-      'Chinese': 'TKN-97841',
-      'Korean': 'TKN-194759',
-      'Arabic': 'TKN-73773',
-      'German': 'TKN-67499'
-    },
-    'freedom': {
-      'English': 'TKN-11653',
-      'Spanish': 'TKN-112834',
-      'French': 'TKN-45384',
-      'Hindi': 'TKN-194056',
-      'Indonesian': 'TKN-9373',
-      'Italian': 'TKN-59613',
-      'Japanese': 'TKN-3066',
-      'Dutch': 'TKN-15629',
-      'Portuguese': 'TKN-112834',
-      'Russian': 'TKN-103677',
-      'Thai': 'TKN-164019',
-      'Turkish': 'TKN-172329',
-      'Vietnamese': 'TKN-11304',
-      'Chinese': 'TKN-3066',
-      'Korean': 'TKN-140066',
-      'Arabic': 'TKN-38860',
-      'German': 'TKN-6869'
-    },
-    'compassion': {
-      'English': 'TKN-4964',
-      'Spanish': 'TKN-1508',
-      'French': 'TKN-4964',
-      'Hindi': 'TKN-26892',
-      'Indonesian': 'TKN-277',
-      'Italian': 'TKN-4964',
-      'Japanese': 'TKN-12414',
-      'Dutch': 'TKN-60813',
-      'Portuguese': 'TKN-4964',
-      'Russian': 'TKN-1960',
-      'Thai': 'TKN-170625',
-      'Turkish': 'TKN-180548',
-      'Vietnamese': 'TKN-19257',
-      'Chinese': 'TKN-113456',
-      'Korean': 'TKN-22564',
-      'Arabic': 'TKN-7605',
-      'German': 'TKN-46627'
-    }
-  };
-
-  // More symbols can be added here...
-
-  // If actual data is used, use actual data, otherwise use standardized numbering format
-  if (allTokens[symbolNames[symbolIndex]]) {
-    return allTokens[symbolNames[symbolIndex]];
-  }
-  
-  // Otherwise use standardized numbering format
-  const symbolNumber = symbolIndex + 1; // 1-50 numbers
-  return {
-    'English': `TKN-${symbolNumber}001`,
-    'Spanish': `TKN-${symbolNumber}002`,
-    'French': `TKN-${symbolNumber}003`,
-    'Hindi': `TKN-${symbolNumber}004`,
-    'Indonesian': `TKN-${symbolNumber}005`,
-    'Italian': `TKN-${symbolNumber}006`,
-    'Japanese': `TKN-${symbolNumber}007`,
-    'Dutch': `TKN-${symbolNumber}008`,
-    'Portuguese': `TKN-${symbolNumber}009`,
-    'Russian': `TKN-${symbolNumber}010`,
-    'Thai': `TKN-${symbolNumber}011`,
-    'Turkish': `TKN-${symbolNumber}012`,
-    'Vietnamese': `TKN-${symbolNumber}013`,
-    'Chinese': `TKN-${symbolNumber}014`,
-    'Korean': `TKN-${symbolNumber}015`,
-    'Arabic': `TKN-${symbolNumber}016`,
-    'German': `TKN-${symbolNumber}017`
+  const symbolName = symbolNames[symbolIndex];
+  return tokenMapping[symbolName] || {
+    'English': `${1000 + symbolIndex}`,
+    'Spanish': `${2000 + symbolIndex}`,
+    'French': `${3000 + symbolIndex}`,
+    'Hindi': `${4000 + symbolIndex}`,
+    'Indonesian': `${5000 + symbolIndex}`,
+    'Italian': `${6000 + symbolIndex}`,
+    'Japanese': `${7000 + symbolIndex}`,
+    'Dutch': `${8000 + symbolIndex}`,
+    'Portuguese': `${9000 + symbolIndex}`,
+    'Russian': `${10000 + symbolIndex}`,
+    'Thai': `${11000 + symbolIndex}`,
+    'Turkish': `${12000 + symbolIndex}`,
+    'Vietnamese': `${13000 + symbolIndex}`,
+    'Chinese': `${14000 + symbolIndex}`,
+    'Korean': `${15000 + symbolIndex}`,
+    'Arabic': `${16000 + symbolIndex}`,
+    'German': `${17000 + symbolIndex}`
   };
 };
 
@@ -1161,7 +942,7 @@ const SymbolRecognizer = () => {
     return (
       <PageLayout 
         title="Symbol Recognition" 
-        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
+        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to."
       >
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" p={6}>
@@ -1185,7 +966,7 @@ const SymbolRecognizer = () => {
     return (
       <PageLayout 
         title="Symbol Recognition" 
-        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
+        subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to."
       >
       <Container>
         <Paper sx={{ p: 3, bgcolor: '#fff8f8', border: '1px solid #ffcccc', borderRadius: 2, mb: 3 }}>
@@ -1281,7 +1062,7 @@ const SymbolRecognizer = () => {
   return (
     <PageLayout 
       title="Symbol Recognition" 
-      subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to. The current version can recognize 50 different symbols."
+      subtitle="Upload a symbol image, and AI will identify which type of symbol it belongs to."
     >
     <Container>
         {useLocalPrediction && (

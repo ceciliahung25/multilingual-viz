@@ -375,7 +375,7 @@ const SentenceComposer = () => {
   return (
     <PageLayout
       title="Sentence Composer"
-      subtitle="Drag subject, verb and object to compose a sentence and generate a multilingual visual symbol."
+      subtitle="Drag subject, verb and object to compose a sentence and generate a multilingual visual symbol"
     >
       <ContentBox>
       <LeftPanel>

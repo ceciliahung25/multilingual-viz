@@ -354,7 +354,7 @@ const TokenGenerator = () => {
   return (
     <PageLayout
       title="Word Visualizer"
-      subtitle="Select a language and word to generate multilingual symbolic representations."
+      subtitle="Select a language and word to generate multilingual symbolic representations"
     >
       <ContentBox ref={containerRef}>
       {/* 左侧表单区 */}

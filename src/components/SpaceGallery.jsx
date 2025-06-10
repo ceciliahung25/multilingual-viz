@@ -30,7 +30,7 @@ const SpaceGallery = () => {
   return (
     <PageLayout
       title="Omni-D in Space"
-      subtitle="Explore symbolic signage used in space stations and spacecraft environments."
+      subtitle="Explore symbolic signage used in space stations and spacecraft environments"
     >
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 3, p: 1 }}>
         {scenes.map(scene => (
