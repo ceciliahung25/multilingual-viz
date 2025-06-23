@@ -41,7 +41,7 @@ export const translations = {
       symbolGallery: 'Symbol Gallery',
       sentenceBuilder: 'Sentence Builder',
       identityGenerator: 'Identity Generator',
-      omniDInSpace: 'Omni-D in Space',
+      omniDInSpace: 'Symbol Recognizer',
       omniDLexicon: 'Omni-D Lexicon'
     },
     
@@ -167,7 +167,7 @@ export const translations = {
       symbolGallery: '符号画廊',
       sentenceBuilder: '句子构建器',
       identityGenerator: '身份生成器',
-      omniDInSpace: '太空中的Omni-D',
+      omniDInSpace: '符号识别',
       omniDLexicon: 'Omni-D词汇表'
     },
     

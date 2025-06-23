@@ -70,7 +70,7 @@ const SectionCard = styled(Paper)(({ theme }) => ({
   flexDirection: 'column',
   overflow: 'hidden',
   flex: 1,
-  minWidth: 0,
+  minWidth: 0, // 防止flex项目溢出
 }));
 
 const ModuleCard = styled(Paper)(({ theme }) => ({
@@ -108,11 +108,11 @@ const FunctionButton = styled(Paper)(({ theme }) => ({
   padding: '10px 16px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
-  backgroundColor: '#A9A9A9',
+  backgroundColor: '#A9A9A9', // 中灰色背景
   '&:hover': {
     transform: 'scale(1.02)',
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-    backgroundColor: '#939393',
+    backgroundColor: '#939393', // 悬停时稍深一点的灰色
   },
   display: 'flex',
   flexDirection: 'row',
@@ -144,6 +144,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 const HomePage = ({ setActivePage }) => {
   const { language } = useLanguage();
   
+  // 模块数据
   const modules = [
     {
       id: 'tokengenerator',
@@ -172,7 +173,9 @@ const HomePage = ({ setActivePage }) => {
     }
   ];
 
+  // 点击模块时的处理函数
   const handleModuleClick = (componentName) => {
+    // 根据不同的模块，导航到对应的页面
     switch (componentName) {
       case 'puzzlesentence':
         setActivePage('puzzlesentence');
@@ -220,6 +223,7 @@ const HomePage = ({ setActivePage }) => {
 
         <ContentSection>
           <MainContent>
+            {/* 左侧大图部分 */}
             <Box sx={{ flex: '0 0 45%' }}>
               <SectionCard>
                 <img 
@@ -234,6 +238,7 @@ const HomePage = ({ setActivePage }) => {
               </SectionCard>
             </Box>
 
+            {/* 中间工具列表 */}
             <Box sx={{ flex: '0 0 23%' }}>
               <SectionCard sx={{ padding: '24px' }}>
                 <SectionTitle variant="h5">
@@ -245,6 +250,7 @@ const HomePage = ({ setActivePage }) => {
                   flexDirection: 'column',
                   gap: 1.5
                 }}>
+                  {/* 工具按钮列表 */}
                   <FunctionButton onClick={() => handleModuleClick('gallery')}>
                     <IconBox><FaImages /></IconBox>
                     <Typography variant="body2" sx={{ 
@@ -292,6 +298,7 @@ const HomePage = ({ setActivePage }) => {
               </SectionCard>
             </Box>
 
+            {/* 右侧 Omni-D Lexicon 卡片 */}
             <Box sx={{ flex: '0 0 32%' }}>
               <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ padding: '24px', cursor: 'pointer' }}>
                 <SectionTitle variant="h5">

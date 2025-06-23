@@ -196,7 +196,7 @@ const SymbolRecognizerCN = () => {
             setModel(globalModelCache);
             setIsLoading(false);
       return;
-        }
+    }
         try {
             setLoadingMessage('正在加载基础模型 (MobileNet)...');
             const loadedMobilenet = await mobilenet.load();
@@ -289,7 +289,7 @@ const SymbolRecognizerCN = () => {
         let hash = seed;
         for (let i = 0; i < str.length; i++) {
             hash = (hash * 31 + str.charCodeAt(i)) % 1000000;
-        }
+    }
         const result = hash % max;
         console.log(`哈希映射: "${str}" -> ${result} (${symbolData[result]?.name})`);
         return result;
@@ -369,7 +369,7 @@ const SymbolRecognizerCN = () => {
                 mappedPredictions = predictions.map((pred, index) => {
                     const symbolIndex = hashStringToIndex(pred.className, 50);
                     const symbolName = symbolData[symbolIndex]?.name || `符号 ${symbolIndex}`;
-                    
+      
                     // 调整置信度，使结果更合理
                     const adjustedProbability = index === 0 ? 0.9 : Math.max(0.1, 0.9 - index * 0.15);
       
@@ -691,7 +691,7 @@ const SymbolRecognizerCN = () => {
                                 </CanvasContainer>
                             </Box>
                         </Box>
-
+          
                         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
                             <Button
                                 variant="outlined"
@@ -712,7 +712,7 @@ const SymbolRecognizerCN = () => {
                                     color: '#fff',
                                     borderRadius: '12px'
                                 }}
-                            >
+              >
                                 {isPredicting ? <CircularProgress size={24} color="inherit" /> : '识别符号'}
               </Button>
             </Box>
