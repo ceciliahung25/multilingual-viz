@@ -2,62 +2,225 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Box, Typography, IconButton, Button, Dialog, DialogContent, DialogTitle, Grid, Card, CardMedia, CardContent } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PageLayout from '../PageLayout';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { t } from '../../utils/translations';
 // 导入真实的token映射数据
 import { tokenMapping } from '../../utils/tokenMapping';
 
 // 复用SymbolRecognizer中的符号数据
 const symbolDescriptions = {
-  0: { description: "A complex emotion encompassing affection, compassion, and deep attachment in various forms." },
-  1: { description: "A state without conflict or war; also denotes inner tranquility and harmony." },
-  2: { description: "The ability to act in the face of fear, pain, or danger." },
-  3: { description: "An optimistic state of mind based on the expectation of positive outcomes." },
-  4: { description: "An emotional response to perceived threats or danger." },
-  5: { description: "A positive emotional state characterized by contentment, joy, and life satisfaction." },
-  6: { description: "Information, facts, and skills acquired through experience, education, or learning." },
-  7: { description: "A strong psychological craving or longing for something, often marked by urgency or emotional intensity." },
-  8: { description: "The quality of being in accord with fact or reality." },
-  9: { description: "The state of being free to act, speak, or think without hindrance." },
-  10: { description: "A positive response and desire to help with an inner motivation to lessen or prevent suffering of others." },
-  11: { description: "Confidence or trust in a person, thing, or concept. In the context of religion, faith is 'belief in God or in the doctrines or teachings of religion'." },
-  12: { description: "The ability to make sound judgments and decisions based on knowledge and deep understanding." },
-  13: { description: "A feature of objects that makes them pleasurable to perceive. Such objects include landscapes, sunsets, humans, and works of art." },
-  14: { description: "The quality of being honorable." },
-  15: { description: "The act of surviving; to stay living." },
-  16: { description: "An exciting experience that is typically bold, sometimes risky, undertaking." },
-  17: { description: "A way to wish good luck for a person. Sometimes, in religious rituals, it is said that God blesses those who are good." },
-  18: { description: "A state of complete physical, mental, and social well-being, and not merely the absence of disease." },
-  19: { description: "The state or condition of meeting a defined range of expectations. It may be viewed as the opposite of failure." },
-  20: { description: "A state of economic or social growth in wealth and well-being." },
-  21: { description: "A strong feeling of happiness often resulting from success or good fortune." },
-  22: { description: "The quality of being considerate, generous, and caring." },
-  23: { description: "A state of balance or agreement among different parts or people." },
-  24: { description: "A close relationship based on trust and mutual support." },
-  25: { description: "The abundance of valuable resources like money or property." },
-  26: { description: "The ability to remain calm and persistent in the face of delay or difficulty." },
-  27: { description: "Willingness to give money, time, or help selflessly." },
-  28: { description: "A modest view of one's importance." },
-  29: { description: "Thankfulness for kindness received." },
-  30: { description: "The process of gaining information through senses or instruments." },
-  31: { description: "Investigating unknown areas to acquire new knowledge." },
-  32: { description: "The ability to interpret and make sense of sensory input." },
-  33: { description: "The process of bringing ideas or things into existence." },
-  34: { description: "Applying force to move or initiate change." },
-  35: { description: "An art form using rhythm and imagery to convey emotion and thought." },
-  36: { description: "Knowledge and skills gained through life and practice." },
-  37: { description: "The ability to make wise decisions based on knowledge and experience." },
-  38: { description: "A sequence of mental images during sleep, or a personal aspiration." },
-  39: { description: "An individual who guides and inspires others." },
-  40: { description: "To impart knowledge or skills to others." },
-  41: { description: "A complete emotional loss of hope." },
-  42: { description: "Memorable due to uniqueness or significance." },
-  43: { description: "New, unused, or recently encountered." },
-  44: { description: "The ability to recover quickly from challenges or setbacks." },
-  45: { description: "A facial expression that shows joy and friendliness." },
-  46: { description: "Time and events that are yet to happen." },
-  47: { description: "Exceptionally talented or intelligent." },
-  48: { description: "A quiet state with no motion or sound." },
-  49: { description: "Grand and awe-inspiring in appearance or manner." }
+  0: { 
+    description: "A complex emotion encompassing affection, compassion, and deep attachment in various forms.",
+    descriptionZh: "一种复杂的情感，包含各种形式的爱、同情和深厚的依恋。"
+  },
+  1: { 
+    description: "A state without conflict or war; also denotes inner tranquility and harmony.",
+    descriptionZh: "没有冲突或战争的状态；也指内心的宁静与和谐。"
+  },
+  2: { 
+    description: "The ability to act in the face of fear, pain, or danger.",
+    descriptionZh: "在恐惧、痛苦或危险面前行动的能力。"
+  },
+  3: { 
+    description: "An optimistic state of mind based on the expectation of positive outcomes.",
+    descriptionZh: "基于积极结果预期的乐观心态。"
+  },
+  4: { 
+    description: "An emotional response to perceived threats or danger.",
+    descriptionZh: "对感知到的威胁或危险的情感反应。"
+  },
+  5: { 
+    description: "A positive emotional state characterized by contentment, joy, and life satisfaction.",
+    descriptionZh: "以满足、快乐和生活满意度为特征的积极情感状态。"
+  },
+  6: { 
+    description: "Information, facts, and skills acquired through experience, education, or learning.",
+    descriptionZh: "通过经验、教育或学习获得的信息、事实和技能。"
+  },
+  7: { 
+    description: "A strong psychological craving or longing for something, often marked by urgency or emotional intensity.",
+    descriptionZh: "对某事物的强烈心理渴望或向往，通常以紧迫感或情感强度为标志。"
+  },
+  8: { 
+    description: "The quality of being in accord with fact or reality.",
+    descriptionZh: "与事实或现实一致的特质。"
+  },
+  9: { 
+    description: "The state of being free to act, speak, or think without hindrance.",
+    descriptionZh: "自由行动、说话或思考而不受阻碍的状态。"
+  },
+  10: { 
+    description: "A positive response and desire to help with an inner motivation to lessen or prevent suffering of others.",
+    descriptionZh: "一种积极的回应和帮助他人的愿望，内在动机是减轻或防止他人的痛苦。"
+  },
+  11: { 
+    description: "Confidence or trust in a person, thing, or concept. In the context of religion, faith is 'belief in God or in the doctrines or teachings of religion'.",
+    descriptionZh: "对一个人、事物或概念的信心或信任。在宗教背景下，信仰是'对上帝或宗教教义或教导的信念'。"
+  },
+  12: { 
+    description: "The ability to make sound judgments and decisions based on knowledge and deep understanding.",
+    descriptionZh: "基于知识和深刻理解做出明智判断和决策的能力。"
+  },
+  13: { 
+    description: "A feature of objects that makes them pleasurable to perceive. Such objects include landscapes, sunsets, humans, and works of art.",
+    descriptionZh: "使物体令人愉悦感知的特征。这些物体包括风景、日落、人类和艺术作品。"
+  },
+  14: { 
+    description: "The quality of being honorable.",
+    descriptionZh: "高尚的品质。"
+  },
+  15: { 
+    description: "The act of surviving; to stay living.",
+    descriptionZh: "生存的行为；保持生命。"
+  },
+  16: { 
+    description: "An exciting experience that is typically bold, sometimes risky, undertaking.",
+    descriptionZh: "通常大胆、有时冒险的令人兴奋的经历。"
+  },
+  17: { 
+    description: "A way to wish good luck for a person. Sometimes, in religious rituals, it is said that God blesses those who are good.",
+    descriptionZh: "为某人祈求好运的方式。有时，在宗教仪式中，据说上帝会祝福善良的人。"
+  },
+  18: { 
+    description: "A state of complete physical, mental, and social well-being, and not merely the absence of disease.",
+    descriptionZh: "身体、心理和社会完全健康的状态，而不仅仅是无疾病。"
+  },
+  19: { 
+    description: "The state or condition of meeting a defined range of expectations. It may be viewed as the opposite of failure.",
+    descriptionZh: "满足既定期望范围的状态或条件。它可以被视为失败的反面。"
+  },
+  20: { 
+    description: "A state of economic or social growth in wealth and well-being.",
+    descriptionZh: "财富和福祉方面的经济或社会增长状态。"
+  },
+  21: { 
+    description: "A strong feeling of happiness often resulting from success or good fortune.",
+    descriptionZh: "通常由成功或好运产生的强烈幸福感。"
+  },
+  22: { 
+    description: "The quality of being considerate, generous, and caring.",
+    descriptionZh: "体贴、慷慨和关爱的品质。"
+  },
+  23: { 
+    description: "A state of balance or agreement among different parts or people.",
+    descriptionZh: "不同部分或人之间的平衡或一致状态。"
+  },
+  24: { 
+    description: "A close relationship based on trust and mutual support.",
+    descriptionZh: "基于信任和相互支持的亲密关系。"
+  },
+  25: { 
+    description: "The abundance of valuable resources like money or property.",
+    descriptionZh: "金钱或财产等宝贵资源的丰富。"
+  },
+  26: { 
+    description: "The ability to remain calm and persistent in the face of delay or difficulty.",
+    descriptionZh: "在面对延迟或困难时保持冷静和坚持的能力。"
+  },
+  27: { 
+    description: "Willingness to give money, time, or help selflessly.",
+    descriptionZh: "无私地给予金钱、时间或帮助的意愿。"
+  },
+  28: { 
+    description: "A modest view of one's importance.",
+    descriptionZh: "对自己重要性的谦虚看法。"
+  },
+  29: { 
+    description: "Thankfulness for kindness received.",
+    descriptionZh: "对所受到的善意的感谢。"
+  },
+  30: { 
+    description: "The process of gaining information through senses or instruments.",
+    descriptionZh: "通过感官或仪器获取信息的过程。"
+  },
+  31: { 
+    description: "Investigating unknown areas to acquire new knowledge.",
+    descriptionZh: "调查未知领域以获取新知识。"
+  },
+  32: { 
+    description: "The ability to interpret and make sense of sensory input.",
+    descriptionZh: "解释和理解感官输入的能力。"
+  },
+  33: { 
+    description: "The process of bringing ideas or things into existence.",
+    descriptionZh: "将想法或事物带入存在的过程。"
+  },
+  34: { 
+    description: "Applying force to move or initiate change.",
+    descriptionZh: "施加力来移动或引发变化。"
+  },
+  35: { 
+    description: "An art form using rhythm and imagery to convey emotion and thought.",
+    descriptionZh: "使用节奏和意象来传达情感和思想的艺术形式。"
+  },
+  36: { 
+    description: "Knowledge and skills gained through life and practice.",
+    descriptionZh: "通过生活和实践获得的知识和技能。"
+  },
+  37: { 
+    description: "The ability to make wise decisions based on knowledge and experience.",
+    descriptionZh: "基于知识和经验做出明智决策的能力。"
+  },
+  38: { 
+    description: "A sequence of mental images during sleep, or a personal aspiration.",
+    descriptionZh: "睡眠期间的思维图像序列，或个人抱负。"
+  },
+  39: { 
+    description: "An individual who guides and inspires others.",
+    descriptionZh: "指导和激励他人的个人。"
+  },
+  40: { 
+    description: "To impart knowledge or skills to others.",
+    descriptionZh: "向他人传授知识或技能。"
+  },
+  41: { 
+    description: "A complete emotional loss of hope.",
+    descriptionZh: "完全的情感绝望。"
+  },
+  42: { 
+    description: "Memorable due to uniqueness or significance.",
+    descriptionZh: "因独特性或重要性而令人难忘。"
+  },
+  43: { 
+    description: "New, unused, or recently encountered.",
+    descriptionZh: "新的、未使用的或最近遇到的。"
+  },
+  44: { 
+    description: "The ability to recover quickly from challenges or setbacks.",
+    descriptionZh: "从挑战或挫折中快速恢复的能力。"
+  },
+  45: { 
+    description: "A facial expression that shows joy and friendliness.",
+    descriptionZh: "显示快乐和友好的面部表情。"
+  },
+  46: { 
+    description: "Time and events that are yet to happen.",
+    descriptionZh: "尚未发生的时间和事件。"
+  },
+  47: { 
+    description: "Exceptionally talented or intelligent.",
+    descriptionZh: "特别有才华或聪明。"
+  },
+  48: { 
+    description: "A quiet state with no motion or sound.",
+    descriptionZh: "没有运动或声音的安静状态。"
+  },
+  49: { 
+    description: "Grand and awe-inspiring in appearance or manner.",
+    descriptionZh: "在外观或举止上宏伟而令人敬畏。"
+  }
 };
+
+// 中文词汇映射
+const chineseWords = [
+  '爱', '和平', '勇气', '希望', '恐惧', '幸福', '知识', '渴望', 
+  '真理', '自由', '同情', '信仰', '智慧', '美丽', '荣誉', '生存', 
+  '冒险', '祝福', '健康', '成功', '繁荣', '快乐', '善良', '和谐',
+  '友谊', '财富', '耐心', '慷慨', '谦逊', '感恩', '观察', '探索',
+  '感知', '创造', '推动', '诗歌', '经验', '智慧', '梦想', '领袖',
+  '教导', '绝望', '难忘', '新鲜', '坚韧', '微笑', '未来', '辉煌',
+  '宁静', '庄严'
+];
 
 // 使用真实的token数据
 const getTokensForSymbol = (symbolIndex) => {
@@ -96,6 +259,7 @@ const getTokensForSymbol = (symbolIndex) => {
 const Gallery = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [showStructure, setShowStructure] = useState(false);
+  const { language } = useLanguage();
   
   // 使用useMemo优化words数组，避免重复渲染
   const words = useMemo(() => [
@@ -143,7 +307,7 @@ const Gallery = () => {
             </Typography>
             
             <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary', fontStyle: 'italic' }}>
-              Source: Omni-D Semantic Database • Neural Pattern Recognition System
+              {t('gallery.source', language)}
             </Typography>
             
             <Button 
@@ -151,7 +315,7 @@ const Gallery = () => {
               sx={{ textTransform: 'none' }}
               onClick={() => setShowStructure(true)}
             >
-              View Structure Interpretation
+              {t('gallery.viewStructure', language)}
             </Button>
           </DialogContent>
         </Dialog>
@@ -173,10 +337,10 @@ const Gallery = () => {
       >
         <DialogTitle sx={{ position: 'relative', pr: 6 }}>
           <Typography variant="h6" color="error" sx={{ fontWeight: 'bold' }}>
-            Symbol Configuration Principle
+            {t('gallery.symbolConfig', language)}
           </Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 1 }}>
-            The position of each point on the 17-sided polygon is determined by the token value of the word in the corresponding language. The internal matrix follows the same principle. The small red triangle is the machine recognition starting symbol.
+            {t('gallery.symbolConfigDesc', language)}
           </Typography>
           <IconButton 
             sx={{ position: 'absolute', top: 8, right: 8 }}
@@ -298,7 +462,7 @@ const Gallery = () => {
               overflowY: 'auto'
             }}
           >
-            <Typography variant="subtitle2" gutterBottom>Token Values in Different Languages:</Typography>
+            <Typography variant="subtitle2" gutterBottom>{t('gallery.tokenValues', language)}</Typography>
             {Object.entries(symbol.tokens).map(([lang, token], idx) => (
               <Box key={idx} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography variant="body2">{lang}:</Typography>
@@ -320,7 +484,7 @@ const Gallery = () => {
                 '&:hover': { backgroundColor: '#333' }
               }}
             >
-              Back to Interpretation
+              {t('gallery.backToInterpretation', language)}
             </Button>
           </Box>
         </DialogContent>
@@ -333,19 +497,21 @@ const Gallery = () => {
     const symbolIndex = words.indexOf(word);
     const symbol = {
       key: symbolIndex,
-      name: word === 'good health' ? 'Health' : word.charAt(0).toUpperCase() + word.slice(1),
+      name: language === 'zh' ? chineseWords[symbolIndex] : (word === 'good health' ? 'Health' : word.charAt(0).toUpperCase() + word.slice(1)),
       english: word,
-      description: symbolDescriptions[symbolIndex]?.description || "A meaningful concept with deep significance.",
+      description: language === 'zh' ? 
+        (symbolDescriptions[symbolIndex]?.descriptionZh || "一个有意义的具有深层含义的概念。") :
+        (symbolDescriptions[symbolIndex]?.description || "A meaningful concept with deep significance."),
       tokens: getTokensForSymbol(symbolIndex)
     };
     setSelectedSymbol(symbol);
     setShowStructure(false);
-  }, [words]);
+  }, [words, language]);
 
   return (
     <PageLayout
-      title="Visualization Gallery"
-      subtitle="Browse visual symbol representations of different words. Click on any symbol for detailed information"
+      title={t('gallery.title', language)}
+      subtitle={t('gallery.subtitle', language)}
     >
       <Box sx={{
         width: '100%',
@@ -382,7 +548,7 @@ const Gallery = () => {
                     alt={word}
                     onError={(e) => {
                       // 图像加载失败时的处理
-                      e.target.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="%23f5f5f5"/><text x="60" y="60" text-anchor="middle" dy="0.3em" font-family="Arial" font-size="12" fill="%23999">${word}</text></svg>`;
+                      e.target.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="%23f5f5f5"/><text x="60" y="60" text-anchor="middle" dy="0.3em" font-family="Arial" font-size="12" fill="%23999">${language === 'zh' ? chineseWords[index] : word}</text></svg>`;
                     }}
                     sx={{
                       objectFit: 'contain',
@@ -391,7 +557,7 @@ const Gallery = () => {
                   />
                   <CardContent sx={{ textAlign: 'center', py: 1 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'medium', textTransform: 'capitalize' }}>
-                      {word === 'good health' ? 'Health' : word}
+                      {language === 'zh' ? chineseWords[index] : (word === 'good health' ? 'Health' : word)}
                     </Typography>
                   </CardContent>
                 </Card>

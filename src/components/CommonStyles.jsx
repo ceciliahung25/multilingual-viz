@@ -12,7 +12,7 @@ export const ContentBox = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   width: '100%',
   boxSizing: 'border-box',
-  gap: '40px',
+  gap: '60px',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
     alignItems: 'center',
@@ -132,8 +132,13 @@ export const RightPanel = styled(StyledPaper)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  marginTop: '24px',
+  backgroundColor: '#fafafa',
+  border: 'none',
+  boxShadow: 'none',
   [theme.breakpoints.down('md')]: {
     width: '100%',
+    marginTop: '0',
   },
 }));
 

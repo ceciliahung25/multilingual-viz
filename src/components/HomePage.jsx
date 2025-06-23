@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Paper, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { FaPuzzlePiece, FaFont, FaRocket, FaImages } from 'react-icons/fa';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../utils/translations';
 
 // 样式定义
 const HomeContainer = styled(Box)(({ theme }) => ({
@@ -36,9 +38,20 @@ const TitleSection = styled(Box)(({ theme }) => ({
 
 const ContentSection = styled(Box)(({ theme }) => ({
   width: '100%',
+  maxWidth: 1200,
+  margin: '0 auto',
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
+  flexDirection: 'column',
+  gap: theme.spacing(3)
+}));
+
+const MainContent = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(2),
+  width: '100%',
+  [theme.breakpoints.down('lg')]: {
+    flexDirection: 'column'
+  }
 }));
 
 const SectionCard = styled(Paper)(({ theme }) => ({
@@ -50,6 +63,8 @@ const SectionCard = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
+  flex: 1,
+  minWidth: 0, // 防止flex项目溢出
 }));
 
 const ModuleCard = styled(Paper)(({ theme }) => ({
@@ -98,9 +113,8 @@ const FunctionButton = styled(Paper)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-start',
   color: 'white',
-  height: '50px',
+  minHeight: '50px',
   width: '100%',
-  whiteSpace: 'nowrap',
 }));
 
 const IconBox = styled(Box)(({ theme }) => ({
@@ -122,30 +136,32 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const HomePage = ({ setActivePage }) => {
+  const { language } = useLanguage();
+  
   // 模块数据
   const modules = [
     {
       id: 'tokengenerator',
-      name: 'Omni-D Declaration',
+      name: t('homepage.features.tokenGenerator', language),
       component: 'tokengenerator',
       image: '/images/图片2.jpg',
-      description: 'Select language, look up words online'
+      description: t('homepage.features.tokenDesc', language)
     },
     {
       id: 'sentencecomposer',
-      name: 'Sentence Composer',
+      name: t('homepage.features.sentenceComposer', language),
       component: 'sentencecomposer',
       icon: <FaPuzzlePiece />
     },
     {
       id: 'namevisualizer',
-      name: 'Identity Generator',
+      name: t('homepage.features.nameVisualizer', language),
       component: 'namevisualizer',
       icon: <FaFont />
     },
     {
       id: 'space',
-      name: 'Space Symbol Archive',
+      name: t('homepage.features.spaceGallery', language),
       component: 'space',
       icon: <FaRocket />
     }
@@ -186,23 +202,17 @@ const HomePage = ({ setActivePage }) => {
       <MainCard>
         <TitleSection>
           <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-            Omni-D: Semiotic Engine
+            {t('homepage.title', language)}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            Multilingual Visualization System
+            {t('homepage.subtitle', language)}
           </Typography>
         </TitleSection>
 
         <ContentSection>
-          {/* 主要内容区域 - 分为三部分 */}
-          <Grid container spacing={3} sx={{ 
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            justifyContent: 'center'
-          }}>
+          <MainContent>
             {/* 左侧大图部分 */}
-            <Grid item xs={12} md={5}>
+            <Box sx={{ flex: '0 0 45%' }}>
               <SectionCard>
                 <img 
                   src="/images/图片1.png" 
@@ -214,84 +224,93 @@ const HomePage = ({ setActivePage }) => {
                   }}
                 />
               </SectionCard>
-            </Grid>
+            </Box>
 
-            {/* 中间功能模块部分 */}
-            <Grid item xs={12} md={3.5}>
+            {/* 中间工具列表 */}
+            <Box sx={{ flex: '0 0 30%' }}>
               <SectionCard sx={{ padding: '24px' }}>
                 <SectionTitle variant="h5">
-                  Explore Tools
+                  {t('homepage.exploreTools', language)}
                 </SectionTitle>
                 
                 <Box sx={{ 
                   display: 'flex', 
                   flexDirection: 'column',
-                  flex: 1,
-                  justifyContent: 'flex-start'
+                  gap: 1.5
                 }}>
-                  <Grid container spacing={1.5} direction="column">
-                    {/* Symbol Gallery按钮 - 移到最上面 */}
-                    <Grid item>
-                      <FunctionButton onClick={() => handleModuleClick('gallery')}>
-                        <IconBox><FaImages /></IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
-                          Symbol Gallery
-                        </Typography>
-                      </FunctionButton>
-                    </Grid>
+                  {/* 工具按钮列表 */}
+                  <FunctionButton onClick={() => handleModuleClick('gallery')}>
+                    <IconBox><FaImages /></IconBox>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 500,
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      {t('homepage.symbolGallery', language)}
+                    </Typography>
+                  </FunctionButton>
 
-                    {/* 句子拼接按钮 */}
-                    <Grid item>
-                      <FunctionButton onClick={() => handleModuleClick('sentencecomposer')}>
-                        <IconBox>{modules[1].icon}</IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
-                          Sentence Builder
-                        </Typography>
-                      </FunctionButton>
-                    </Grid>
+                  <FunctionButton onClick={() => handleModuleClick('sentencecomposer')}>
+                    <IconBox>{modules[1].icon}</IconBox>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 500,
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      {t('homepage.sentenceBuilder', language)}
+                    </Typography>
+                  </FunctionButton>
 
-                    {/* 身份生成按钮 */}
-                    <Grid item>
-                      <FunctionButton onClick={() => handleModuleClick('namevisualizer')}>
-                        <IconBox>{modules[2].icon}</IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
-                          Identity Generator
-                        </Typography>
-                      </FunctionButton>
-                    </Grid>
+                  <FunctionButton onClick={() => handleModuleClick('namevisualizer')}>
+                    <IconBox>{modules[2].icon}</IconBox>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 500,
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      {t('homepage.identityGenerator', language)}
+                    </Typography>
+                  </FunctionButton>
 
-                    {/* 太空图库按钮 */}
-                    <Grid item>
-                      <FunctionButton onClick={() => handleModuleClick('space')}>
-                        <IconBox><FaRocket /></IconBox>
-                        <Typography variant="body2" sx={{ fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, textAlign: 'center' }}>
-                          Omni-D in Space
-                        </Typography>
-                      </FunctionButton>
-                    </Grid>
-                  </Grid>
+                  <FunctionButton onClick={() => handleModuleClick('space')}>
+                    <IconBox><FaRocket /></IconBox>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 500,
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      {t('homepage.omniDInSpace', language)}
+                    </Typography>
+                  </FunctionButton>
                 </Box>
               </SectionCard>
-            </Grid>
+            </Box>
 
-            {/* 右侧Omni-D宣言卡片 */}
-            <Grid item xs={12} md={3.5}>
-              <ModuleCard onClick={() => handleModuleClick('tokengenerator')}>
+            {/* 右侧 Omni-D Lexicon 卡片 */}
+            <Box sx={{ flex: '0 0 25%' }}>
+              <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ padding: '24px', cursor: 'pointer' }}>
                 <SectionTitle variant="h5">
-                  Omni-D Lexicon
+                  {t('homepage.omniDLexicon', language)}
                 </SectionTitle>
                 
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center',
+                  gap: 2
+                }}>
                   <ImageBox>
                     <ModuleImage src="/images/图片2.jpg" alt="Omni-D Declaration" />
                   </ImageBox>
-                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                    Select language, look up words online
+                  <Typography variant="body2" color="text.secondary" sx={{ 
+                    textAlign: 'center'
+                  }}>
+                    {t('homepage.features.tokenDesc', language)}
                   </Typography>
                 </Box>
-              </ModuleCard>
-            </Grid>
-          </Grid>
+              </SectionCard>
+            </Box>
+          </MainContent>
         </ContentSection>
       </MainCard>
     </HomeContainer>

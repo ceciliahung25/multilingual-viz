@@ -6,27 +6,26 @@ import CloseIcon from '@mui/icons-material/Close';
 import * as d3 from 'd3';
 import CryptoJS from 'crypto-js';
 import PageLayout from './PageLayout';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../utils/translations';
 import { 
   ContentBox, 
   StyledPaper, 
   StyledSelect, 
   StyledMenuItem, 
   LeftPanel as BaseLeftPanel, 
-  RightPanel, 
-  InteractionBox 
+  RightPanel
 } from './CommonStyles';
 
 // 自定义左侧面板
 const LeftPanel = styled(BaseLeftPanel)(({ theme }) => ({
-  width: 600,
-  gap: 18,
-  paddingLeft: 30,
-  paddingRight: 8,
+  width: 550, // 调整宽度以容纳所有控件
+  gap: 24,
+  padding: '24px 28px',
   [theme.breakpoints.down('md')]: {
     width: '100%',
-    maxWidth: 600,
-    paddingLeft: 0,
-    paddingRight: 0,
+    maxWidth: 550,
+    padding: '20px',
   },
 }));
 
@@ -43,18 +42,9 @@ const WordList = styled(Box)(({ theme }) => ({
   alignItems: 'flex-start',
 }));
 
-// 中间面板
-const CenterPanel = styled(Box)(({ theme }) => ({
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: 18,
-}));
-
 // 槽位
 const Hole = styled(StyledPaper)(({ theme }) => ({
-  minWidth: 120,
+  minWidth: 100,
   maxWidth: 180,
   height: 56,
   display: 'flex',
@@ -70,10 +60,10 @@ const Hole = styled(StyledPaper)(({ theme }) => ({
   whiteSpace: 'nowrap',
   marginBottom: 0,
   [theme.breakpoints.down('sm')]: {
-    minWidth: 100,
-    fontSize: 16,
+    minWidth: 90,
+    fontSize: 14,
     height: 48,
-    padding: '0 12px',
+    padding: '0 10px',
   },
 }));
 
@@ -122,12 +112,11 @@ const languageOptions = [
 ];
 
 const SentenceComposer = () => {
-  // 当前语言 - 默认设为英文
-  const [language, setLanguage] = useState('en');
+  const { language: appLanguage } = useLanguage();
+  // 当前语言 - 根据应用语言设置默认值
+  const [language, setLanguage] = useState(appLanguage === 'zh' ? 'zh' : 'en');
   // 洞的内容：主语、谓语、宾语
   const [holes, setHoles] = useState([null, null, null]);
-  // 当前拖拽的词语
-  const [dragWord, setDragWord] = useState(null);
   // 动画高亮
   const [dragging, setDragging] = useState(null);
   // one-hot数据
@@ -141,6 +130,13 @@ const SentenceComposer = () => {
   const graphRef = useRef();
   const containerRef = useRef();
   const [graphSize, setGraphSize] = useState({ width: 420, height: 420 });
+
+  // 当应用语言改变时，同步更新组件语言并清空槽位
+  useEffect(() => {
+    const newLang = appLanguage === 'zh' ? 'zh' : 'en';
+    setLanguage(newLang);
+    setHoles([null, null, null]); // 清空槽位
+  }, [appLanguage]);
 
   // 自适应调整图表大小
   useEffect(() => {
@@ -208,14 +204,6 @@ const SentenceComposer = () => {
   const objects = currentLang.objects;
   // 当前语言英文名称（用于CSV数据查找）
   const langName = language === 'zh' ? 'Chinese' : 'English';
-  // 根据当前语言显示相应的提示文字
-  const roleNames = language === 'zh' ? ['主语', '谓语', '宾语'] : ['Subject', 'Verb', 'Object'];
-
-  // 根据 main_word 和当前语言，查找本地词
-  const getLocalWord = (main_word) => {
-    const row = oneHotData.find(d => d.main_word === main_word && d.language === langName);
-    return row ? row.local_word : main_word;
-  };
 
   // 可视化逻辑
   useEffect(() => {
@@ -341,178 +329,236 @@ const SentenceComposer = () => {
       .attr('fill', '#000')
       .attr('font-size', width < 350 ? 13 : 15)
       .text(filled.join(' '));
-  }, [holes, tokenIdData, oneHotData, language, langOrder, graphSize]);
+  }, [holes, tokenIdData, oneHotData, language, langOrder, graphSize, langName]);
+
+  // 拖拽开始
+  const handleDragStart = (e, word) => {
+    setDragging(word);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', word);
+  };
+
+  // 拖拽结束
+  const handleDragEnd = () => {
+    setDragging(null);
+  };
 
   // 拖拽到洞位（限制类型）
-  const handleDrop = (idx) => {
-    if (!dragWord) return;
+  const handleDrop = (e, idx) => {
+    e.preventDefault();
+    const word = e.dataTransfer.getData('text/plain');
+    if (!word) return;
+    
     if (
-      (idx === 0 && subjects.includes(dragWord)) ||
-      (idx === 1 && verbs.includes(dragWord)) ||
-      (idx === 2 && objects.includes(dragWord))
+      (idx === 0 && subjects.includes(word)) ||
+      (idx === 1 && verbs.includes(word)) ||
+      (idx === 2 && objects.includes(word))
     ) {
       const newHoles = [...holes];
-      newHoles[idx] = dragWord;
+      newHoles[idx] = word;
       setHoles(newHoles);
-      setDragWord(null);
-      setDragging(null);
     }
+    setDragging(null);
   };
+
   // 允许放置
   const handleDragOver = (e) => {
     e.preventDefault();
-  };
-  // 移除洞内词语
-  const handleRemove = (idx) => {
-    const newHoles = [...holes];
-    newHoles[idx] = null;
-    setHoles(newHoles);
+    e.dataTransfer.dropEffect = 'move';
   };
 
   // 判断词语是否已被使用
   const isUsed = (w) => holes.includes(w);
 
+  const handleWordClick = (word, type) => {
+    // 找到第一个空的对应类型的槽位
+    let idx;
+    if (type === 'subject') idx = 0;
+    else if (type === 'verb') idx = 1;
+    else if (type === 'object') idx = 2;
+
+    // 如果该类型的槽位为空，则填充
+    if (holes[idx] === null) {
+      const newHoles = [...holes];
+      newHoles[idx] = word;
+      setHoles(newHoles);
+    }
+  };
+
   return (
     <PageLayout
-      title="Sentence Composer"
-      subtitle="Drag subject, verb and object to compose a sentence and generate a multilingual visual symbol"
+      title={t('sentenceComposer.title', appLanguage)}
+      subtitle={t('sentenceComposer.subtitle', appLanguage)}
     >
       <ContentBox>
-      <LeftPanel>
-          <Box sx={{ width: '33%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 1 }}>
-              Select Language:
+        <LeftPanel>
+          {/* 语言选择和句子槽位放在一起 */}
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+              {t('sentenceComposer.selectLanguage', appLanguage)}
             </Typography>
-            <StyledSelect
-              value={language}
-              onChange={(e) => {
-                setLanguage(e.target.value);
-                setHoles([null, null, null]);
-              }}
-              fullWidth
-            >
-              {languageOptions.map(lang => (
-                <StyledMenuItem key={lang.code} value={lang.code}>{lang.label}</StyledMenuItem>
-              ))}
-            </StyledSelect>
-          </Box>
-          
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'row', 
-            gap: 2, 
-            mt: 1,
-            mb: 3,
-            flexWrap: { xs: 'wrap', sm: 'nowrap' },
-            justifyContent: 'flex-start', 
-            width: '100%'
-          }}>
-            {holes.map((word, idx) => (
-              <Hole
-                key={idx}
-                onDrop={() => handleDrop(idx)}
-                onDragOver={handleDragOver}
-                sx={{ flex: 1 }}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+              <StyledSelect
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                sx={{ minWidth: 120 }}
               >
-                {word ? (
-                  <Box sx={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span>{word}</span>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleRemove(idx)}
-                      sx={{ position: 'absolute', top: -8, right: -8, background: '#f0f0f0', width: 18, height: 18 }}
-                    >
-                      <CloseIcon sx={{ fontSize: 14 }} />
+                {languageOptions.map(option => (
+                  <StyledMenuItem key={option.code} value={option.code}>
+                    {option.label}
+                  </StyledMenuItem>
+                ))}
+              </StyledSelect>
+            </Box>
+            
+            {/* 句子槽位 */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+              {holes.map((word, idx) => (
+                <Hole 
+                  key={idx}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  onDragOver={handleDragOver}
+                  sx={{ position: 'relative' }}
+                >
+                  {word ? (
+                    <>
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                        {word}
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          const newHoles = [...holes];
+                          newHoles[idx] = null;
+                          setHoles(newHoles);
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          top: -6,
+                          right: -6,
+                          width: 20,
+                          height: 20,
+                          backgroundColor: '#f0f0f0',
+                          padding: '2px',
+                          '&:hover': { backgroundColor: '#e0e0e0' }
+                        }}
+                      >
+                        <CloseIcon sx={{ fontSize: 14 }} />
                       </IconButton>
-                    </Box>
+                    </>
                   ) : (
-                    <span style={{ color: '#bbb' }}>{roleNames[idx]}</span>
+                    <Typography variant="body1" sx={{ color: '#ccc' }}>
+                      {appLanguage === 'zh' ? ['主语', '谓语', '宾语'][idx] : ['Subject', 'Verb', 'Object'][idx]}
+                    </Typography>
                   )}
                 </Hole>
               ))}
+            </Box>
           </Box>
-
-          {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).subjects.length > 0 && (
-            <InteractionBox>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                Subject
+          
+          {/* 词语列表 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+            {/* 主语 */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                {appLanguage === 'zh' ? '主语' : 'Subject'}
               </Typography>
-        <WordList>
-                {languageOptions.find(l => l.code === language).subjects.map(word => (
-            <WordButton
+              <WordList>
+                {languageOptions.find(opt => opt.code === language)?.subjects.map(word => (
+                  <WordButton
                     key={word}
+                    disabled={isUsed(word)}
                     draggable={!isUsed(word)}
-                    className={clsx({ dragging: dragging === word })}
-                    onDragStart={() => {
-                      setDragWord(word);
-                      setDragging(word);
+                    onDragStart={(e) => handleDragStart(e, word)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => !isUsed(word) && handleWordClick(word, 'subject')}
+                    className={clsx(dragging === word && 'dragging')}
+                    sx={{
+                      opacity: isUsed(word) ? 0.3 : 1,
+                      cursor: isUsed(word) ? 'not-allowed' : 'pointer'
                     }}
-              onDragEnd={() => setDragging(null)}
-                    sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-            >
+                  >
                     {word}
-            </WordButton>
-          ))}
-        </WordList>
-            </InteractionBox>
-          )}
+                  </WordButton>
+                ))}
+              </WordList>
+            </Box>
 
-          {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).verbs.length > 0 && (
-            <InteractionBox>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                Verb
+            {/* 谓语 */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                {appLanguage === 'zh' ? '谓语' : 'Verb'}
               </Typography>
-        <WordList>
-                {languageOptions.find(l => l.code === language).verbs.map(word => (
-            <WordButton
+              <WordList>
+                {languageOptions.find(opt => opt.code === language)?.verbs.map(word => (
+                  <WordButton
                     key={word}
+                    disabled={isUsed(word)}
                     draggable={!isUsed(word)}
-                    className={clsx({ dragging: dragging === word })}
-                    onDragStart={() => {
-                      setDragWord(word);
-                      setDragging(word);
+                    onDragStart={(e) => handleDragStart(e, word)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => !isUsed(word) && handleWordClick(word, 'verb')}
+                    className={clsx(dragging === word && 'dragging')}
+                    sx={{
+                      opacity: isUsed(word) ? 0.3 : 1,
+                      cursor: isUsed(word) ? 'not-allowed' : 'pointer'
                     }}
-              onDragEnd={() => setDragging(null)}
-                    sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-            >
+                  >
                     {word}
-            </WordButton>
-          ))}
-        </WordList>
-            </InteractionBox>
-          )}
+                  </WordButton>
+                ))}
+              </WordList>
+            </Box>
 
-          {languageOptions.find(l => l.code === language) && languageOptions.find(l => l.code === language).objects.length > 0 && (
-            <InteractionBox>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                Object
+            {/* 宾语 */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                {appLanguage === 'zh' ? '宾语' : 'Object'}
               </Typography>
-        <WordList>
-                {languageOptions.find(l => l.code === language).objects.map(word => (
-            <WordButton
+              <WordList>
+                {languageOptions.find(opt => opt.code === language)?.objects.map(word => (
+                  <WordButton
                     key={word}
+                    disabled={isUsed(word)}
                     draggable={!isUsed(word)}
-                    className={clsx({ dragging: dragging === word })}
-                    onDragStart={() => {
-                      setDragWord(word);
-                      setDragging(word);
+                    onDragStart={(e) => handleDragStart(e, word)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => !isUsed(word) && handleWordClick(word, 'object')}
+                    className={clsx(dragging === word && 'dragging')}
+                    sx={{
+                      opacity: isUsed(word) ? 0.3 : 1,
+                      cursor: isUsed(word) ? 'not-allowed' : 'pointer'
                     }}
-              onDragEnd={() => setDragging(null)}
-                    sx={{ opacity: isUsed(word) ? 0.5 : 1 }}
-            >
+                  >
                     {word}
-            </WordButton>
-          ))}
-        </WordList>
-            </InteractionBox>
-          )}
-      </LeftPanel>
+                  </WordButton>
+                ))}
+              </WordList>
+            </Box>
+          </Box>
+        </LeftPanel>
 
-        <CenterPanel sx={{ pt: 2 }}>
-      <RightPanel ref={containerRef}>
-            <svg ref={graphRef} width={graphSize.width} height={graphSize.height}></svg>
-      </RightPanel>
-        </CenterPanel>
+        <RightPanel>
+          <Box
+            ref={containerRef}
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <svg
+              ref={graphRef}
+              style={{
+                width: graphSize.width,
+                height: graphSize.height,
+                cursor: 'grab'
+              }}
+            />
+          </Box>
+        </RightPanel>
       </ContentBox>
     </PageLayout>
   );

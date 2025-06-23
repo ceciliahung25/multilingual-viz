@@ -4,6 +4,8 @@ import * as d3 from 'd3';
 import CryptoJS from 'crypto-js';
 import { styled } from '@mui/material/styles';
 import PageLayout from '../PageLayout';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { t } from '../../utils/translations';
 
 // 语言映射
 const languages = [
@@ -163,12 +165,20 @@ const ContentBox = styled(Box)(({ theme }) => ({
 }));
 
 const TokenGenerator = () => {
-  const [sourceLanguage, setSourceLanguage] = useState('');
+  const { language: appLanguage } = useLanguage();
+  const [sourceLanguage, setSourceLanguage] = useState(appLanguage === 'zh' ? 'Chinese' : 'English');
   const [word, setWord] = useState('');
   const [data, setData] = useState([]);
   const [graphSize, setGraphSize] = useState({ width: 500, height: 500 });
   const graphRef = useRef();
   const containerRef = useRef();
+
+  useEffect(() => {
+    // 当全局语言切换时，同步更新页面语言并清空单词选择
+    const newLang = appLanguage === 'zh' ? 'Chinese' : 'English';
+    setSourceLanguage(newLang);
+    setWord('');
+  }, [appLanguage]);
 
   useEffect(() => {
     const updateGraphSize = () => {
@@ -235,7 +245,7 @@ const TokenGenerator = () => {
     const bits = h.slice(0, 24).split('').map(x => parseInt(x, 16) % 2);
     // 4. 绘制
     const { width, height } = graphSize;
-    const margin = Math.floor(width * 0.12);
+    const margin = Math.floor(width * 0.08);
     const radius = Math.min(width, height) / 2 - margin;
     const svg = d3.select(graphRef.current)
       .attr('width', width)
@@ -255,23 +265,20 @@ const TokenGenerator = () => {
       const ratio = ratios[i];
       return {
         x: vertex.x * (1 - ratio) + nextVertex.x * ratio,
-        y: vertex.y * (1 - ratio) + nextVertex.y * ratio,
-        lang: langOrder[i],
-        token: allLangTokens[i]
+        y: vertex.y * (1 - ratio) + nextVertex.y * ratio
       };
     });
     // 绘制17边形轮廓
-    const polygonLine = d3.line().x(d => d.x).y(d => d.y);
     svg.append('path')
       .datum([...vertices, vertices[0]])
-      .attr('d', polygonLine)
-      .attr('fill', 'rgba(200, 200, 200, 0.12)')
+      .attr('d', d3.line().x(d => d.x).y(d => d.y))
+      .attr('fill', 'rgba(200,200,200,0.12)')
       .attr('stroke', '#ccc')
       .attr('stroke-width', 1);
     // 绘制内部多边形
     svg.append('path')
       .datum([...points, points[0]])
-      .attr('d', polygonLine)
+      .attr('d', d3.line().x(d => d.x).y(d => d.y))
       .attr('fill', 'none')
       .attr('stroke', '#000')
       .attr('stroke-width', 1);
@@ -294,11 +301,11 @@ const TokenGenerator = () => {
       .attr('class', 'node')
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('r', width < 400 ? 5 : 7)
+      .attr('r', Math.max(5, Math.floor(width / 60)))
       .attr('fill', '#000')
       .on('mouseover', function(e, d) {
         tooltip.style('visibility', 'visible')
-          .text(`${d.lang}: ${d.token}`);
+          .text(`${sourceLanguage}: ${word}`);
       })
       .on('mousemove', function(e) {
         tooltip.style('top', (e.pageY - 30) + 'px')
@@ -309,7 +316,7 @@ const TokenGenerator = () => {
       });
     // 内部矩阵
     const rowCounts = [2, 4, 6, 6, 4, 2];
-    const dotR = width < 400 ? 9 : 13;
+    const dotR = Math.max(4, Math.floor(width / 50));
     const yGap = dotR * 2.2;
     const xGap = dotR * 2.2;
     let bitIdx = 0;
@@ -339,22 +346,22 @@ const TokenGenerator = () => {
       const triX = firstDotPos.x - dotR * 1.6;
       const triY = firstDotPos.y;
       svg.append('path')
-        .attr('d', `M ${triX} ${triY} L ${triX - triangleBase} ${triY + triangleHeight/2} L ${triX - triangleBase} ${triY - triangleHeight/2} Z`)
+        .attr('d', `M ${triX} ${triY} L ${triX - triangleBase} ${triY + triangleHeight / 2} L ${triX - triangleBase} ${triY - triangleHeight / 2} Z`)
         .attr('fill', 'red');
     }
     // 词语标签
     svg.append('text')
       .attr('text-anchor', 'middle')
-      .attr('y', radius + 45)
+      .attr('y', radius + 30)
       .attr('fill', '#000')
-      .attr('font-size', width < 400 ? 13 : 15)
+      .attr('font-size', 16)
       .text(localWord);
   };
 
   return (
     <PageLayout
-      title="Word Visualizer"
-      subtitle="Select a language and word to generate multilingual symbolic representations"
+      title={t('wordVisualizer.title', appLanguage)}
+      subtitle={t('wordVisualizer.subtitle', appLanguage)}
     >
       <ContentBox ref={containerRef}>
       {/* 左侧表单区 */}
@@ -379,7 +386,9 @@ const TokenGenerator = () => {
             displayEmpty
             sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
           >
-            <MinimalMenuItem value="">Select Source Language</MinimalMenuItem>
+            <MinimalMenuItem value="" disabled>
+              <Typography color="textSecondary">{t('wordVisualizer.selectSourceLanguage', appLanguage)}</Typography>
+            </MinimalMenuItem>
             {languages.map(lang => (
               <MinimalMenuItem key={lang.code} value={lang.nameEn}>{lang.name}</MinimalMenuItem>
             ))}
@@ -391,7 +400,9 @@ const TokenGenerator = () => {
             sx={{ width: '100%', fontSize: { xs: 14, md: 15 }, height: { xs: 38, md: 40 } }}
             disabled={!sourceLanguage}
           >
-            <MinimalMenuItem value="">Select Word</MinimalMenuItem>
+            <MinimalMenuItem value="" disabled>
+              <Typography color="textSecondary">{t('wordVisualizer.selectWord', appLanguage)}</Typography>
+            </MinimalMenuItem>
             {wordOptions.map((w, idx) => (
               <MinimalMenuItem key={w.local_word + idx} value={w.main_word + '|' + w.local_word}>{w.local_word}</MinimalMenuItem>
             ))}
@@ -402,11 +413,11 @@ const TokenGenerator = () => {
             disabled={!word || !sourceLanguage}
             sx={{ height: { xs: 38, md: 40 }, fontSize: { xs: 14, md: 15 }, minWidth: { xs: 90, md: 100 } }}
           >
-            Generate
+            {t('wordVisualizer.generate', appLanguage)}
           </MinimalButton>
         </Box>
           <Typography variant="body2" sx={{ color: '#777', fontSize: { xs: 12, md: 13 } }}>
-          The word list will update based on the selected language.
+          {t('wordVisualizer.note', appLanguage)}
         </Typography>
       </MinimalPaper>
       {/* 右侧可视化区 */}

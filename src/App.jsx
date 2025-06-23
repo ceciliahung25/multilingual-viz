@@ -10,6 +10,7 @@ import SentenceComposer from './components/SentenceComposer';
 import Gallery from './components/Gallery/Gallery';
 import TokenGenerator from './components/TokenGenerator/TokenGenerator';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import './App.css';
 
 // 创建主题
@@ -26,14 +27,10 @@ const lightTheme = createTheme({
   },
 });
 
-// 确定当前是否使用中国区域版本
-// 可以根据域名、环境变量或构建参数来判断
-const isChineseVersion = process.env.REACT_APP_REGION === 'CN' || 
-                         window.location.hostname.includes('.cn') ||
-                         window.location.hostname.includes('-cn');
-
-function App() {
+// 主应用组件
+const AppContent = () => {
   const [activePage, setActivePage] = useState('homepage');
+  const { isChinese } = useLanguage();
 
   const renderPage = () => {
     switch (activePage) {
@@ -46,8 +43,8 @@ function App() {
       case 'space':
         return <SpaceGallery />;
       case 'symbols':
-        // 根据版本选择使用哪个符号识别器组件
-        return isChineseVersion ? <SymbolRecognizerCN /> : <SymbolRecognizer />;
+        // 根据语言选择使用哪个符号识别器组件
+        return isChinese ? <SymbolRecognizerCN /> : <SymbolRecognizer />;
       case 'puzzlesentence':
         return <PuzzleSentence />;
       case 'namevisualizer':
@@ -60,15 +57,23 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={lightTheme}>
-      <CssBaseline />
-      <div className="app">
-        <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="main-content">
-          {renderPage()}
-        </main>
-      </div>
-    </ThemeProvider>
+    <div className="app">
+      <Sidebar activePage={activePage} setActivePage={setActivePage} />
+      <main className="main-content">
+        {renderPage()}
+      </main>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <LanguageProvider>
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <AppContent />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
 

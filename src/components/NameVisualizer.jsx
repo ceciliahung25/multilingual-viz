@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import * as d3 from 'd3';
 import CryptoJS from 'crypto-js';
 import PageLayout from './PageLayout';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../utils/translations';
 import { 
   ContentBox, 
   StyledPaper, 
@@ -77,8 +79,8 @@ const upperLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65
 const lowerLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
 
 const NameVisualizer = () => {
+  const { language } = useLanguage();
   const [holes, setHoles] = useState([null, null, null, null]);
-  const [dragLetter, setDragLetter] = useState(null);
   const [dragging, setDragging] = useState(null);
   const [tokenMap, setTokenMap] = useState({});
   const graphRef = React.useRef();
@@ -237,20 +239,34 @@ const NameVisualizer = () => {
       .text(filled.join(''));
   }, [holes, tokenMap, graphSize]);
 
+  // 拖拽开始
+  const handleDragStart = (e, letter) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', letter);
+  };
+
+  // 拖拽结束
+  const handleDragEnd = () => {
+    setDragging(null);
+  };
+
   // 拖拽到洞
-  const handleDrop = (idx) => {
-    if (dragLetter) {
+  const handleDrop = (e, idx) => {
+    e.preventDefault();
+    const letter = e.dataTransfer.getData('text/plain');
+    if (letter) {
       const newHoles = [...holes];
-      newHoles[idx] = dragLetter;
+      newHoles[idx] = letter;
       setHoles(newHoles);
-      setDragLetter(null);
-      setDragging(null);
     }
   };
+
   // 允许放置
   const handleDragOver = (e) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
   };
+
   // 移除洞内字母
   const handleRemove = (idx) => {
     const newHoles = [...holes];
@@ -258,117 +274,141 @@ const NameVisualizer = () => {
     setHoles(newHoles);
   };
 
-  // 判断字母是否已被使用
-  const isUsed = (l) => holes.includes(l);
+  // 判断字母是否已被使用 - 移除使用限制
+  const isUsed = (l) => false; // 始终返回false，表示字母可以重复使用
+
+  const handleLetterClick = (letter) => {
+    // 找到第一个空的槽位
+    const emptyIndex = holes.findIndex(hole => hole === null);
+    if (emptyIndex !== -1) {
+      const newHoles = [...holes];
+      newHoles[emptyIndex] = letter;
+      setHoles(newHoles);
+    }
+  };
 
   return (
     <PageLayout
-      title="Identity Visualizer"
-      subtitle="Create a unique visual symbol by combining letters to represent your name or identity"
+      title={t('nameVisualizer.title', language)}
+      subtitle={t('nameVisualizer.subtitle', language)}
     >
       <ContentBox>
         <LeftPanel>
-          <Typography variant="h6" fontWeight={600}>
-            Combine Letters
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+            {t('nameVisualizer.enterName', language)}
           </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'row', 
-            gap: { xs: 1.5, md: 3 }, 
-            mb: 2,
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
-            justifyContent: 'center' 
-          }}>
+          
+          {/* 字母洞 */}
+          <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
             {holes.map((letter, idx) => (
-              <Hole
+              <Hole 
                 key={idx}
-                onDrop={() => handleDrop(idx)}
+                onDrop={(e) => handleDrop(e, idx)}
                 onDragOver={handleDragOver}
               >
                 {letter ? (
-                  <Box sx={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '24px', fontWeight: 500 }}>{letter}</span>
+                  <Box sx={{ position: 'relative' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      {letter}
+                    </Typography>
                     <IconButton
                       size="small"
                       onClick={() => handleRemove(idx)}
-                      sx={{ position: 'absolute', top: -8, right: -8, background: '#f0f0f0', width: 18, height: 18 }}
+                      sx={{
+                        position: 'absolute',
+                        top: -8,
+                        right: -8,
+                        width: 16,
+                        height: 16,
+                        backgroundColor: '#f0f0f0',
+                        '&:hover': { backgroundColor: '#e0e0e0' }
+                      }}
                     >
-                      <CloseIcon sx={{ fontSize: 14 }} />
+                      <CloseIcon sx={{ fontSize: 12 }} />
                     </IconButton>
                   </Box>
                 ) : (
-                  <span style={{ color: '#bbb' }}>Empty</span>
+                  <Typography variant="h6" sx={{ color: '#ccc' }}>
+                    {t('nameVisualizer.emptySlot', language)}
+                  </Typography>
                 )}
               </Hole>
             ))}
           </Box>
 
-          <Typography variant="h6" fontWeight={600} sx={{ mt: 3 }}>
-            Uppercase Letters
-          </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            justifyContent: 'flex-start', 
-            mb: 2,
-            background: '#f7f7f9',
-            p: 1.5,
-            borderRadius: 2
-          }}>
-            {upperLetters.map(letter => (
-              <LetterButton
-                key={letter}
-                variant="text"
-                disabled={isUsed(letter)}
-                className={clsx(dragging === letter && 'dragging')}
-                draggable={!isUsed(letter)}
-                onDragStart={() => {
-                  setDragLetter(letter);
-                  setDragging(letter);
-                }}
-                onDragEnd={() => setDragging(null)}
-              >
-                {letter}
-              </LetterButton>
-            ))}
+          {/* 字母按钮 - 恢复大小写字母 */}
+          <Box sx={{ width: '100%' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+              {t('nameVisualizer.uppercaseLetters', language)}
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', gap: '8px' }}>
+              {upperLetters.map(letter => (
+                <LetterButton
+                  key={letter}
+                  disabled={isUsed(letter)}
+                  draggable={!isUsed(letter)}
+                  onDragStart={(e) => handleDragStart(e, letter)}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => !isUsed(letter) && handleLetterClick(letter)}
+                  className={clsx(dragging === letter && 'dragging')}
+                  sx={{
+                    opacity: isUsed(letter) ? 0.3 : 1,
+                    cursor: isUsed(letter) ? 'not-allowed' : 'pointer',
+                    margin: 0 // 覆盖默认margin
+                  }}
+                >
+                  {letter}
+                </LetterButton>
+              ))}
+            </Box>
           </Box>
-
-          <Typography variant="h6" fontWeight={600}>
-            Lowercase Letters
-          </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            justifyContent: 'flex-start',
-            background: '#f7f7f9',
-            p: 1.5,
-            borderRadius: 2
-          }}>
-            {lowerLetters.map(letter => (
-              <LetterButton
-                key={letter}
-                variant="text"
-                disabled={isUsed(letter)}
-                className={clsx(dragging === letter && 'dragging')}
-                draggable={!isUsed(letter)}
-                onDragStart={() => {
-                  setDragLetter(letter);
-                  setDragging(letter);
-                }}
-                onDragEnd={() => setDragging(null)}
-              >
-                {letter}
-              </LetterButton>
-            ))}
+          <Box sx={{ width: '100%' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, mt: 2 }}>
+              {t('nameVisualizer.lowercaseLetters', language)}
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start', gap: '8px' }}>
+              {lowerLetters.map(letter => (
+                <LetterButton
+                  key={letter}
+                  disabled={isUsed(letter)}
+                  draggable={!isUsed(letter)}
+                  onDragStart={(e) => handleDragStart(e, letter)}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => !isUsed(letter) && handleLetterClick(letter)}
+                  className={clsx(dragging === letter && 'dragging')}
+                  sx={{
+                    opacity: isUsed(letter) ? 0.3 : 1,
+                    cursor: isUsed(letter) ? 'not-allowed' : 'pointer',
+                    margin: 0 // 覆盖默认margin
+                  }}
+                >
+                  {letter}
+                </LetterButton>
+              ))}
+            </Box>
           </Box>
         </LeftPanel>
 
-        <RightPanel ref={containerRef} sx={{ 
-          ml: 4,  // 增加左边距，增加与左侧内容的距离 
-          mt: 5,  // 增加顶部边距，使画布下移
-          height: 'calc(100% - 40px)'  // 适当调整高度以保持整体平衡
-        }}>
-          <svg ref={graphRef} width={graphSize.width} height={graphSize.height}></svg>
+        <RightPanel>
+          <Box
+            ref={containerRef}
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <svg
+              ref={graphRef}
+              style={{
+                width: graphSize.width,
+                height: graphSize.height,
+                cursor: 'grab'
+              }}
+            />
+          </Box>
         </RightPanel>
       </ContentBox>
     </PageLayout>

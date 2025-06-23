@@ -1,36 +1,39 @@
 import React from 'react';
 import './SpaceGallery.css';
 import PageLayout from './PageLayout';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../utils/translations';
 import { Box, Typography } from '@mui/material';
-import { CardItem } from './CommonStyles';
 
 const SpaceGallery = () => {
+  const { language } = useLanguage();
+  
   // 临时数据，后续会替换为真实数据
   const scenes = [
     {
       id: 1,
-      title: "Space Restroom",
+      title: language === 'zh' ? '太空洗手间' : 'Space Restroom',
       image: "/images/toilet.png",
-      description: "Symbolic signage for restroom doors in orbital stations"
+      description: language === 'zh' ? '轨道站洗手间门的符号标识' : 'Symbolic signage for restroom doors in orbital stations'
     },
     {
       id: 2,
-      title: "Control Panel",
+      title: language === 'zh' ? '控制面板' : 'Control Panel',
       image: "/images/panel.png",
-      description: "Interface markings used on space control panels"
+      description: language === 'zh' ? '太空控制面板上使用的界面标记' : 'Interface markings used on space control panels'
     },
     {
       id: 3,
-      title: "Emergency Exit",
+      title: language === 'zh' ? '紧急出口' : 'Emergency Exit',
       image: "/images/exit.png",
-      description: "Symbols indicating emergency exits in space station corridors"
+      description: language === 'zh' ? '空间站走廊中指示紧急出口的符号' : 'Symbols indicating emergency exits in space station corridors'
     }
   ];
 
   return (
     <PageLayout
-      title="Omni-D in Space"
-      subtitle="Explore symbolic signage used in space stations and spacecraft environments"
+      title={t('spaceGallery.title', language)}
+      subtitle={t('spaceGallery.subtitle', language)}
     >
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 3, p: 1 }}>
         {scenes.map(scene => (
