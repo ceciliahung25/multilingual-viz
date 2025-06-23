@@ -1,19 +1,19 @@
 import React from 'react';
 import { Box, Paper, Typography, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { FaPuzzlePiece, FaFont, FaRocket, FaImages } from 'react-icons/fa';
+import { FaPuzzlePiece, FaFont, FaRobot, FaRocket, FaImages } from 'react-icons/fa';
 import { useLanguage } from '../contexts/LanguageContext';
 import { t } from '../utils/translations';
 
 // 样式定义
 const HomeContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  minHeight: 'calc(100vh - 48px)',
+  minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '24px',
+  padding: theme.spacing(3),
 }));
 
 const MainCard = styled(Paper)(({ theme }) => ({
@@ -21,36 +21,42 @@ const MainCard = styled(Paper)(({ theme }) => ({
   boxShadow: '0 2px 8px 0 rgba(0,0,0,0.06)',
   background: '#fff',
   width: '100%',
-  padding: '40px 24px',
+  padding: theme.spacing(8, 5),
   maxWidth: 1280,
-  minHeight: '660px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  margin: 'auto',
 }));
 
 const TitleSection = styled(Box)(({ theme }) => ({
-  marginBottom: '40px',
+  marginBottom: theme.spacing(6),
   textAlign: 'center',
   width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
   width: '100%',
   maxWidth: 1200,
-  margin: '0 auto',
   display: 'flex',
   flexDirection: 'column',
-  gap: theme.spacing(3)
+  gap: theme.spacing(3),
+  padding: theme.spacing(0, 2),
+  alignItems: 'center',
 }));
 
 const MainContent = styled(Box)(({ theme }) => ({
   display: 'flex',
   gap: theme.spacing(2),
   width: '100%',
+  justifyContent: 'center',
   [theme.breakpoints.down('lg')]: {
-    flexDirection: 'column'
+    flexDirection: 'column',
+    alignItems: 'center',
   }
 }));
 
@@ -180,8 +186,8 @@ const HomePage = ({ setActivePage }) => {
       case 'namevisualizer':
         setActivePage('namevisualizer');
         break;
-      case 'space':
-        setActivePage('space');
+      case 'symbolrecognizer':
+        setActivePage('symbols');
         break;
       case 'symbols':
         setActivePage('symbols');
@@ -201,10 +207,16 @@ const HomePage = ({ setActivePage }) => {
     <HomeContainer>
       <MainCard>
         <TitleSection>
-          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+          <Typography variant="h3" component="h1" gutterBottom sx={{ 
+            fontWeight: 700,
+            textAlign: 'center',
+            mb: 2
+          }}>
             {t('homepage.title', language)}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
+          <Typography variant="subtitle1" color="text.secondary" sx={{
+            textAlign: 'center'
+          }}>
             {t('homepage.subtitle', language)}
           </Typography>
         </TitleSection>
@@ -227,7 +239,7 @@ const HomePage = ({ setActivePage }) => {
             </Box>
 
             {/* 中间工具列表 */}
-            <Box sx={{ flex: '0 0 30%' }}>
+            <Box sx={{ flex: '0 0 23%' }}>
               <SectionCard sx={{ padding: '24px' }}>
                 <SectionTitle variant="h5">
                   {t('homepage.exploreTools', language)}
@@ -272,8 +284,8 @@ const HomePage = ({ setActivePage }) => {
                     </Typography>
                   </FunctionButton>
 
-                  <FunctionButton onClick={() => handleModuleClick('space')}>
-                    <IconBox><FaRocket /></IconBox>
+                  <FunctionButton onClick={() => handleModuleClick('symbolrecognizer')}>
+                    <IconBox><FaRobot /></IconBox>
                     <Typography variant="body2" sx={{ 
                       fontWeight: 500,
                       flex: 1,
@@ -287,7 +299,7 @@ const HomePage = ({ setActivePage }) => {
             </Box>
 
             {/* 右侧 Omni-D Lexicon 卡片 */}
-            <Box sx={{ flex: '0 0 25%' }}>
+            <Box sx={{ flex: '0 0 32%' }}>
               <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ padding: '24px', cursor: 'pointer' }}>
                 <SectionTitle variant="h5">
                   {t('homepage.omniDLexicon', language)}
