@@ -286,13 +286,14 @@ const HomePage = ({ setActivePage }) => {
             fontWeight: 700,
             textAlign: 'center',
             mb: 2,
-            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem', lg: '3rem' }
+            fontSize: { xs: '1.53rem', sm: '2.2rem', md: '2.5rem', lg: '3rem' }
           }}>
             {t('homepage.title', language)}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{
             textAlign: 'center',
-            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }
+            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+            lineHeight: { xs: 1.2, sm: 1.4, md: 1.6 }
           }}>
             {t('homepage.subtitle', language)}
           </Typography>
@@ -302,7 +303,7 @@ const HomePage = ({ setActivePage }) => {
           <MainContent>
             {/* 左侧大图部分 */}
             <Box sx={{ 
-              flex: '0 0 45%',
+              flex: '0 0 36%',
               [theme => theme.breakpoints.down('lg')]: {
                 flex: '1',
                 width: '100%'
@@ -323,7 +324,7 @@ const HomePage = ({ setActivePage }) => {
 
             {/* 中间工具列表 */}
             <Box sx={{ 
-              flex: '0 0 23%',
+              flex: '0 0 32%',
               [theme => theme.breakpoints.down('lg')]: {
                 flex: '1',
                 width: '100%'
