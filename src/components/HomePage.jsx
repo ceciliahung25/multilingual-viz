@@ -166,12 +166,13 @@ const FunctionButton = styled(Paper)(({ theme }) => ({
   minHeight: '50px',
   width: '100%',
   [theme.breakpoints.down('md')]: {
-    minHeight: '45px',
-    padding: '8px 12px',
+    minHeight: '42px',
+    padding: '6px 10px',
   },
   [theme.breakpoints.down('sm')]: {
-    minHeight: '40px',
-    padding: '6px 10px',
+    minHeight: '36px',
+    padding: '5px 8px',
+    borderRadius: 6,
   },
 }));
 
@@ -204,14 +205,14 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   marginTop: '30px',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
-    marginBottom: '30px',
-    marginTop: '20px',
+    marginBottom: '20px',
+    marginTop: '15px',
     fontSize: '1.3rem',
   },
   [theme.breakpoints.down('sm')]: {
-    marginBottom: '20px',
-    marginTop: '10px',
-    fontSize: '1.1rem',
+    marginBottom: '12px',
+    marginTop: '8px',
+    fontSize: '1rem',
   },
 }));
 
@@ -344,7 +345,7 @@ const HomePage = ({ setActivePage }) => {
                 <Box sx={{ 
                   display: 'flex', 
                   flexDirection: 'column',
-                  gap: 1.5
+                  gap: { xs: 0.8, sm: 1, md: 1.5 }
                 }}>
                   {/* 工具按钮列表 */}
                   <FunctionButton onClick={() => handleModuleClick('gallery')}>
@@ -353,7 +354,7 @@ const HomePage = ({ setActivePage }) => {
                       fontWeight: 500,
                       flex: 1,
                       textAlign: 'center',
-                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' }
                     }}>
                       {t('homepage.symbolGallery', language)}
                     </Typography>
@@ -365,7 +366,7 @@ const HomePage = ({ setActivePage }) => {
                       fontWeight: 500,
                       flex: 1,
                       textAlign: 'center',
-                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' }
                     }}>
                       {t('homepage.sentenceBuilder', language)}
                     </Typography>
@@ -377,7 +378,7 @@ const HomePage = ({ setActivePage }) => {
                       fontWeight: 500,
                       flex: 1,
                       textAlign: 'center',
-                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' }
                     }}>
                       {t('homepage.identityGenerator', language)}
                     </Typography>
@@ -389,7 +390,7 @@ const HomePage = ({ setActivePage }) => {
                       fontWeight: 500,
                       flex: 1,
                       textAlign: 'center',
-                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' }
                     }}>
                       {t('homepage.omniDInSpace', language)}
                     </Typography>

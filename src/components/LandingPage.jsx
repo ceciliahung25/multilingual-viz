@@ -211,15 +211,15 @@ class ParticleSystem {
 
   createParticles() {
     this.particles = [];
-    // 根据设备性能调整粒子数量
+    // 根据设备性能调整粒子数量 - 大幅减少以提高性能
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth < 1024;
-    let numParticles = 2000;
+    let numParticles = 800; // 从2000减少到800
     
     if (isMobile) {
-      numParticles = 800;
+      numParticles = 300; // 从800减少到300
     } else if (isTablet) {
-      numParticles = 1200;
+      numParticles = 500; // 从1200减少到500
     }
     
     for (let i = 0; i < numParticles; i++) {
@@ -285,7 +285,14 @@ class ParticleSystem {
     const time = Date.now() * 0.001; // 时间用于动画
     const maxDistance = 200;
     
-    this.particles.forEach(particle => {
+    // 性能优化：跳帧渲染
+    this.frameCount = (this.frameCount || 0) + 1;
+    const skipFrames = window.innerWidth < 768 ? 2 : 1; // 移动端每2帧渲染一次
+    
+    this.particles.forEach((particle, index) => {
+      // 性能优化：跳过部分粒子计算
+      if (this.frameCount % skipFrames !== 0 && index % 3 !== 0) return;
+      
       // 计算粒子到鼠标的距离
       const dx = particle.x - this.mouse.x;
       const dy = particle.y - this.mouse.y;
@@ -328,9 +335,9 @@ class ParticleSystem {
       this.ctx.globalAlpha = alpha;
       this.ctx.fillStyle = color;
       
-      // 添加白色光晕效果
+      // 减少光晕效果以提高性能
       this.ctx.shadowColor = '#ffffff';
-      this.ctx.shadowBlur = size * 1.5;
+      this.ctx.shadowBlur = size * 0.8;
       
       this.ctx.beginPath();
       this.ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
