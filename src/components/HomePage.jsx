@@ -336,7 +336,7 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '12px'
+                  padding: '8px'  // 减少移动端内边距，使宽度更接近其他卡片
                 }
               }}>
                 <SectionTitle variant="h5">
@@ -415,7 +415,7 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '12px'
+                  padding: '8px'  // 与中间卡片保持一致的移动端内边距
                 }
               }}>
                 <SectionTitle variant="h5">
