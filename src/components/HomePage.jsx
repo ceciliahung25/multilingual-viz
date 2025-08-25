@@ -213,6 +213,8 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     marginBottom: '12px',
     marginTop: '8px',
     fontSize: '1rem',
+    paddingLeft: '12px',
+    paddingRight: '12px',
   },
 }));
 
@@ -336,7 +338,7 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '8px'  // 减少移动端内边距，使宽度更接近其他卡片
+                  padding: '0'  // 移动端移除内边距，与图片卡片保持一致
                 }
               }}>
                 <SectionTitle variant="h5">
@@ -346,7 +348,10 @@ const HomePage = ({ setActivePage }) => {
                 <Box sx={{ 
                   display: 'flex', 
                   flexDirection: 'column',
-                  gap: { xs: 0.8, sm: 1, md: 1.5 }
+                  gap: { xs: 0.8, sm: 1, md: 1.5 },
+                  [theme => theme.breakpoints.down('sm')]: {
+                    padding: '12px'  // 在移动端为内容区域添加内边距
+                  }
                 }}>
                   {/* 工具按钮列表 */}
                   <FunctionButton onClick={() => handleModuleClick('gallery')}>
@@ -415,7 +420,7 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '8px'  // 与中间卡片保持一致的移动端内边距
+                  padding: '0'  // 移动端移除内边距，与图片卡片保持一致
                 }
               }}>
                 <SectionTitle variant="h5">
@@ -426,7 +431,10 @@ const HomePage = ({ setActivePage }) => {
                   display: 'flex', 
                   flexDirection: 'column', 
                   alignItems: 'center',
-                  gap: 2
+                  gap: 2,
+                  [theme => theme.breakpoints.down('sm')]: {
+                    padding: '12px'  // 在移动端为内容区域添加内边距
+                  }
                 }}>
                   <ImageBox>
                     <ModuleImage src="/images/图片2.jpg" alt="Omni-D Declaration" />
