@@ -14,6 +14,13 @@ const HomeContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   padding: theme.spacing(3),
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(2),
+    minHeight: 'auto',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
 }));
 
 const MainCard = styled(Paper)(({ theme }) => ({
@@ -28,6 +35,15 @@ const MainCard = styled(Paper)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(4, 3),
+    borderRadius: 12,
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3, 2),
+    borderRadius: 8,
+    margin: theme.spacing(1),
+  },
 }));
 
 const TitleSection = styled(Box)(({ theme }) => ({
@@ -37,6 +53,12 @@ const TitleSection = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  [theme.breakpoints.down('md')]: {
+    marginBottom: theme.spacing(4),
+  },
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(3),
+  },
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
@@ -47,6 +69,14 @@ const ContentSection = styled(Box)(({ theme }) => ({
   gap: theme.spacing(3),
   padding: theme.spacing(0, 2),
   alignItems: 'center',
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(2),
+    padding: theme.spacing(0, 1),
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: theme.spacing(1.5),
+    padding: 0,
+  },
 }));
 
 const MainContent = styled(Box)(({ theme }) => ({
@@ -57,7 +87,13 @@ const MainContent = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
     flexDirection: 'column',
     alignItems: 'center',
-  }
+  },
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(1.5),
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: theme.spacing(1),
+  },
 }));
 
 const SectionCard = styled(Paper)(({ theme }) => ({
@@ -71,6 +107,14 @@ const SectionCard = styled(Paper)(({ theme }) => ({
   overflow: 'hidden',
   flex: 1,
   minWidth: 0, // 防止flex项目溢出
+  [theme.breakpoints.down('md')]: {
+    height: '300px',
+    borderRadius: 12,
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '250px',
+    borderRadius: 8,
+  },
 }));
 
 const ModuleCard = styled(Paper)(({ theme }) => ({
@@ -121,6 +165,14 @@ const FunctionButton = styled(Paper)(({ theme }) => ({
   color: 'white',
   minHeight: '50px',
   width: '100%',
+  [theme.breakpoints.down('md')]: {
+    minHeight: '45px',
+    padding: '8px 12px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: '40px',
+    padding: '6px 10px',
+  },
 }));
 
 const IconBox = styled(Box)(({ theme }) => ({
@@ -132,6 +184,18 @@ const IconBox = styled(Box)(({ theme }) => ({
   width: '32px',
   minWidth: '32px',
   color: 'white',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '16px',
+    width: '28px',
+    minWidth: '28px',
+    marginRight: '10px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '14px',
+    width: '24px',
+    minWidth: '24px',
+    marginRight: '8px',
+  },
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -139,6 +203,16 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   marginBottom: '50px',
   marginTop: '30px',
   textAlign: 'center',
+  [theme.breakpoints.down('md')]: {
+    marginBottom: '30px',
+    marginTop: '20px',
+    fontSize: '1.3rem',
+  },
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: '20px',
+    marginTop: '10px',
+    fontSize: '1.1rem',
+  },
 }));
 
 const HomePage = ({ setActivePage }) => {
@@ -210,12 +284,14 @@ const HomePage = ({ setActivePage }) => {
           <Typography variant="h3" component="h1" gutterBottom sx={{ 
             fontWeight: 700,
             textAlign: 'center',
-            mb: 2
+            mb: 2,
+            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem', lg: '3rem' }
           }}>
             {t('homepage.title', language)}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{
-            textAlign: 'center'
+            textAlign: 'center',
+            fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' }
           }}>
             {t('homepage.subtitle', language)}
           </Typography>
@@ -224,7 +300,13 @@ const HomePage = ({ setActivePage }) => {
         <ContentSection>
           <MainContent>
             {/* 左侧大图部分 */}
-            <Box sx={{ flex: '0 0 45%' }}>
+            <Box sx={{ 
+              flex: '0 0 45%',
+              [theme => theme.breakpoints.down('lg')]: {
+                flex: '1',
+                width: '100%'
+              }
+            }}>
               <SectionCard>
                 <img 
                   src="/images/图片1.png" 
@@ -239,8 +321,22 @@ const HomePage = ({ setActivePage }) => {
             </Box>
 
             {/* 中间工具列表 */}
-            <Box sx={{ flex: '0 0 23%' }}>
-              <SectionCard sx={{ padding: '24px' }}>
+            <Box sx={{ 
+              flex: '0 0 23%',
+              [theme => theme.breakpoints.down('lg')]: {
+                flex: '1',
+                width: '100%'
+              }
+            }}>
+              <SectionCard sx={{ 
+                padding: '24px',
+                [theme => theme.breakpoints.down('md')]: {
+                  padding: '16px'
+                },
+                [theme => theme.breakpoints.down('sm')]: {
+                  padding: '12px'
+                }
+              }}>
                 <SectionTitle variant="h5">
                   {t('homepage.exploreTools', language)}
                 </SectionTitle>
@@ -256,7 +352,8 @@ const HomePage = ({ setActivePage }) => {
                     <Typography variant="body2" sx={{ 
                       fontWeight: 500,
                       flex: 1,
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
                     }}>
                       {t('homepage.symbolGallery', language)}
                     </Typography>
@@ -267,7 +364,8 @@ const HomePage = ({ setActivePage }) => {
                     <Typography variant="body2" sx={{ 
                       fontWeight: 500,
                       flex: 1,
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
                     }}>
                       {t('homepage.sentenceBuilder', language)}
                     </Typography>
@@ -278,7 +376,8 @@ const HomePage = ({ setActivePage }) => {
                     <Typography variant="body2" sx={{ 
                       fontWeight: 500,
                       flex: 1,
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
                     }}>
                       {t('homepage.identityGenerator', language)}
                     </Typography>
@@ -289,7 +388,8 @@ const HomePage = ({ setActivePage }) => {
                     <Typography variant="body2" sx={{ 
                       fontWeight: 500,
                       flex: 1,
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.875rem' }
                     }}>
                       {t('homepage.omniDInSpace', language)}
                     </Typography>
@@ -299,8 +399,23 @@ const HomePage = ({ setActivePage }) => {
             </Box>
 
             {/* 右侧 Omni-D Lexicon 卡片 */}
-            <Box sx={{ flex: '0 0 32%' }}>
-              <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ padding: '24px', cursor: 'pointer' }}>
+            <Box sx={{ 
+              flex: '0 0 32%',
+              [theme => theme.breakpoints.down('lg')]: {
+                flex: '1',
+                width: '100%'
+              }
+            }}>
+              <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ 
+                padding: '24px', 
+                cursor: 'pointer',
+                [theme => theme.breakpoints.down('md')]: {
+                  padding: '16px'
+                },
+                [theme => theme.breakpoints.down('sm')]: {
+                  padding: '12px'
+                }
+              }}>
                 <SectionTitle variant="h5">
                   {t('homepage.omniDLexicon', language)}
                 </SectionTitle>
