@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
+import LandingPage from './components/LandingPage';
 import SpaceGallery from './components/SpaceGallery';
 import SymbolRecognizer from './components/SymbolRecognizer';
 import SymbolRecognizerCN from './components/SymbolRecognizerCN';
@@ -29,11 +30,13 @@ const lightTheme = createTheme({
 
 // 主应用组件
 const AppContent = () => {
-  const [activePage, setActivePage] = useState('homepage');
+  const [activePage, setActivePage] = useState('landing');
   const { isChinese } = useLanguage();
 
   const renderPage = () => {
     switch (activePage) {
+      case 'landing':
+        return <LandingPage onExplore={() => setActivePage('homepage')} />;
       case 'homepage':
         return <HomePage setActivePage={setActivePage} />;
       case 'gallery':
@@ -52,9 +55,18 @@ const AppContent = () => {
       case 'sentencecomposer':
         return <SentenceComposer />;
       default:
-        return <HomePage setActivePage={setActivePage} />;
+        return <LandingPage onExplore={() => setActivePage('homepage')} />;
     }
   };
+
+  // 着陆页使用全屏布局，其他页面使用带侧边栏的布局
+  if (activePage === 'landing') {
+    return (
+      <div className="app">
+        {renderPage()}
+      </div>
+    );
+  }
 
   return (
     <div className="app">
