@@ -309,9 +309,16 @@ const HomePage = ({ setActivePage }) => {
               [theme => theme.breakpoints.down('lg')]: {
                 flex: '1',
                 width: '100%'
+              },
+              [theme => theme.breakpoints.down('sm')]: {
+                border: '2px solid red'  // 临时调试边框
               }
             }}>
-              <SectionCard>
+              <SectionCard sx={{
+                [theme => theme.breakpoints.down('sm')]: {
+                  border: '2px solid blue'  // 临时调试边框
+                }
+              }}>
                 <img 
                   src="/images/图片1.png" 
                   alt="Omni-D 主图" 
@@ -330,6 +337,9 @@ const HomePage = ({ setActivePage }) => {
               [theme => theme.breakpoints.down('lg')]: {
                 flex: '1',
                 width: '100%'
+              },
+              [theme => theme.breakpoints.down('sm')]: {
+                border: '2px solid red'  // 临时调试边框
               }
             }}>
               <SectionCard sx={{ 
@@ -338,7 +348,8 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '0'  // 移动端移除内边距，与图片卡片保持一致
+                  padding: '0',  // 移动端移除内边距，与图片卡片保持一致
+                  border: '2px solid blue'  // 临时调试边框
                 }
               }}>
                 <SectionTitle variant="h5">
@@ -411,6 +422,9 @@ const HomePage = ({ setActivePage }) => {
               [theme => theme.breakpoints.down('lg')]: {
                 flex: '1',
                 width: '100%'
+              },
+              [theme => theme.breakpoints.down('sm')]: {
+                border: '2px solid red'  // 临时调试边框
               }
             }}>
               <SectionCard onClick={() => handleModuleClick('tokengenerator')} sx={{ 
@@ -420,7 +434,8 @@ const HomePage = ({ setActivePage }) => {
                   padding: '16px'
                 },
                 [theme => theme.breakpoints.down('sm')]: {
-                  padding: '0'  // 移动端移除内边距，与图片卡片保持一致
+                  padding: '0',  // 移动端移除内边距，与图片卡片保持一致
+                  border: '2px solid blue'  // 临时调试边框
                 }
               }}>
                 <SectionTitle variant="h5">
